@@ -5,6 +5,8 @@
  */
 package elms.bin;
 
+import elms.bin.FrameUtil2;
+
 /**
  *
  * @author YukiMuraRindon

@@ -4,7 +4,11 @@
  * and open the template in the editor.
  */
 package elms.bin;
-
+import elms.po.Product;
+import elms.util.FrameUtil2;
+import elms.service.productserviceimpl;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author YukiMuraRindon
@@ -17,7 +21,10 @@ public class productinternalframe extends javax.swing.JInternalFrame {
     //private static productinternalframe p = new productinternalframe();
     public productinternalframe() {
         initComponents(); 
-        
+        List<Product> list = productserviceimpl.findAll();
+    }
+    public void refuresh(List<Product> lsit){
+        DefaultTableModel model = (DefaultTableModel) this.tabProduct.
     }
     
     /**
@@ -30,13 +37,13 @@ public class productinternalframe extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabProduct = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtPid = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtPname = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -72,7 +79,7 @@ public class productinternalframe extends javax.swing.JInternalFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -91,7 +98,12 @@ public class productinternalframe extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        tabProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabProductMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabProduct);
 
         jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
@@ -123,14 +135,24 @@ public class productinternalframe extends javax.swing.JInternalFrame {
 
         jButton3.setText("新增");
 
-        jButton4.setText("更新");
+        jButton4.setText("刷新");
         jButton4.setToolTipText("");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
 
         jButton5.setText("保存");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("取消");
+        jButton6.setText("删除");
 
-        jButton7.setText("删除");
+        jButton7.setText("重置");
 
         jButton8.setText("退出");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -158,13 +180,13 @@ public class productinternalframe extends javax.swing.JInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtPid, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(39, 39, 39)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -197,9 +219,9 @@ public class productinternalframe extends javax.swing.JInternalFrame {
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -239,6 +261,28 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         FrameUtil2.framemap.remove(productinternalframe.class.getName());
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void tabProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabProductMouseClicked
+        // TODO add your handling code here:
+        int row = this.tabProduct.getSelectedRow();
+        Integer id = (Integer) this.tabProduct.getValueAt(row,0);
+        this.txtPid.setText(id.toString());
+        this.txtPname.setText(this.tabProduct.getValueAt(row,1)).toString();
+    }//GEN-LAST:event_tabProductMouseClicked
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        // TODO add your handling code here:
+        List<Product> list = productserviceimpl.findAll();
+        refresh(list);
+    }//GEN-LAST:event_jButton4MouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        int id =Integer.parseInt(this.txtPid.getText().trim());
+        String pname=this.txtPname.getText().trim();
+        String ptype = this.txtPtype.getText().trim();
+        Product p = new Product(id,pname,ptype,id,id,null,null,null,null);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton3;
@@ -255,11 +299,11 @@ public class productinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
+    private javax.swing.JTable tabProduct;
+    private javax.swing.JTextField txtPid;
+    private javax.swing.JTextField txtPname;
     // End of variables declaration//GEN-END:variables
 }

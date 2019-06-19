@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.bin.FrameUtil2;
+import elms.util.*;
 
 /**
  *

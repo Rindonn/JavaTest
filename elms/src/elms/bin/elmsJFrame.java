@@ -6,6 +6,7 @@
 package elms.bin;
 
 
+import elms.util.FrameUtil2;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
