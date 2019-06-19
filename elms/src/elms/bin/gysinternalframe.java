@@ -146,6 +146,11 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
         jButton5.setText("删除");
 
         jButton6.setText("退出");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel11.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 0, 0));
@@ -162,7 +167,7 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 56, Short.MAX_VALUE)
+                        .addGap(0, 38, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -280,6 +285,11 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         FrameUtil2.framemap.remove(gysinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        FrameUtil2.framemap.remove(gysinternalframe.class.getName());
+    }//GEN-LAST:event_jButton6ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

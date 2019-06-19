@@ -128,6 +128,11 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         jButton5.setText("重置");
 
         jButton6.setText("退出");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,7 +143,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(238, Short.MAX_VALUE))
+                .addContainerGap(239, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -240,6 +245,11 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         FrameUtil2.framemap.remove(khglinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        FrameUtil2.framemap.remove(khglinternalframe.class.getName());
+    }//GEN-LAST:event_jButton6ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
