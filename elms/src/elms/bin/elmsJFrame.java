@@ -5,18 +5,10 @@
  */
 package elms.bin;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import javax.swing.JPanel;
+
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,11 +16,14 @@ import javax.swing.JPanel;
  */
 public class elmsJFrame extends javax.swing.JFrame {
 
+
     /**
      * Creates new form elmsJFrame
      */
     public elmsJFrame() {
         initComponents();
+        //初始化内容的显示面板
+
     }
 
     /**
@@ -39,29 +34,27 @@ public class elmsJFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel()
-        ;
-        jLabel1 = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnyggl = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jButton17 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
+        jButton19 = new javax.swing.JButton();
+        jButton20 = new javax.swing.JButton();
+        jButton21 = new javax.swing.JButton();
+        jButton22 = new javax.swing.JButton();
+        jButton23 = new javax.swing.JButton();
+        jButton24 = new javax.swing.JButton();
+        desktop2 = new elms.bin.desktop();
         jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
+        itemcommodity = new javax.swing.JMenu();
         commodity = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        slp = new javax.swing.JMenuItem();
+        emp = new javax.swing.JMenuItem();
+        empl = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -78,88 +71,103 @@ public class elmsJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("进销存管理");
-        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/salesmanmnu.gif"))); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jToolBar1.setRollover(true);
+
+        btnyggl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/salesman.gif"))); // NOI18N
+        btnyggl.setToolTipText("员工管理");
+        btnyggl.setFocusable(false);
+        btnyggl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnyggl.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnyggl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnygglActionPerformed(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        getContentPane().add(jButton1, gridBagConstraints);
+        jToolBar1.add(btnyggl);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/customermnu.gif"))); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/customer.gif"))); // NOI18N
+        jButton14.setToolTipText("");
+        jButton14.setFocusable(false);
+        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton14ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new java.awt.GridBagConstraints());
+        jToolBar1.add(jButton14);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/productmnu.gif"))); // NOI18N
-        getContentPane().add(jButton4, new java.awt.GridBagConstraints());
-
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/supplierframe.gif"))); // NOI18N
-        getContentPane().add(jButton3, new java.awt.GridBagConstraints());
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchasemnu.gif"))); // NOI18N
-        getContentPane().add(jButton5, new java.awt.GridBagConstraints());
-
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retpurchasemnu.gif"))); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/product.gif"))); // NOI18N
+        jButton15.setFocusable(false);
+        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                jButton15ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton6, new java.awt.GridBagConstraints());
+        jToolBar1.add(jButton15);
 
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/sellmnu.gif"))); // NOI18N
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton7, new java.awt.GridBagConstraints());
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/supplier.gif"))); // NOI18N
+        jButton16.setFocusable(false);
+        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton16);
 
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retsellmnu.gif"))); // NOI18N
-        getContentPane().add(jButton8, new java.awt.GridBagConstraints());
+        jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchase.gif"))); // NOI18N
+        jButton17.setFocusable(false);
+        jButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton17);
 
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/suppbusirecmnu.gif"))); // NOI18N
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton9, new java.awt.GridBagConstraints());
+        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retpurchase.gif"))); // NOI18N
+        jButton18.setActionCommand("");
+        jButton18.setFocusable(false);
+        jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton18);
 
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/custbusirecmnu.gif"))); // NOI18N
-        getContentPane().add(jButton10, new java.awt.GridBagConstraints());
+        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/sell.gif"))); // NOI18N
+        jButton19.setFocusable(false);
+        jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton19);
 
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/stockquerymnu.gif"))); // NOI18N
-        getContentPane().add(jButton11, new java.awt.GridBagConstraints());
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retsell.gif"))); // NOI18N
+        jButton20.setFocusable(false);
+        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton20);
 
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchasegathermnu.gif"))); // NOI18N
-        getContentPane().add(jButton12, new java.awt.GridBagConstraints());
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/suppbusirec.gif"))); // NOI18N
+        jButton21.setFocusable(false);
+        jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton21);
 
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
+        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/custbusirec.gif"))); // NOI18N
+        jButton22.setFocusable(false);
+        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton22);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/elms.jpg"))); // NOI18N
-        jPanel1.add(jLabel1);
+        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/stockquery.gif"))); // NOI18N
+        jButton23.setFocusable(false);
+        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton23);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 13;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 10, 0, 0);
-        getContentPane().add(jPanel1, gridBagConstraints);
+        jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchasegather.gif"))); // NOI18N
+        jButton24.setFocusable(false);
+        jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton24);
 
-        jMenu3.setText("基本资料管理");
+        getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
+        getContentPane().add(desktop2, java.awt.BorderLayout.CENTER);
+
+        itemcommodity.setText("基本资料管理");
 
         commodity.setText("商品资料管理");
         commodity.setActionCommand("m1");
@@ -173,18 +181,28 @@ public class elmsJFrame extends javax.swing.JFrame {
                 commodityActionPerformed(evt);
             }
         });
-        jMenu3.add(commodity);
+        itemcommodity.add(commodity);
 
-        jMenuItem2.setText("供应商资料管理");
-        jMenu3.add(jMenuItem2);
+        slp.setText("供应商资料管理");
+        slp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                slpActionPerformed(evt);
+            }
+        });
+        itemcommodity.add(slp);
 
-        jMenuItem3.setText("客户资料管理");
-        jMenu3.add(jMenuItem3);
+        emp.setText("客户资料管理");
+        emp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empActionPerformed(evt);
+            }
+        });
+        itemcommodity.add(emp);
 
-        jMenuItem1.setText("员工资料管理");
-        jMenu3.add(jMenuItem1);
+        empl.setText("员工资料管理");
+        itemcommodity.add(empl);
 
-        jMenuBar2.add(jMenu3);
+        jMenuBar2.add(itemcommodity);
 
         jMenu4.setText("采购管理");
 
@@ -240,13 +258,22 @@ public class elmsJFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar2);
 
-        pack();
+        setSize(new java.awt.Dimension(1050, 867));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void commodityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commodityActionPerformed
         // TODO add your handling code here:
-       new commodity().setVisible(true);
+       productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
     }//GEN-LAST:event_commodityActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
@@ -262,25 +289,75 @@ public class elmsJFrame extends javax.swing.JFrame {
         //new commodity().setVisible(true);
     }//GEN-LAST:event_commodityMouseClicked
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnygglActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnygglActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+         productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
+    }//GEN-LAST:event_btnygglActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void empActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+         khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
+    }//GEN-LAST:event_empActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
+         khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
+    }//GEN-LAST:event_jButton15ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void slpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_slpActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
+    }//GEN-LAST:event_slpActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);
+       p.setVisible(true);
+           try {
+               p.setSelected(true);
+           } catch (PropertyVetoException ex) {
+               Logger.getLogger(elmsJFrame.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           p.toFront();
+    }//GEN-LAST:event_jButton14ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -318,38 +395,38 @@ public class elmsJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnyggl;
     public javax.swing.JMenuItem commodity;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu3;
+    private elms.bin.desktop desktop2;
+    private javax.swing.JMenuItem emp;
+    private javax.swing.JMenuItem empl;
+    private javax.swing.JMenu itemcommodity;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
+    private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
+    private javax.swing.JButton jButton24;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JMenuItem slp;
     // End of variables declaration//GEN-END:variables
 }
