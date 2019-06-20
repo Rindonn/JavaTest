@@ -17,7 +17,7 @@ public class supplierserviceimpl implements supplierservice {
 
    supplierdao p = new supplierdao();
     public List<Supplier> findAll(){
-        String sql = "select * from t_supplier";
+        String sql = "select * from t_supplier where state = 1";
         Object[] parmas = {};
         return p.query(sql,Supplier.class,parmas);
 }
@@ -28,7 +28,7 @@ public class supplierserviceimpl implements supplierservice {
     }
     
     public boolean delete(int id){
-        String sql = "delete from t_supplier where supid=?";
+        String sql = "update t_supplier set state= -1  where supid=?";
         Object[] parmas = {id};
         return p.update(sql,parmas);
     }

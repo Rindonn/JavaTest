@@ -17,7 +17,7 @@ public class productserviceimpl implements productservice{
     productdao p = new productdao();
     @Override
     public List<Product> findAll(){
-        String sql = "select * from t_product";
+        String sql = "select * from t_product where state = 1";
         Object[] parmas = {};
         return p.query(sql,Product.class,parmas);
 }
@@ -28,7 +28,7 @@ public class productserviceimpl implements productservice{
     }
     
     public boolean delete(int id){
-        String sql = "delete from t_product where proid=?";
+        String sql = "update t_product set state= -1  where proid=?";
         Object[] parmas = {id};
         return p.update(sql,parmas);
     }

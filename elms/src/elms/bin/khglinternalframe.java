@@ -108,6 +108,11 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         });
 
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         tabcustomer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -323,7 +328,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         //从所选中的行中读取出数据 
         Integer id = (Integer) this.tabcustomer.getValueAt(row, 0);
         this.txtcusid.setText(id.toString());
-        this.txtcusid1.setText(id.toString());
+        this.txtcusid1.setText(this.tabcustomer.getValueAt(row, 1).toString());
         this.txtcusname.setText(this.tabcustomer.getValueAt(row, 1).toString());
         this.txttaobaoid.setText(this.tabcustomer.getValueAt(row,2).toString());
         this.txtcusphone.setText(this.tabcustomer.getValueAt(row,3).toString());
@@ -392,6 +397,16 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         this.txtcusaddress.setText("");
         this.txtlastdeliverydate.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        customerserviceimpl p = new customerserviceimpl();
+        String username = this.txtcusid1.getText().trim();
+        //将id传递到service
+        List<Customer> list = null;
+        list = p.select(username);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -16,7 +16,7 @@ import java.util.List;
 public class customerserviceimpl {
      customerdao p = new customerdao();
     public List<Customer> findAll(){
-        String sql = "select * from t_customer";
+        String sql = "select * from t_customer where state = 1";
         Object[] parmas = {};
         return p.query(sql,Customer.class,parmas);
 }
@@ -27,7 +27,7 @@ public class customerserviceimpl {
     }
     
     public boolean delete(int id){
-        String sql = "delete from t_customer where cusid=?";
+        String sql = "update t_customer set state= -1  where cusid=?";
         Object[] parmas = {id};
         return p.update(sql,parmas);
     }
@@ -37,4 +37,9 @@ public class customerserviceimpl {
        //System.out.println(sql);
        return p.update(sql, params);
     }
+    public List<Customer> select(String username){
+        String sql = "select * from t_customer where cusname = ? and state = 1";
+        Object[] parmas = {username};
+        return p.query(sql,Customer.class,parmas);
+}
 }
