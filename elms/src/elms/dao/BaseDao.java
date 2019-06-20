@@ -15,7 +15,7 @@ import org.apache.commons.dbutils.handlers.*;
  */
 public class BaseDao<T> {
 
-    private static final String URL = "jdbc:mysql://192.168.106.138:3306/elms?characterEncoding = utf-8";
+    private static final String URL = "jdbc:mysql://192.168.106.138:3306/elms?characterEncoding=utf-8";
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String USER = "root";
     private static final String PASSWORD = "123456";

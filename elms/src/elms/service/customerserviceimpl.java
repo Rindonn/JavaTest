@@ -7,7 +7,9 @@ package elms.service;
 
 import elms.dao.customerdao;
 import elms.po.*;
+import java.beans.PropertyVetoException;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,8 +36,8 @@ public class customerserviceimpl {
     public boolean insert(Customer pp) {
        String sql = "insert into t_customer (cusid,cusname,taobaoid,cusphone,postcard,cusaddress,lastdeliverydate) values(?,?,?,?,?,?,?)";
        Object[] params = {pp.getCusid(),pp.getCusname(),pp.getTaobaoid(),pp.getCusphone(),pp.getPostcard(),pp.getCusaddress(),pp.getLastdeliverydate()};
-       //System.out.println(sql);
-       return p.update(sql, params);
+         //System.out.println(sql);
+         return p.update(sql, params);
     }
     public List<Customer> select(String username){
         String sql = "select * from t_customer where cusname = ? and state = 1";
