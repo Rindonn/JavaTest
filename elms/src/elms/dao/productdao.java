@@ -9,6 +9,6 @@ package elms.dao;
  *
  * @author YukiMuraRindon
  */
-public class productdao {
-    
+public class productdao extends BaseDao{
+
 }

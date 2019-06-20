@@ -4,7 +4,15 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Supplier;
+import elms.service.supplierserviceimpl;
 import elms.util.FrameUtil2;
+import java.beans.PropertyVetoException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author YukiMuraRindon
@@ -15,8 +23,33 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
      * Creates new form gysinternalframe
      */
     public gysinternalframe() {
-        initComponents();
+        supplierserviceimpl p = new supplierserviceimpl();
+        initComponents(); 
+        List<Supplier> list = null;
+        list = p.findAll();
+        refresh(list);
     }
+    public void refresh(List<Supplier> list){
+       DefaultTableModel model = (DefaultTableModel) this.tabSupplier.getModel();
+     //删除表格中的行
+     while(model.getRowCount()>0){
+         model.removeRow(0);
+     }
+        //便利集合
+        for (Supplier p : list) {
+            //将数据放到一个集合里 然后在放到表格中
+            Vector v = new Vector();
+            v.add(p.getSupid());
+            v.add(p.getSupaddreviation());
+            v.add(p.getSupfullname());
+            v.add(p.getOwner());
+            v.add(p.getJob());
+            v.add(p.getMobile());
+            v.add(p.getSupaddress());
+            //放到表格里
+            model.addRow(v);
+        }
+   }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,34 +61,28 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabSupplier = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtsupid = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtsupaddreviation = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtsupfullname = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        txtmobile = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        txtaddress = new javax.swing.JTextField();
+        btnAdd = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
+        benUpdate = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnQuit = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
+        txtjob = new javax.swing.JTextField();
+        txtowner = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -79,26 +106,31 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabSupplier.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "供应商编号", "供应商简称", "供应商全称", "负责人称谓", "负责人姓名", "电话", "传真", "移动电话", "供应商地址", "工厂地址", "最近一次进货日期"
+                "供应商编号", "供应商简称", "供应商全称", "负责人姓名", "负责人称谓", "移动电话", "供应商地址"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        tabSupplier.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabSupplierMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabSupplier);
 
         jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
@@ -118,37 +150,51 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel5.setText("称谓：");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "称谓1", "称谓2" }));
-
-        jLabel6.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel6.setText("公司地址：");
-
-        jLabel7.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel7.setText("电话：");
-
         jLabel8.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel8.setText("移动电话：");
-
-        jLabel9.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel9.setText("传真：");
 
         jLabel10.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel10.setText("工厂地址：");
 
-        jButton1.setText("新增");
-
-        jButton2.setText("更新");
-
-        jButton3.setText("保存");
-
-        jButton4.setText("取消");
-
-        jButton5.setText("删除");
-
-        jButton6.setText("退出");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setText("新增");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnRefresh.setText("刷新");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
+        benUpdate.setText("保存");
+        benUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                benUpdateActionPerformed(evt);
+            }
+        });
+
+        btnRemove.setText("重置");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("删除");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnQuit.setText("退出");
+        btnQuit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuitActionPerformed(evt);
             }
         });
 
@@ -170,110 +216,82 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
                         .addGap(0, 38, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTextField9))
-                                    .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel1)
-                                                    .addComponent(jLabel4))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(jTextField1)
-                                                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel7)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jTextField6)))
+                                            .addComponent(txtsupid, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                                            .addComponent(txtowner))
                                         .addGap(76, 76, 76)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel5))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel2)
-                                                    .addComponent(jLabel5))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(jTextField2)
-                                                    .addComponent(jComboBox1, 0, 180, Short.MAX_VALUE)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel8)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jTextField7)))
+                                            .addComponent(txtsupaddreviation, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                            .addComponent(txtjob))
                                         .addGap(37, 37, 37)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jLabel8))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel3)
-                                                    .addComponent(jLabel6))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
-                                                    .addComponent(jTextField3)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel9)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jTextField8)))))
+                                            .addComponent(txtmobile, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                                            .addComponent(txtsupfullname)))
+                                    .addComponent(txtaddress))
                                 .addGap(68, 68, 68))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel11)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 458, Short.MAX_VALUE)
-                                .addComponent(jButton1)
+                                .addComponent(btnAdd)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2)
+                                .addComponent(btnRefresh)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton3)
+                                .addComponent(benUpdate)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4)
+                                .addComponent(btnRemove)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton5)
+                                .addComponent(btnDelete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton6)
+                                .addComponent(btnQuit)
                                 .addContainerGap())))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtsupid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtsupaddreviation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtsupfullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtmobile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtjob, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                    .addComponent(txtowner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
+                    .addComponent(txtaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
+                    .addComponent(btnAdd)
+                    .addComponent(btnRefresh)
+                    .addComponent(benUpdate)
+                    .addComponent(btnRemove)
+                    .addComponent(btnDelete)
+                    .addComponent(btnQuit)
                     .addComponent(jLabel11))
                 .addContainerGap())
         );
@@ -286,20 +304,116 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
         FrameUtil2.framemap.remove(gysinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+    private void btnQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitActionPerformed
+        try {
+            // TODO add your handling code here:
+            this.setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(gysinternalframe.class.getName()).log(Level.SEVERE, null, ex);
+        }
         FrameUtil2.framemap.remove(gysinternalframe.class.getName());
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnQuitActionPerformed
+
+    private void tabSupplierMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabSupplierMouseClicked
+        // TODO add your handling code here:
+        //先获取到所选中的行数
+        int row = this.tabSupplier.getSelectedRow();
+        //从所选中的行中读取出数据 
+        Integer id = (Integer) this.tabSupplier.getValueAt(row, 0);
+        this.txtsupid.setText(id.toString());
+        //System.out.println("1");
+        this.txtsupaddreviation.setText(this.tabSupplier.getValueAt(row, 1).toString());
+       // System.out.println("2");
+        this.txtsupfullname.setText(this.tabSupplier.getValueAt(row,2).toString());
+       // System.out.println("3");
+        this.txtowner.setText(this.tabSupplier.getValueAt(row,3).toString());
+        //System.out.println(this.tabSupplier.getValueAt(row,3).toString());
+        this.txtjob.setText(this.tabSupplier.getValueAt(row,4).toString());
+      //  System.out.println("5");
+        this.txtmobile.setText(this.tabSupplier.getValueAt(row,5).toString());
+        this.txtaddress.setText(this.tabSupplier.getValueAt(row,6).toString());
+       // System.out.println("123");
+    }//GEN-LAST:event_tabSupplierMouseClicked
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        supplierserviceimpl pp = new supplierserviceimpl();
+        int txtsupid =Integer.parseInt(this.txtsupid.getText().trim());
+        String txtsupaddreviation=this.txtsupaddreviation.getText().trim();
+        String txtsupfullname = this.txtsupfullname.getText().trim();
+        String txtowner=this.txtowner.getText().trim();
+        String txtjob = this.txtjob.getText().trim();
+        String txtmobile=this.txtmobile.getText().trim();
+        String txtaddress = this.txtaddress.getText().trim();
+        
+        Supplier p = new Supplier(txtsupid,txtsupaddreviation,txtsupfullname,txtowner,txtjob,txtmobile,txtaddress);
+        if(pp.insert(p)){
+           //弹出框  提示修改成功
+          JOptionPane.showMessageDialog(this, "增加完成");
+          List<Supplier> list = pp.findAll();
+          refresh(list);
+        }
+        
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        // TODO add your handling code here:
+        supplierserviceimpl p = new supplierserviceimpl();
+        List<Supplier> list = p.findAll();
+        refresh(list);
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void benUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_benUpdateActionPerformed
+        // TODO add your handling code here:
+        supplierserviceimpl pp = new supplierserviceimpl();
+        int txtsupid =Integer.parseInt(this.txtsupid.getText().trim());
+        String txtsupaddreviation=this.txtsupaddreviation.getText().trim();
+        String txtsupfullname = this.txtsupfullname.getText().trim();
+        String txtowner=this.txtowner.getText().trim();
+        String txtjob = this.txtjob.getText().trim();
+        String txtmobile=this.txtmobile.getText().trim();
+        String txtaddress = this.txtaddress.getText().trim();
+        Supplier p = new Supplier(txtsupid,txtsupaddreviation,txtsupfullname,txtowner,txtjob,txtmobile,txtaddress);
+        if(pp.update(p)){
+           //弹出框  提示修改成功
+          JOptionPane.showMessageDialog(this, "修改完成");
+          List<Supplier> list = pp.findAll();
+          refresh(list);
+        }
+    }//GEN-LAST:event_benUpdateActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        // TODO add your handling code here
+        this.txtsupid.setText("");
+        this.txtsupaddreviation.setText("");
+        this.txtsupfullname.setText("");
+        this.txtowner.setText("");
+        this.txtjob.setText("");
+        this.txtmobile.setText("");
+        this.txtaddress.setText("");
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+         supplierserviceimpl p = new supplierserviceimpl();
+        String idd = this.txtsupid.getText().trim();
+        int id = Integer.parseInt(idd);
+        //将id传递到service
+        if(p.delete(id)){
+            JOptionPane.showMessageDialog(this, "删除成功");
+            List<Supplier> list = p.findAll();
+            refresh(list);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton benUpdate;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnQuit;
+    private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -307,20 +421,15 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
+    private javax.swing.JTable tabSupplier;
+    private javax.swing.JTextField txtaddress;
+    private javax.swing.JTextField txtjob;
+    private javax.swing.JTextField txtmobile;
+    private javax.swing.JTextField txtowner;
+    private javax.swing.JTextField txtsupaddreviation;
+    private javax.swing.JTextField txtsupfullname;
+    private javax.swing.JTextField txtsupid;
     // End of variables declaration//GEN-END:variables
 }

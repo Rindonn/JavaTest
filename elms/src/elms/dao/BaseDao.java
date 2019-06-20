@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jdbc.dao;
+package elms.dao;
 import java.sql.*;
 import java.util.List;
 import org.apache.commons.dbutils.*;
@@ -21,7 +21,7 @@ public class BaseDao<T> {
     private static final String PASSWORD = "123456";
 
     // 加载驱动
-    static {
+    static{
         boolean result = DbUtils.loadDriver(DRIVER);
         if (result == false) {
             try {
@@ -30,6 +30,7 @@ public class BaseDao<T> {
                 e.printStackTrace();
             }
         }
+        
     }
 
     // 创建连接
@@ -73,6 +74,7 @@ public class BaseDao<T> {
     /**
      * 返回多个对象
      *
+     * @param <T>
      * @param sql
      * @param clazz
      * @param params 如果没有参数就设为 Object[] params={}
@@ -206,7 +208,7 @@ public class BaseDao<T> {
     }
     // 测试
 
-//    public static void main(String[] args) {
+//    public  void main(String[] args) {
 //        // 获得连接对象
 //        Connection conn = new BaseDao().getConnection();
 //        // 打印

@@ -35,6 +35,15 @@ public class Customer {
         this.postcard = postcard;
         this.cusaddress = cusaddress;
     }
+    
+    public Customer(int cusid, String cusname, String taobaoid, String cusphone, String postcard, String cusaddress) {
+        this.cusid = cusid;
+        this.cusname = cusname;
+        this.taobaoid = taobaoid;
+        this.cusphone = cusphone;
+        this.postcard = postcard;
+        this.cusaddress = cusaddress;
+    }
 
     public int getCusid() {
         return cusid;

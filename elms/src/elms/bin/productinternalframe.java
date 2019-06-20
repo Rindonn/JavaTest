@@ -7,7 +7,13 @@ package elms.bin;
 import elms.po.Product;
 import elms.util.FrameUtil2;
 import elms.service.productserviceimpl;
+import java.beans.PropertyVetoException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -18,15 +24,36 @@ public class productinternalframe extends javax.swing.JInternalFrame {
     /**
      * Creates new form productinternalframe
      */
-    //private static productinternalframe p = new productinternalframe();
     public productinternalframe() {
+        productserviceimpl p = new productserviceimpl();
         initComponents(); 
-        List<Product> list = productserviceimpl.findAll();
+        List<Product> list = null;
+        list = p.findAll();
+        refresh(list);
     }
-    public void refuresh(List<Product> lsit){
-        DefaultTableModel model = (DefaultTableModel) this.tabProduct.
+    public void refresh(List<Product> list){
+       DefaultTableModel model = (DefaultTableModel) this.tabProduct.getModel();
+     //删除表格中的行
+     while(model.getRowCount()>0){
+         model.removeRow(0);
+     }
+     //便利集合
+     for(Product p : list){
+         //将数据放到一个集合里 然后在放到表格中
+        Vector v = new Vector();
+        v.add(p.getProid());
+        v.add(p.getProname());
+        v.add(p.getProtype());
+        v.add(p.getStorecount());
+        v.add(p.getQuantity());
+        v.add(p.getSuggestbuyprice());
+        v.add(p.getSuggestsaleprice());
+        v.add(p.getLastpurchasedate());
+        v.add(p.getLastdeliverydate());
+        //放到表格里
+        model.addRow(v);
     }
-    
+   }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,21 +68,25 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         txtPid = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtPcount = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtPname = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtJmoney = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtSmoney = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnFresh = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
+        btnQuit = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        jLabel7 = new javax.swing.JLabel();
+        txtPtype = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtScount = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -81,17 +112,17 @@ public class productinternalframe extends javax.swing.JInternalFrame {
 
         tabProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "编号", "产品名称", "安全存量", "建议购买价", "建议销售价", "当前数量", "最后进货日期", "最后送货日期"
+                "编号", "产品名称", "产品型号", "安全存量", "当前数量", "建议购买价", "建议销售价", "最后进货日期", "最后送货日期"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -107,7 +138,7 @@ public class productinternalframe extends javax.swing.JInternalFrame {
 
         jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel1.setText("手工编号：");
+        jLabel1.setText("编号：");
 
         jLabel2.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 0, 0));
@@ -115,7 +146,7 @@ public class productinternalframe extends javax.swing.JInternalFrame {
 
         jLabel3.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel3.setText("产品名称：");
+        jLabel3.setText("商品名称：");
 
         jLabel4.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel4.setText("建议购买价;");
@@ -123,9 +154,9 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel5.setText("建议销售价：");
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        txtSmoney.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                txtSmoneyActionPerformed(evt);
             }
         });
 
@@ -133,114 +164,145 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         jLabel6.setForeground(new java.awt.Color(255, 0, 0));
         jLabel6.setText("注意：红色字体项目为必填");
 
-        jButton3.setText("新增");
-
-        jButton4.setText("刷新");
-        jButton4.setToolTipText("");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
+        btnAdd.setText("新增");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
             }
         });
 
-        jButton5.setText("保存");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnFresh.setText("刷新");
+        btnFresh.setToolTipText("");
+        btnFresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnFreshActionPerformed(evt);
             }
         });
 
-        jButton6.setText("删除");
-
-        jButton7.setText("重置");
-
-        jButton8.setText("退出");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setText("保存");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("删除");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnRemove.setText("重置");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        btnQuit.setText("退出");
+        btnQuit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuitActionPerformed(evt);
             }
         });
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
 
+        jLabel7.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel7.setText("商品型号：");
+
+        jLabel8.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel8.setText("当前库存：");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 781, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPid, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(39, 39, 39)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField5))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton8)))
-                .addContainerGap(30, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 997, Short.MAX_VALUE)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jLabel6)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAdd)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnFresh)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnUpdate)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnDelete)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnRemove)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(btnQuit))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtPid, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(62, 62, 62)
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(113, 113, 113)
+                            .addComponent(jLabel7)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtPtype, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtPcount, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(txtScount, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtJmoney, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel5)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtSmoney, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(33, 33, 33)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtPid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
+                    .addComponent(txtPname, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtPtype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPcount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtJmoney, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                    .addComponent(txtSmoney, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtScount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8))
+                    .addComponent(btnAdd)
+                    .addComponent(btnFresh)
+                    .addComponent(btnUpdate)
+                    .addComponent(btnDelete)
+                    .addComponent(btnRemove)
+                    .addComponent(btnQuit))
                 .addContainerGap())
         );
 
@@ -252,58 +314,131 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         FrameUtil2.framemap.remove(productinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void txtSmoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSmoneyActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_txtSmoneyActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+    private void btnQuitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitActionPerformed
+        try {
+            // TODO add your handling code here:
+            this.setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(productinternalframe.class.getName()).log(Level.SEVERE, null, ex);
+        }
         FrameUtil2.framemap.remove(productinternalframe.class.getName());
-    }//GEN-LAST:event_jButton8ActionPerformed
+        
+    }//GEN-LAST:event_btnQuitActionPerformed
 
     private void tabProductMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabProductMouseClicked
         // TODO add your handling code here:
+        //先获取到所选中的行数
         int row = this.tabProduct.getSelectedRow();
-        Integer id = (Integer) this.tabProduct.getValueAt(row,0);
+        //从所选中的行中读取出数据 
+        Integer id = (Integer) this.tabProduct.getValueAt(row, 0);
         this.txtPid.setText(id.toString());
-        this.txtPname.setText(this.tabProduct.getValueAt(row,1)).toString();
+        this.txtPname.setText(this.tabProduct.getValueAt(row, 1).toString());
+        this.txtPtype.setText(this.tabProduct.getValueAt(row,2).toString());
+        this.txtPcount.setText(this.tabProduct.getValueAt(row,3).toString());
+        this.txtScount.setText(this.tabProduct.getValueAt(row,4).toString());
+        this.txtJmoney.setText(this.tabProduct.getValueAt(row,5).toString());
+        this.txtSmoney.setText(this.tabProduct.getValueAt(row,6).toString());
     }//GEN-LAST:event_tabProductMouseClicked
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
-        List<Product> list = productserviceimpl.findAll();
-        refresh(list);
-    }//GEN-LAST:event_jButton4MouseClicked
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        productserviceimpl pp = new productserviceimpl();
         int id =Integer.parseInt(this.txtPid.getText().trim());
         String pname=this.txtPname.getText().trim();
         String ptype = this.txtPtype.getText().trim();
-        Product p = new Product(id,pname,ptype,id,id,null,null,null,null);
-    }//GEN-LAST:event_jButton5ActionPerformed
+        int pcount = Integer.parseInt(this.txtPcount.getText().trim());
+        int scount = Integer.parseInt(this.txtScount.getText().trim());
+        BigDecimal jmoney = new BigDecimal(this.txtJmoney.getText().trim());
+        BigDecimal smoney = new BigDecimal(this.txtSmoney.getText().trim());
+        Product p = new Product(id,pname,ptype,scount,pcount,jmoney,smoney,null,null);
+        if(pp.update(p)){
+           //弹出框  提示修改成功
+          JOptionPane.showMessageDialog(this, "修改完成");
+          List<Product> list = pp.findAll();
+          refresh(list);
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnFreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFreshActionPerformed
+        // TODO add your handling code here:
+        productserviceimpl p = new productserviceimpl();
+        List<Product> list = p.findAll();
+        refresh(list);
+    }//GEN-LAST:event_btnFreshActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+        productserviceimpl pp = new productserviceimpl();
+        int id =Integer.parseInt(this.txtPid.getText().trim());
+        String pname=this.txtPname.getText().trim();
+        String ptype = this.txtPtype.getText().trim();
+        int pcount = Integer.parseInt(this.txtPcount.getText().trim());
+        int scount = Integer.parseInt(this.txtScount.getText().trim());
+        BigDecimal jmoney = new BigDecimal(this.txtJmoney.getText().trim());
+        BigDecimal smoney = new BigDecimal(this.txtSmoney.getText().trim());
+        System.out.println("123");
+        Product p = new Product(id,pname,ptype,scount,pcount,jmoney,smoney,null,null);
+        if(pp.insert(p)){
+           //弹出框  提示修改成功
+          JOptionPane.showMessageDialog(this, "增加完成");
+          List<Product> list = pp.findAll();
+          refresh(list);
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        productserviceimpl p = new productserviceimpl();
+        String idd = this.txtPid.getText().trim();
+        int id = Integer.parseInt(idd);
+        //将id传递到service
+        if(p.delete(id)){
+            JOptionPane.showMessageDialog(this, "删除成功");
+            List<Product> list = p.findAll();
+            refresh(list);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        // TODO add your handling code here:
+        this.txtPid.setText("");
+        this.txtPname.setText("");
+        this.txtPtype.setText("");
+        this.txtPcount.setText("");
+        this.txtScount.setText("");
+        this.txtJmoney.setText("");
+        this.txtSmoney.setText("");
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnFresh;
+    private javax.swing.JButton btnQuit;
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tabProduct;
+    private javax.swing.JTextField txtJmoney;
+    private javax.swing.JTextField txtPcount;
     private javax.swing.JTextField txtPid;
     private javax.swing.JTextField txtPname;
+    private javax.swing.JTextField txtPtype;
+    private javax.swing.JTextField txtScount;
+    private javax.swing.JTextField txtSmoney;
     // End of variables declaration//GEN-END:variables
 }

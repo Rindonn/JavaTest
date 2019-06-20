@@ -4,13 +4,12 @@
  * and open the template in the editor.
  */
 package elms.service;
-import elms.dao.*;
 import elms.po.Product;
 import java.util.List;
 /**
  *
  * @author YukiMuraRindon
  */
-public interface productservice extends BaseDao{
+public interface productservice{
     public List<Product> findAll();
 }

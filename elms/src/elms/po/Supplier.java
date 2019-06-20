@@ -13,22 +13,22 @@ public class Supplier {
     private int supid;
     private String supaddreviation;
     private String supfullname;
-    private String owmer;
+    private String owner;
     private String job;
-    private String modile;
+    private String mobile;
     private String supaddress;
     private int state;
 
     public Supplier() {
     }
 
-    public Supplier(int supid, String supaddreviation, String supfullname, String owmer, String job, String modile, String supaddress) {
+    public Supplier(int supid, String supaddreviation, String supfullname, String owner, String job, String mobile, String supaddress) {
         this.supid = supid;
         this.supaddreviation = supaddreviation;
         this.supfullname = supfullname;
-        this.owmer = owmer;
+        this.owner = owner;
         this.job = job;
-        this.modile = modile;
+        this.mobile = mobile;
         this.supaddress = supaddress;
     }
 
@@ -56,12 +56,12 @@ public class Supplier {
         this.supfullname = supfullname;
     }
 
-    public String getOwmer() {
-        return owmer;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setOwmer(String owmer) {
-        this.owmer = owmer;
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public String getJob() {
@@ -72,12 +72,12 @@ public class Supplier {
         this.job = job;
     }
 
-    public String getModile() {
-        return modile;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setModile(String modile) {
-        this.modile = modile;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getSupaddress() {
