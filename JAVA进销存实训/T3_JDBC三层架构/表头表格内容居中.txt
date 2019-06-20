@@ -1,0 +1,10 @@
+ //表头居中
+           DefaultTableCellHeaderRenderer thr = new DefaultTableCellHeaderRenderer();
+            thr.setHorizontalAlignment(JLabel.CENTER);
+            thr.setFont(new Font(Font.DIALOG,Font.BOLD,30));
+            jTable1.getTableHeader().setDefaultRenderer(thr);
+
+           //表格内容居中
+           DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();// 设置table内容居中
+             tcr.setHorizontalAlignment(SwingConstants.CENTER);
+             jTable1.setDefaultRenderer(Object.class, tcr);

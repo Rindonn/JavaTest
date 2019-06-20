@@ -1,0 +1,16 @@
+1.单独的insert,delete,update 都是事务操作
+2.执行多条语句需要保证要执行都执行，要不执行都不执行
+  2.1 存储过程
+  2.2 触发器
+  2.3 代码处理 ，设定Connection对象不自动提交
+    try{
+      conn.setAutoCommit(false);//设定不自动提交
+      //执行sql语句代码1
+      //执行sql语句代码2
+      //执行sql语句代码n
+      conn.commit();//手动提交
+     }catch(Exception e){
+         //如果出现异常，事务回滚
+         conn.rollback();
+     }
+   2.4 AOP解决事务

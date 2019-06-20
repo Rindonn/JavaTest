@@ -1,0 +1,15 @@
+JDBC事务操作
+1. dao层不进行try-catch操作，使用throws处理，即将异常抛给业务层处理
+2.业务层进行事务处理方案
+  2.1 单独获得Connection对象
+try{
+     2.2 设置Connection对象不自定提交
+        conn.setAutoCommit(false);
+     2.3 下面操作多个dao方法
+        
+     2.4  统一提交
+        conn.commit();
+   }catch(Exception e){
+      //操作不成功，回滚事务
+     2.5 conn.rollback();
+   }

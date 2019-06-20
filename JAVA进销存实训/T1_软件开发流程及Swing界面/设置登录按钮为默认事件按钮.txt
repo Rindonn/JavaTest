@@ -1,0 +1,2 @@
+  // 设置“登录”按钮btnLogin为回车默认响应按钮
+        this.getRootPane().setDefaultButton(btnLogin);

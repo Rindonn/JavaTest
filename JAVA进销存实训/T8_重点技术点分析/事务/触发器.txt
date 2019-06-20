@@ -1,0 +1,6 @@
+create trigger trigger_choose
+AFTER insert 
+on t_score for each ROW
+UPDATE t_course 
+set realcount = realcount+1
+where cid = new.cid;

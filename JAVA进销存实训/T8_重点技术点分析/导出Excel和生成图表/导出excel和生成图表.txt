@@ -1,0 +1,28 @@
+1.导出Excel
+ 1.1 打开保存对话框，目的设置导出的excel文件的保存位置
+  JFileChooser savefile = new JFileChooser();//文件选择对话框
+        FileFilter filter = new FileNameExtensionFilter("Excel文件(*.xls)", "xls");
+        savefile.addChoosableFileFilter(filter);//添加过滤器
+        savefile.setFileFilter(filter);
+
+        int flag = savefile.showSaveDialog(this);//打开文件选选择对话框
+        File file = null;
+        if (flag == JFileChooser.APPROVE_OPTION) {
+        //如果点击了保存按钮
+        file = savefile.getSelectedFile();
+        System.out.println("文件名：" + file.getAbsolutePath());
+        String filename = file.getAbsolutePath();
+        //截取文件扩展名
+        String ftype = filename.substring(filename.length()-4);
+        if(!ftype.equals(".xls")){
+            file = new File(filename+".xls");
+        }
+
+2. 生成图表
+  2.1 List集合中的数据添加到 -  CategoryDataset dataset
+
+  2.2 根据 CategoryDataset dataset - 生成JFreeChart
+ 
+  2.3 将生成的JFreeChart对象转成JPanel
+
+  2.4 将JPanel添加到顶层容器
