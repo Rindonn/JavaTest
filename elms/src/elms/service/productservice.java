@@ -12,4 +12,5 @@ import java.util.List;
  */
 public interface productservice{
     public List<Product> findAll();
+     public List<Product> findAll(String key);
 }

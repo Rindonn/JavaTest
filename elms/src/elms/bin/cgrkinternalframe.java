@@ -6,6 +6,17 @@
 package elms.bin;
 
 import elms.bin.FrameUtil2;
+import elms.po.Product;
+import elms.po.Supplier;
+import elms.service.productservice;
+import elms.service.productserviceimpl;
+import elms.service.supplierserviceimpl;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,8 +28,48 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
      * Creates new form cgrkinternalframe
      */
     public cgrkinternalframe() {
-        initComponents();
+        productserviceimpl p = new productserviceimpl();
+        initComponents(); 
+        List<Product> list = null;
+        list = p.findAll();
+        refresh(list);
+        initPurchase();
     }
+    public void initPurchase(){
+        //获取供应商
+        JComboBox cb = new JComboBox();
+        supplierserviceimpl p = new supplierserviceimpl();
+        List<Supplier> list = null;
+        list = p.findAll();
+        for(Supplier su :list){
+            cb.addItem(su);
+        }
+        //添加到供应商
+        this.tabcaigou.getColumnModel().getColumn(7).setCellEditor(new DefaultCellEditor(cb));
+    }
+    
+    public void refresh(List<Product> list){
+       DefaultTableModel model = (DefaultTableModel) this.tabcgrk.getModel();
+     //删除表格中的行
+     while(model.getRowCount()>0){
+         model.removeRow(0);
+     }
+     //便利集合
+     for(Product p : list){
+         //将数据放到一个集合里 然后在放到表格中
+        Vector v = new Vector();
+        v.add(p.getProid());
+        v.add(p.getProname());
+        v.add(p.getProtype());
+        v.add(p.getStorecount());
+        v.add(p.getQuantity());
+        v.add(p.getSuggestbuyprice());
+        v.add(p.getSuggestsaleprice());
+        v.add(p.getLastpurchasedate());
+        v.add(p.getLastdeliverydate());
+        //放到表格里
+        model.addRow(v);
+    }}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,15 +80,15 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        txtproname = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabcgrk = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tabcaigou = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -62,33 +113,13 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         });
 
         jButton1.setText("查询");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "商品编号", "商品名称", "商品型号", "商品库存", "建议购买价"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
 
-        jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel1.setText("加入采购：");
-        jLabel1.setToolTipText("");
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tabcgrk.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -96,14 +127,54 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "商品编号", "商品名称", "商品型号", "建议购买价", "采购量", "采购价格", "供应商"
+                "商品编号", "商品名称", "商品型号", "安全库存", "商品库存", "建议购买价", "建议销售价"
             }
-        ));
-        jScrollPane2.setViewportView(jTable2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tabcgrk.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabcgrkMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabcgrk);
+
+        jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel1.setText("加入采购：");
+        jLabel1.setToolTipText("");
+
+        tabcaigou.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "商品编号", "商品名称", "商品型号", "建议购买价", "采购量", "商品单位", "采购价格", "供应商"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tabcaigou);
 
         jButton2.setText("采购入库");
 
-        jButton3.setText("删除");
+        btnRemove.setText("删除");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,7 +189,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(200, 200, 200)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtproname, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(53, 53, 53)
                                 .addComponent(jButton1))
                             .addGroup(layout.createSequentialGroup()
@@ -131,7 +202,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(btnRemove)
                 .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
@@ -139,7 +210,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtproname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -150,7 +221,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnRemove))
                 .addContainerGap())
         );
 
@@ -159,19 +230,62 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
 
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         // TODO add your handling code here:
-                FrameUtil2.framemap.remove(cgrkinternalframe.class.getName());
+         FrameUtil2.framemap.remove(cgrkinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        productservice p = new productserviceimpl() {};
+        String key = this.txtproname.getText().trim();
+        List<Product> list = p.findAll(key);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tabcgrkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabcgrkMouseClicked
+        // TODO add your handling code here:
+        boolean flag = false;
+        int selectRow = this.tabcgrk.getSelectedRow();
+        Integer id = (Integer)this.tabcgrk.getValueAt(selectRow, 0);
+        String name = this.tabcgrk.getValueAt(selectRow,1).toString();
+        String type = this.tabcgrk.getValueAt(selectRow, 2).toString();
+        String price = this.tabcgrk.getValueAt(selectRow, 3).toString();
+        BigDecimal  suggestbuyprice = (BigDecimal)this.tabcgrk.getValueAt(selectRow, 5);
+        Vector v = new Vector();
+        v.add(id);
+        v.add(name);
+        v.add(type);
+        v.add(price);
+        v.add(suggestbuyprice);
+        DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
+        int i;
+        for(i=0;i<model.getRowCount();i++){
+            if(v.get(0) == this.tabcgrk.getValueAt(i,0)){
+                flag = true;
+                break;
+            }
+        }
+        if(flag == false){
+            model.addRow(v);
+        }
+    }//GEN-LAST:event_tabcgrkMouseClicked
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        // TODO add your handling code here:
+        int row = this.tabcaigou.getSelectedRow();
+        DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
+        
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRemove;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tabcaigou;
+    private javax.swing.JTable tabcgrk;
+    private javax.swing.JTextField txtproname;
     // End of variables declaration//GEN-END:variables
 }
