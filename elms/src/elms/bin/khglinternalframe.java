@@ -27,7 +27,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         customerserviceimpl p = new customerserviceimpl();
         initComponents(); 
         List<Customer> list = null;
-        list = p.findAll();
+        list = p.findAll("123");
         refresh(list);
     }
     public void refresh(List<Customer> list){
@@ -47,6 +47,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         v.add(p.getPostcard());
         v.add(p.getCusaddress());
         v.add(p.getLastdeliverydate());
+        v.add(p.getTruename());
         //放到表格里
         model.addRow(v);
     }
@@ -84,6 +85,8 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         jButton6 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         txtlastdeliverydate = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtemployee = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -116,17 +119,17 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
 
         tabcustomer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "客户编号", "客户姓名", "淘宝号", "电话", "邮编", "送货地址", "最近送货日期"
+                "客户编号", "客户姓名", "淘宝号", "电话", "邮编", "送货地址", "最近送货日期", "负责员工"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -198,6 +201,9 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         jLabel8.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel8.setText("最近收货日期：");
 
+        jLabel4.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
+        jLabel4.setText("负责员工：");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -207,62 +213,63 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                 .addComponent(txtcusid1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
-                .addContainerGap(239, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel2))))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtcusid)
-                                    .addComponent(txtcusphone, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtcusname, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(32, 32, 32)
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txttaobaoid, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(69, 69, 69)
-                                        .addComponent(jLabel6)
-                                        .addGap(29, 29, 29)
-                                        .addComponent(txtpostcard))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtcusaddress, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtlastdeliverydate))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton6)))))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtcusphone))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtcusid, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtcusaddress, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtlastdeliverydate, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtemployee))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtcusname, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(txttaobaoid, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel6)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtpostcard, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -271,29 +278,34 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtcusid1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(53, 53, 53)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtcusid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtcusname, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
-                    .addComponent(txttaobaoid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(184, 184, 184)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtcusid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtcusname, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(txttaobaoid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtcusphone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(txtpostcard, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(txtcusaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(txtlastdeliverydate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                    .addComponent(txtlastdeliverydate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtemployee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
@@ -335,6 +347,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         this.txtpostcard.setText(this.tabcustomer.getValueAt(row,4).toString());
         this.txtcusaddress.setText(this.tabcustomer.getValueAt(row,5).toString());
         this.txtlastdeliverydate.setText(this.tabcustomer.getValueAt(row,6).toString());
+        this.txtemployee.setText(this.tabcustomer.getValueAt(row,7).toString());
     }//GEN-LAST:event_tabcustomerMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -419,6 +432,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -430,6 +444,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtcusid1;
     private javax.swing.JTextField txtcusname;
     private javax.swing.JTextField txtcusphone;
+    private javax.swing.JTextField txtemployee;
     private javax.swing.JTextField txtlastdeliverydate;
     private javax.swing.JTextField txtpostcard;
     private javax.swing.JTextField txttaobaoid;

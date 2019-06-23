@@ -22,6 +22,11 @@ public class customerserviceimpl {
         Object[] parmas = {};
         return p.query(sql,Customer.class,parmas);
 }
+    public List<Customer> findAll(String a){
+        String sql = "SELECT t_customer.cusid,t_customer.cusname,t_customer.taobaoid,t_customer.cusphone,t_customer.postcard,t_customer.cusaddress,t_customer.lastdeliverydate,t_employee.truename FROM t_customer,t_employee WHERE t_employee.uid = t_customer.uid and t_customer.state = 1;";
+        Object[] parmas = {};
+        return p.query(sql,Customer.class,parmas);
+    }
     public boolean update(Customer pp) {
        String sql = "update t_customer set cusname=?,taobaoid=?,cusphone=?,postcard=?,cusaddress=?,lastdeliverydate=? where cusid=?";
        Object[] params = {pp.getCusname(),pp.getTaobaoid(),pp.getCusphone(),pp.getPostcard(),pp.getCusaddress(),pp.getLastdeliverydate(),pp.getCusid()};
@@ -40,8 +45,8 @@ public class customerserviceimpl {
          return p.update(sql, params);
     }
     public List<Customer> select(String username){
-        String sql = "select * from t_customer where cusname = ? and state = 1";
-        Object[] parmas = {username};
+        String sql = "SELECT t_customer.cusid,t_customer.cusname,t_customer.taobaoid,t_customer.cusphone,t_customer.postcard,t_customer.cusaddress,t_customer.lastdeliverydate,t_employee.truename FROM t_customer,t_employee WHERE t_employee.uid = t_customer.uid and concat(t_customer.cusname,t_customer.taobaoid) like ? and t_customer.state = 1;";
+        Object[] parmas = {"%"+username+"%"};
         return p.query(sql,Customer.class,parmas);
 }
 }
