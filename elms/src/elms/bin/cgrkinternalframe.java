@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -256,10 +257,9 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         v.add(type);
         v.add(price);
         v.add(suggestbuyprice);
-        DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
-        int i;
-        for(i=0;i<model.getRowCount();i++){
-            if(v.get(0) == this.tabcgrk.getValueAt(i,0)){
+         DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
+        for(int i = 0;i<model.getRowCount();i++){
+            if(v.get(0) == this.tabcaigou.getValueAt(i, 0)){
                 flag = true;
                 break;
             }
@@ -271,8 +271,16 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         // TODO add your handling code here:
-        int row = this.tabcaigou.getSelectedRow();
+         int row = this.tabcaigou.getSelectedRow();
+        
+        //定义表的model
         DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
+        if(row == -1){
+            JOptionPane.showMessageDialog(this,"请先选择你要删除的采购商品");
+            return;
+        }
+        model.removeRow(row);
+        row = -1;
         
     }//GEN-LAST:event_btnRemoveActionPerformed
 

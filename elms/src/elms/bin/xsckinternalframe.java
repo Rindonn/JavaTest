@@ -4,7 +4,15 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Product;
+import elms.service.productservice;
+import elms.service.productserviceimpl;
 import elms.util.FrameUtil2;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author YukiMuraRindon
@@ -15,9 +23,31 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
      * Creates new form xsckinternalframe
      */
     public xsckinternalframe() {
-        initComponents();
+        productserviceimpl p = new productserviceimpl();
+        initComponents(); 
+        List<Product> list = null;
+        list = p.findAll();
+        refresh(list);
     }
-
+    public void refresh(List<Product> list){
+       DefaultTableModel model = (DefaultTableModel) this.tabpro.getModel();
+     //删除表格中的行
+        while(model.getRowCount()>0){
+            model.removeRow(0);
+        }
+        //便利集合
+        for(Product p : list){
+            //将数据放到一个集合里 然后在放到表格中
+           Vector v = new Vector();
+           v.add(p.getProid());
+           v.add(p.getProname());
+           v.add(p.getProtype());
+           v.add(p.getQuantity());
+           v.add(p.getSuggestsaleprice());
+           //放到表格里
+           model.addRow(v);
+       }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,13 +59,13 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
 
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
-        jTextField1 = new javax.swing.JTextField();
+        txtproname = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabpro = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tabxs = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
@@ -64,56 +94,68 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
         });
 
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabpro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "商品编号", "商品名称", "商品类型", "商品库存"
+                "商品编号", "商品名称", "商品类型", "商品库存", "建议销售价"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        tabpro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabproMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabpro);
 
         jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel1.setText("加入销售：");
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tabxs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
-                "商品编号", "商品名称", "库存", "销售数量", "销售价格", "客户"
+                "商品编号", "商品名称", "商品类型", "库存", "建议销售价", "数量", "销售价格", "客户"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tabxs);
 
         jButton2.setText("销售出库");
 
         jButton3.setText("删除");
         jButton3.setToolTipText("");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -123,25 +165,24 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1032, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(jLabel1))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(240, 240, 240)
-                                .addComponent(jButton2)
-                                .addGap(29, 29, 29)
-                                .addComponent(jButton3))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(206, 206, 206)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtproname, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(29, 29, 29)
                                 .addComponent(jButton1)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1042, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton3)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -149,7 +190,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtproname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -157,7 +198,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3))
@@ -172,6 +213,55 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
         FrameUtil2.framemap.remove(xsckinternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        productservice p = new productserviceimpl() {};
+        String key = this.txtproname.getText().trim();
+        List<Product> list = p.findAll(key);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tabproMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabproMouseClicked
+        // TODO add your handling code here:
+        boolean flag = false;
+        int selectRow = this.tabpro.getSelectedRow();
+        Integer id = (Integer)this.tabpro.getValueAt(selectRow, 0);
+        String name = this.tabpro.getValueAt(selectRow,1).toString();
+        String type = this.tabpro.getValueAt(selectRow, 2).toString();
+        String price = this.tabpro.getValueAt(selectRow, 3).toString();
+        BigDecimal  suggestbuyprice = (BigDecimal)this.tabpro.getValueAt(selectRow, 4);
+        Vector v = new Vector();
+        v.add(id);
+        v.add(name);
+        v.add(type);
+        v.add(price);
+        v.add(suggestbuyprice);
+         DefaultTableModel model = (DefaultTableModel) this.tabxs.getModel();
+        for(int i = 0;i<model.getRowCount();i++){
+            if(v.get(0) == this.tabxs.getValueAt(i, 0)){
+                flag = true;
+                break;
+            }
+        }
+        if(flag == false){
+            model.addRow(v);
+        }
+    }//GEN-LAST:event_tabproMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        int row = this.tabxs.getSelectedRow();
+        
+        //定义表的model
+        DefaultTableModel model = (DefaultTableModel) this.tabxs.getModel();
+        if(row == -1){
+            JOptionPane.showMessageDialog(this,"请先选择你要删除的采购商品");
+            return;
+        }
+        model.removeRow(row);
+        row = -1;
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -181,9 +271,9 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTable tabpro;
+    private javax.swing.JTable tabxs;
+    private javax.swing.JTextField txtproname;
     // End of variables declaration//GEN-END:variables
 }

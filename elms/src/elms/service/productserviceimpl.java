@@ -24,7 +24,7 @@ public class productserviceimpl implements productservice{
     @Override
         public List<Product> findAll(String key){
         String sql = "select * from t_product where concat(proname,protype) like ? and state = 1";
-        Object[] parmas = {key};
+        Object[] parmas = {"%"+key+"%"};
         return p.query(sql,Product.class,parmas);
 }
     public boolean update(Product pp) {
