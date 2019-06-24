@@ -10,8 +10,12 @@ import elms.po.Product;
 import elms.po.Supplier;
 import elms.service.productservice;
 import elms.service.productserviceimpl;
+import elms.service.purchaseservice;
+import elms.service.purchaseserviceimpl;
 import elms.service.supplierserviceimpl;
+import elms.util.IdUtil;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultCellEditor;
@@ -88,7 +92,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabcaigou = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        btnPurchaseIn = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
 
         setClosable(true);
@@ -159,7 +163,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, true
+                false, false, false, false, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -168,7 +172,12 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tabcaigou);
 
-        jButton2.setText("采购入库");
+        btnPurchaseIn.setText("采购入库");
+        btnPurchaseIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPurchaseInActionPerformed(evt);
+            }
+        });
 
         btnRemove.setText("删除");
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
@@ -201,7 +210,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnPurchaseIn)
                 .addGap(18, 18, 18)
                 .addComponent(btnRemove)
                 .addGap(16, 16, 16))
@@ -221,7 +230,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btnPurchaseIn)
                     .addComponent(btnRemove))
                 .addContainerGap())
         );
@@ -249,13 +258,11 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         Integer id = (Integer)this.tabcgrk.getValueAt(selectRow, 0);
         String name = this.tabcgrk.getValueAt(selectRow,1).toString();
         String type = this.tabcgrk.getValueAt(selectRow, 2).toString();
-        String price = this.tabcgrk.getValueAt(selectRow, 3).toString();
         BigDecimal  suggestbuyprice = (BigDecimal)this.tabcgrk.getValueAt(selectRow, 5);
         Vector v = new Vector();
         v.add(id);
         v.add(name);
         v.add(type);
-        v.add(price);
         v.add(suggestbuyprice);
          DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
         for(int i = 0;i<model.getRowCount();i++){
@@ -284,11 +291,50 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_btnRemoveActionPerformed
 
+    private void btnPurchaseInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseInActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) this.tabcaigou.getModel();
+        Object[][] product=new Object[this.tabcaigou.getRowCount()][2];
+        Object[][] purchase = new Object[this.tabcaigou.getRowCount()][8];
+        for(int i = 0;i<this.tabcaigou.getRowCount();i++){
+            purchase[i][0] = IdUtil.getIdByDate();
+            purchase[i][1] = this.tabcaigou.getValueAt(i,0);
+            Supplier sup = (Supplier) this.tabcaigou.getValueAt(i, 7);
+            purchase[i][2] = sup.getSupid();
+            purchase[i][3] = this.tabcaigou.getValueAt(i,6);
+            purchase[i][4] = this.tabcaigou.getValueAt(i,4);
+            purchase[i][5] = this.tabcaigou.getValueAt(i,5);
+            
+            product[i][0] = this.tabcaigou.getValueAt(i,4);
+            product[i][1] = this.tabcaigou.getValueAt(i,0);
+            
+            purchase[i][6] = new BigDecimal(purchase[i][3].toString()).multiply(new BigDecimal(purchase[i][4].toString()));
+            Date date = new Date();
+            purchase[i][7] = new java.sql.Date(date.getTime());
+        }
+        purchaseserviceimpl p = new purchaseserviceimpl();
+        boolean result = p.purchaseIn(product,purchase);
+        if(result == true){
+                    productserviceimpl pp = new productserviceimpl();
+            JOptionPane.showMessageDialog(this,"入库成功");
+            List<Product> list = null;
+        list = pp.findAll();
+        refresh(list);
+        initPurchase();
+        }
+        else{
+            JOptionPane.showMessageDialog(this,"入库失败");
+        }
+        while(this.tabcaigou.getRowCount()>0){
+            model.removeRow(0);
+        }
+    }//GEN-LAST:event_btnPurchaseInActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPurchaseIn;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

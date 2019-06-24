@@ -44,4 +44,11 @@ public class productserviceimpl implements productservice{
        //System.out.println(sql);
        return p.update(sql, params);
     }
+
+    public Product getByPid(String pid) {
+        productdao p = new productdao();
+        String sql = "select quantity from t_product where proid = pid";
+        Object[] params = {pid};
+        return (Product) p.get(sql,null,params);
+    }
 }

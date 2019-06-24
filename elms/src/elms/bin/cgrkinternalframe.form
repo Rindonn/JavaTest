@@ -55,7 +55,7 @@
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+              <Component id="btnPurchaseIn" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -78,7 +78,7 @@
               <Component id="jScrollPane2" min="-2" pref="205" max="-2" attributes="0"/>
               <EmptySpace pref="35" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnPurchaseIn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnRemove" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -190,9 +190,9 @@
                 <Column editable="false" title="&#x5546;&#x54c1;&#x540d;&#x79f0;" type="java.lang.Object"/>
                 <Column editable="false" title="&#x5546;&#x54c1;&#x578b;&#x53f7;" type="java.lang.Object"/>
                 <Column editable="false" title="&#x5efa;&#x8bae;&#x8d2d;&#x4e70;&#x4ef7;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x91c7;&#x8d2d;&#x91cf;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x5546;&#x54c1;&#x5355;&#x4f4d;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x91c7;&#x8d2d;&#x4ef7;&#x683c;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x91c7;&#x8d2d;&#x91cf;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x5546;&#x54c1;&#x5355;&#x4f4d;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x91c7;&#x8d2d;&#x4ef7;&#x683c;" type="java.lang.Object"/>
                 <Column editable="true" title="&#x4f9b;&#x5e94;&#x5546;" type="java.lang.Object"/>
               </Table>
             </Property>
@@ -247,10 +247,13 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="btnPurchaseIn">
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x91c7;&#x8d2d;&#x5165;&#x5e93;"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPurchaseInActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnRemove">
       <Properties>

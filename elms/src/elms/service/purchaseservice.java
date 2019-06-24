@@ -4,15 +4,12 @@
  * and open the template in the editor.
  */
 package elms.service;
-import elms.po.Product;
-import java.util.List;
+
 /**
  *
  * @author YukiMuraRindon
  */
-public interface productservice{
-
-    public Product getByPid();
-    public List<Product> findAll();
-     public List<Product> findAll(String key);
+public interface purchaseservice {
+    public boolean purchaseIn(Object[][] product,Object[][] purchase);
+    
 }

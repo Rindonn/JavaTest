@@ -7,9 +7,7 @@ package elms.service;
 
 import elms.dao.customerdao;
 import elms.po.*;
-import java.beans.PropertyVetoException;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *

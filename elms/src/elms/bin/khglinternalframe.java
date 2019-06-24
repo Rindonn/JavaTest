@@ -83,8 +83,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        txtlastdeliverydate = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtemployee = new javax.swing.JTextField();
 
@@ -198,9 +196,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel8.setText("最近收货日期：");
-
         jLabel4.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel4.setText("负责员工：");
 
@@ -247,15 +242,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtcusaddress, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtlastdeliverydate, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtemployee))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -266,9 +253,15 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                         .addComponent(txttaobaoid, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtpostcard, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtemployee, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtpostcard, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(0, 60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -301,11 +294,9 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(txtcusaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(txtlastdeliverydate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(txtemployee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
@@ -346,7 +337,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         this.txtcusphone.setText(this.tabcustomer.getValueAt(row,3).toString());
         this.txtpostcard.setText(this.tabcustomer.getValueAt(row,4).toString());
         this.txtcusaddress.setText(this.tabcustomer.getValueAt(row,5).toString());
-        this.txtlastdeliverydate.setText(this.tabcustomer.getValueAt(row,6).toString());
         this.txtemployee.setText(this.tabcustomer.getValueAt(row,7).toString());
     }//GEN-LAST:event_tabcustomerMouseClicked
 
@@ -408,7 +398,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         this.txtcusphone.setText("");
         this.txtpostcard.setText("");
         this.txtcusaddress.setText("");
-        this.txtlastdeliverydate.setText("");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -436,7 +425,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tabcustomer;
     private javax.swing.JTextField txtcusaddress;
@@ -445,7 +433,6 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtcusname;
     private javax.swing.JTextField txtcusphone;
     private javax.swing.JTextField txtemployee;
-    private javax.swing.JTextField txtlastdeliverydate;
     private javax.swing.JTextField txtpostcard;
     private javax.swing.JTextField txttaobaoid;
     // End of variables declaration//GEN-END:variables
