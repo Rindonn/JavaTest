@@ -102,10 +102,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
 
         tabpro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "商品编号", "商品名称", "商品类型", "商品库存", "建议销售价"
@@ -215,7 +212,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        productservice p = new productserviceimpl() {};
+        productserviceimpl p = new productserviceimpl();
         String key = this.txtproname.getText().trim();
         List<Product> list = p.findAll(key);
         refresh(list);

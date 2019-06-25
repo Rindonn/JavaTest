@@ -12,7 +12,6 @@ import java.util.List;
  */
 public interface productservice{
 
-    public Product getByPid();
     public List<Product> findAll();
      public List<Product> findAll(String key);
 }

@@ -1,0 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package elms.service;
+
+import elms.dao.BaseDao;
+import elms.dao.productdao;
+import elms.dao.selldao;
+import elms.po.Sell;
+import java.sql.Connection;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author YukiMuraRindon
+ */
+public class xsthserviceimpl {
+    public boolean xsreturn(String seid, int proid, int sellreturnnum, Date sellreturntime) {
+        boolean result = true;
+        //修改采购表的退货数量和退货时间
+        String sql1 = "update t_sell set sellreturnamount=?,sellreturndate=?,sellnum=sellnum-? where seid=?";
+        Object[] params1 = {sellreturnnum, sellreturntime, sellreturnnum, seid};
+        String sql2 = "update t_product set quantity= quantity+?  where proid=?";
+        Object[] params2 = {sellreturnnum, proid};
+        Connection conn = new BaseDao().getConnection();
+        //System.out.println(sql1);
+        //System.out.println(sql2);
+        try {
+            conn.setAutoCommit(false);//启动事务
+            selldao p = new selldao();
+            productdao pp = new productdao();
+            boolean update = p.update(conn, sql1, params1);
+            
+            boolean update1 = pp.update(conn, sql2, params2);
+            conn.commit();
+        } catch (Exception e) {
+            try {
+                result = false;
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+}
+
+    public List<Sell> getBySell(String start, String end, String key) {
+        selldao s = new selldao();
+        String sql = "select * from t_sell s left join t_product pro on pro.proid = s.proid left join t_customer c on s.cusid=c.cusid left join t_employee e on s.uid = e.uid where selldate between ? and ? and concat(cusname,proname) like ?";
+        Object[] params = {start,end,"%"+key+"%"};
+        return s.query(sql,Sell.class,params);
+    }
+
+}

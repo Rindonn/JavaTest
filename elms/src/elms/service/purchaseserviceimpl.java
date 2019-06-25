@@ -9,6 +9,7 @@ import elms.dao.BaseDao;
 import elms.dao.purchasedao;
 import elms.po.Purchase;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,5 +54,14 @@ public class purchaseserviceimpl implements purchaseservice {
         Object[] params = {};
         return p.query(sql,Purchase.class,params);
     }
+
+    @Override
+    public List<Purchase> getByPurchase(String start, String end, String key) {
+        purchasedao p = new purchasedao();
+        String sql = "select * from t_purchase pur left join t_product pro on pro.proid = pur.proid left join t_supplier sup on pur.supid=sup.supid where purdate between ? and ? and concat(supfullname,proname) like ?";
+        Object[] params = {start,end,"%"+key+"%"};
+        return p.query(sql,Purchase.class,params);
+    }
+    
     
 }

@@ -45,10 +45,10 @@ public class productserviceimpl implements productservice{
        return p.update(sql, params);
     }
 
-    public Product getByPid(String pid) {
-        productdao p = new productdao();
-        String sql = "select quantity from t_product where proid = pid";
-        Object[] params = {pid};
-        return (Product) p.get(sql,null,params);
+    public List<Product> getByPid(String pid) {
+        String sql = "select quantity from t_product where proid = "+pid;
+       // System.out.print(sql);
+        Object[] params = {};
+        return  p.query(sql,Product.class,null);
     }
 }

@@ -7,6 +7,7 @@ package elms.bin;
 
 import elms.po.Product;
 import elms.po.Purchase;
+import elms.service.cgthserviceimpl;
 import elms.service.productservice;
 import elms.service.productserviceimpl;
 import elms.service.purchaseservice;
@@ -53,10 +54,11 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
             v.add(p.getPurdate());
             v.add(p.getPurnumber());
             v.add(p.getReturndate());
-            v.add(p.getCountnum());
+            v.add(p.getReturnamount());
             v.add(p.getReturnreason());
-            
+            model.addRow(v);
         }
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -68,7 +70,7 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabcaigou = new javax.swing.JTable();
@@ -77,8 +79,8 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         txt2 = new javax.swing.JTextField();
         btnreturnpurchase = new javax.swing.JButton();
-        btndate1 = new elms.util.DateChooserJButton();
-        btndate2 = new elms.util.DateChooserJButton();
+        datestart = new elms.util.DateChooserJButton();
+        dateend = new elms.util.DateChooserJButton();
         jLabel9 = new javax.swing.JLabel();
         txt3 = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
@@ -111,6 +113,11 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
         jLabel1.setText("-");
 
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         tabcaigou.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -202,13 +209,13 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
                                 .addComponent(txt5))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(60, 60, 60)
-                        .addComponent(btndate1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(datestart, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(btndate2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateend, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(147, 147, 147)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -220,10 +227,10 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
-                    .addComponent(btndate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btndate2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(datestart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(44, 44, 44)
@@ -280,25 +287,70 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this,"退货数量非法");
             return ;
         }
-        Product pp = productservice.getByPid(id1); 
+        
+        
+       // System.out.println(id1);
+        List<Product> list1  = p1.getByPid(id1);//检查库存
+        int q=5;
+        for(Product pp:list1){
+            q=pp.getQuantity();
+        }
+        //System.out.println(q);
+        if(rett>q){
+            JOptionPane.showMessageDialog(this, "商品库存不足"+rett+"，无法完成此次退货！");
+            return;
+        }
+        
+        
+        java.sql.Date  returntime = new java.sql.Date( new java.util.Date().getTime());
+        cgthserviceimpl c = new cgthserviceimpl();
+        boolean result = c.purchasereturn(id, pid, rett, returntime, returnreason);
+        if(result == true){
+            JOptionPane.showMessageDialog(this, "退货成功");
+            List<Purchase> list = p.findAll();
+            refresh(list);
+        }else{
+             JOptionPane.showMessageDialog(this, "退货失败");
+        }
+        //清空文本框
+        this.txt1.setText("");
+        this.txt2.setText("");
+        this.txt3.setText("");
+        this.txt4.setText("");
+        this.txt5.setText("");
+
     }//GEN-LAST:event_btnreturnpurchaseActionPerformed
 
     private void tabcaigouMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabcaigouMouseClicked
         // TODO add your handling code here:
         int row = this.tabcaigou.getSelectedRow();
-        this.txt1.setText((String) this.tabcaigou.getValueAt(row,1));
-        int id = Integer.parseInt(this,tabcaigou.getValueAt(row, 1));
-        this.txt2.setText(id.toString());
-        Integer purnum = Integer.parseInt(this.tabcaigou.getValueAt(row, 7));
-        this.txt3.setText(purnum.toString());
+        this.txt1.setText((String) this.tabcaigou.getValueAt(row,0));
+        this.txt2.setText(this.tabcaigou.getValueAt(row, 1).toString());
+        this.txt3.setText(this.tabcaigou.getValueAt(row, 7).toString());
+        this.txt4.setText(this.tabcaigou.getValueAt(row,9).toString());
+        try {
+        this.txt5.setText(this.tabcaigou.getValueAt(row,10).toString());
+        }catch(Exception e){
+            this.txt5.setText("");
+        }
         this.btnreturnpurchase.setEnabled(true);
     }//GEN-LAST:event_tabcaigouMouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        purchaseserviceimpl p =new purchaseserviceimpl();
+        String start = this.datestart.getText();
+        String end = this.dateend.getText();
+        String key = this.txtSearch.getText();
+        List<Purchase> list = p.getByPurchase(start,end,key);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private elms.util.DateChooserJButton btndate1;
-    private elms.util.DateChooserJButton btndate2;
     private javax.swing.JButton btnreturnpurchase;
+    private elms.util.DateChooserJButton dateend;
+    private elms.util.DateChooserJButton datestart;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -307,12 +359,12 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tabcaigou;
     private javax.swing.JTextField txt1;
     private javax.swing.JTextField txt2;
     private javax.swing.JTextField txt3;
     private javax.swing.JTextField txt4;
     private javax.swing.JTextField txt5;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

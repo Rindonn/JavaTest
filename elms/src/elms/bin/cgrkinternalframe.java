@@ -245,7 +245,7 @@ public class cgrkinternalframe extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        productservice p = new productserviceimpl() {};
+        productserviceimpl p = new productserviceimpl();
         String key = this.txtproname.getText().trim();
         List<Product> list = p.findAll(key);
         refresh(list);

@@ -5,7 +5,24 @@
  */
 package elms.bin;
 import elms.bin.FrameUtil2;
+import elms.po.Purchase;
+import elms.service.purchaseservice;
+import elms.service.purchaseserviceimpl;
 import elms.util.*;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -29,15 +46,15 @@ public class cginternalframe extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabp = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
+        datestart = new elms.util.DateChooserJButton();
+        dateend = new elms.util.DateChooserJButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -61,81 +78,86 @@ public class cginternalframe extends javax.swing.JInternalFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2019-06-01", "2019-06-02", "2019-06-03", "2019-06-04" }));
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2019-06-02", "2019-06-03", "20你9-06-04" }));
-
         jLabel1.setText("-");
 
         jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "商品名" }));
 
-        jTextField1.setToolTipText("");
+        txtSearch.setToolTipText("");
 
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabp.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
-                "采购单号", "采购商品名", "采购数量", "采购价格", "供应商", "采购时间"
+                "采购单号", "采购商品名", "商品型号", "采购价格", "供应商", "采购时间", "采购数量", "商品单位", "退货数量", "退货时间", "退货原因"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabp);
 
         jButton2.setText("打印报表");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(114, 114, 114)
+                        .addComponent(datestart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
+                        .addComponent(dateend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(98, 98, 98)
                         .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
-                        .addComponent(jButton1)
-                        .addGap(53, 53, 53))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(datestart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dateend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52)
                 .addComponent(jButton2)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,16 +168,109 @@ public class cginternalframe extends javax.swing.JInternalFrame {
         FrameUtil2.framemap.remove(cginternalframe.class.getName());
     }//GEN-LAST:event_formInternalFrameClosing
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        //获取日期喝输入框内容
+        purchaseserviceimpl p =new purchaseserviceimpl();
+        String start = this.datestart.getText();
+        String end = this.dateend.getText();
+        String key = this.txtSearch.getText();
+        List<Purchase> list = p.getByPurchase(start,end,key);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        purchaseserviceimpl p = new purchaseserviceimpl();
+        String start = this.datestart.getText();
+        String end = this.dateend.getText();
+        String key = this.txtSearch.getText();
+        List<Purchase> list = p.getByPurchase(start,end,key);
+        JFileChooser savefile = new JFileChooser();
+        FileNameExtensionFilter  f = new FileNameExtensionFilter("Excel文件(*.xls)","*.xls");
+        savefile.addChoosableFileFilter(f);
+        savefile.setFileFilter(f);
+        int flag = savefile.showSaveDialog(this);
+        File file = null;
+        if(flag == JFileChooser.APPROVE_OPTION){
+            file = savefile.getSelectedFile();
+            System.out.println("文件名:"+file.getAbsolutePath());
+            String filename = file.getAbsolutePath();
+            String filetype = filename.substring(filename.length()-4);
+            if(!filetype.equals(".xls")){
+                file = new File(filename+".xls");
+            }
+            List<Map<String,String>> ls = new ArrayList<Map<String,String>>();
+            //String[] str ={"采购编号","商品名称","供应商","采购价格"
+            Map<String,String> map = new LinkedHashMap<String,String>();
+            map.put("采购编号", null);
+            map.put("商品名称",null);
+            map.put("供应商",null);
+            map.put("采购价格",null);
+            map.put("采购时间",null);
+            map.put("采购数量",null);
+            map.put("退货时间",null);
+            map.put("退货数量",null);
+            ls.add(map);
+            
+            Map<String,String> mm;
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            for(Purchase p1:list){
+                mm = new LinkedHashMap<String,String>();
+                mm.put("采购编号",String.valueOf(p1.getPurid()));
+                mm.put("商品名称",p1.getProname());
+                mm.put("供应商",p1.getSupfullname());
+                mm.put("采购价格",String.valueOf(p1.getPurprice()));
+                mm.put("采购时间",String.valueOf(p1.getPurdate()));
+                mm.put("采购数量",String.valueOf(p1.getPurnumber()));
+                mm.put("退货时间",String.valueOf(p1.getReturndate()));
+                if(p1.getReturndate()!= null){
+                    mm.put("退货时间",format.format(p1.getReturndate()));
+        }
+                else{
+                    mm.put("退货时间",null);
+                }
+                
+                mm.put("退货数量",String.valueOf(p1.getReturnamount()));
+                ls.add(mm);
+            }
+            ExportExcel.printSale(ls, file);
+            JOptionPane.showMessageDialog(this, "打印成功");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+    public void refresh(List<Purchase> list)
+    {
+        DefaultTableModel m = (DefaultTableModel) this.tabp.getModel();
+        while(m.getRowCount()>0){
+            m.removeRow(0);
+        }
+        for(Purchase p:list){
+            Vector v = new Vector();
+            v.add(p.getPurid());
+            v.add(p.getProname());
+            v.add(p.getProtype());
+            v.add(p.getPurprice());
+            v.add(p.getSupfullname());
+            v.add(p.getPurdate());
+            v.add(p.getPurnumber());
+            v.add(p.getUnit());
+            v.add(p.getReturnamount());
+            v.add(p.getReturndate());
+            v.add(p.getReturnreason());
+            m.addRow(v);
+        }
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private elms.util.DateChooserJButton dateend;
+    private elms.util.DateChooserJButton datestart;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tabp;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
