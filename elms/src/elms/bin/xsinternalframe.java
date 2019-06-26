@@ -4,13 +4,24 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Purchase;
 import elms.po.Sell;
 import elms.service.sellserviceimpl;
 import elms.util.ChartBuilder;
+import elms.util.ExportExcel;
 import elms.util.FrameUtil2;
+import java.io.File;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -113,6 +124,11 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(tabp);
 
         jButton2.setText("打印报表");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         btndatestart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -210,6 +226,64 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
         List<Sell> list = s.getByEmp(start,end,key);
         refresh(list);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        sellserviceimpl s = new sellserviceimpl();
+        String start = this.btndatestart.getText();
+        String end = this.btndateend.getText();
+        String key = this.txtSearch.getText();
+        List<Sell> list = s.getByEmp(start,end,key);
+        refresh(list);
+        JFileChooser savefile = new JFileChooser();
+        FileNameExtensionFilter  f = new FileNameExtensionFilter("Excel文件(*.xls)","*.xls");
+        savefile.addChoosableFileFilter(f);
+        savefile.setFileFilter(f);
+        int flag = savefile.showSaveDialog(this);
+        File file = null;
+        if(flag == JFileChooser.APPROVE_OPTION){
+            file = savefile.getSelectedFile();
+            System.out.println("文件名:"+file.getAbsolutePath());
+            String filename = file.getAbsolutePath();
+            String filetype = filename.substring(filename.length()-4);
+            if(!filetype.equals(".xls")){
+                file = new File(filename+".xls");
+            }
+            List<Map<String,String>> ls = new ArrayList<Map<String,String>>();
+            //String[] str ={"采购编号","商品名称","供应商","采购价格"
+            Map<String,String> map = new LinkedHashMap<String,String>();
+            map.put("销售单号", null);
+            map.put("销售商品名",null);
+            map.put("销售数量",null);
+            map.put("销售价格",null);
+            map.put("销售金额",null);
+            map.put("客户",null);
+            map.put("销售时间",null);
+            ls.add(map);
+            
+            Map<String,String> mm;
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            for(Sell p1:list){
+                mm = new LinkedHashMap<String,String>();
+                mm.put("销售单号",String.valueOf(p1.getSeid()));
+                mm.put("销售商品名",p1.getProtype());
+                mm.put("销售数量",String.valueOf(p1.getSellnum()));
+                mm.put("销售价格",String.valueOf(p1.getSellprice()));  
+                BigDecimal b = new BigDecimal(p1.getSellnum());
+                mm.put("销售金额",String.valueOf(p1.getSellprice().multiply(b)));
+                mm.put("客户",String.valueOf(p1.getCusname()));
+                if(p1.getSelldate()!= null){
+                    mm.put("销售时间",format.format(p1.getSelldate()));
+        }
+                else{
+                    mm.put("销售时间",null);
+                }
+                ls.add(mm);
+            }
+            ExportExcel.printSale(ls, file);
+            JOptionPane.showMessageDialog(this, "打印成功");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

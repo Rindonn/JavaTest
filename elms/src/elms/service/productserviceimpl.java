@@ -51,4 +51,5 @@ public class productserviceimpl implements productservice{
         Object[] params = {};
         return  p.query(sql,Product.class,null);
     }
+
 }

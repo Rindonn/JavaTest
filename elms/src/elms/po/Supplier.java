@@ -22,7 +22,7 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(int supid, String supaddreviation, String supfullname, String owner, String job, String mobile, String supaddress) {
+    public Supplier(int txtsupid, String txtsupaddreviation, String txtsupfullname, String txtowner, String txtjob, String txtmobile, String txtaddress) {
         this.supid = supid;
         this.supaddreviation = supaddreviation;
         this.supfullname = supfullname;

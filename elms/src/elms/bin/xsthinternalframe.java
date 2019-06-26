@@ -26,6 +26,10 @@ public class xsthinternalframe extends javax.swing.JInternalFrame {
         List<Sell> list = s.findAll();
         initComponents();
         refresh(list);
+        this.jButton2.setEnabled(false);
+        this.txt1.setEditable(false);
+        this.txt2.setEditable(false);
+        this.txt3.setEditable(false);
     }
     
      public void refresh(List<Sell> list){
@@ -235,6 +239,7 @@ public class xsthinternalframe extends javax.swing.JInternalFrame {
         this.txt2.setText(this.tabxiaoshou.getValueAt(row, 1).toString());
         this.txt3.setText(this.tabxiaoshou.getValueAt(row, 4).toString());
         this.txt4.setText(this.tabxiaoshou.getValueAt(row,8).toString());
+        this.jButton2.setEnabled(true);
     }//GEN-LAST:event_tabxiaoshouMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

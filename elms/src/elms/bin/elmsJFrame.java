@@ -27,16 +27,23 @@ public class elmsJFrame extends javax.swing.JFrame {
         initComponents();
         LocationUtil.setFullScreen(this);
         //初始化内容的显示面板
+        /*
         if(empp.getPosition().equals("销售员")){
             //写不让按的按钮
             //员工管理、供应商管理、采购出库采购入库采购查询、供货商交易统计、采购汇总
             this.btnyggl.setEnabled(false);
             this.empl.setEnabled(false);
             this.slp.setEnabled(false);
+            this.jButton16.setEnabled(false);
             this.jMenu4.setEnabled(false);
             this.jMenuItem10.setEnabled(false);
             this.jMenuItem14.setEnabled(false);
+            this.jButton17.setEnabled(false);
+            this.jButton18.setEnabled(false);
+            this.jButton21.setEnabled(false);
+            this.jButton24.setEnabled(false);
         }
+        */
     }
 
     /**
@@ -414,11 +421,10 @@ public class elmsJFrame extends javax.swing.JFrame {
 
     private void btnygglActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnygglActionPerformed
         // TODO add your handling code here:
-        productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
-       this.desktop2.remove(p);
-       this.desktop2.add(p);
-       LocationUtil.setScreenCenter(p);
-       p.setVisible(true);
+       ygglinternalframe p = (ygglinternalframe)FrameUtil2.buildFrame(ygglinternalframe.class);
+        this.desktop2.remove(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
+        p.setVisible(true);
            try {
                p.setSelected(true);
            } catch (PropertyVetoException ex) {
@@ -443,9 +449,10 @@ public class elmsJFrame extends javax.swing.JFrame {
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
-         khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
+        
+        productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
+       this.desktop2.add(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -471,7 +478,7 @@ public class elmsJFrame extends javax.swing.JFrame {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
-        gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
+        khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
        this.desktop2.remove(p);
        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
@@ -499,10 +506,10 @@ public class elmsJFrame extends javax.swing.JFrame {
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
-        ygglinternalframe p = (ygglinternalframe)FrameUtil2.buildFrame(ygglinternalframe.class);
-        this.desktop2.remove(p);
-        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
-        p.setVisible(true);
+        gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
+       this.desktop2.remove(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
+       p.setVisible(true);
            try {
                p.setSelected(true);
            } catch (PropertyVetoException ex) {

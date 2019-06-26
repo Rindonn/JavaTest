@@ -6,6 +6,7 @@
 package elms.service;
 
 import elms.dao.selldao;
+import elms.po.Customer;
 import elms.po.Sell;
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class sellserviceimpl {
     public List<Sell> getByEmp(String start, String end, String key) {
         String sql = "select * from t_sell s left join t_product pro on pro.proid = s.proid left join t_customer c on s.cusid=c.cusid left join t_employee e on s.uid = e.uid where selldate between ? and ? and concat(seid,proname) like ?";
         Object[] params = {start,end,"%"+key+"%"};
+        return s.query(sql,Sell.class,params);
+    }
+    public List<Sell> getByCus(String start,String end){
+        String sql = "select * from t_sell s left join t_customer c on c.cusid = s.cusid where s.selldate between ? and ? order by s.sellprice desc";
+        Object[] params = {start,end};
         return s.query(sql,Sell.class,params);
     }
 }

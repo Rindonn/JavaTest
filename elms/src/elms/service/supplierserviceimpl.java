@@ -6,6 +6,7 @@
 package elms.service;
 
 import elms.dao.*;
+import elms.po.Purchase;
 import elms.po.Supplier;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class supplierserviceimpl implements supplierservice {
         Object[] parmas = {};
         return p.query(sql,Supplier.class,parmas);
 }
-        public boolean update(Supplier pp) {
+
+    public boolean update(Supplier pp) {
        String sql = "update t_supplier set supaddreviation=?,supfullname=?,owner=?,job=?,mobile=?,supaddress=? where supid=?";
        Object[] params = {pp.getSupaddreviation(),pp.getSupfullname(),pp.getOwner(),pp.getJob(),pp.getMobile(),pp.getSupaddress(),pp.getSupid()};
        return p.update(sql, params);

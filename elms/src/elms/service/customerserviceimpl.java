@@ -46,5 +46,6 @@ public class customerserviceimpl {
         String sql = "SELECT t_customer.cusid,t_customer.cusname,t_customer.taobaoid,t_customer.cusphone,t_customer.postcard,t_customer.cusaddress,t_customer.lastdeliverydate,t_employee.truename FROM t_customer,t_employee WHERE t_employee.uid = t_customer.uid and concat(t_customer.cusname,t_customer.taobaoid) like ? and t_customer.state = 1;";
         Object[] parmas = {"%"+username+"%"};
         return p.query(sql,Customer.class,parmas);
-}
+    }
+
 }

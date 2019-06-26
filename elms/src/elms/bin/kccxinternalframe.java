@@ -4,18 +4,57 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Product;
+import elms.po.Purchase;
+import elms.service.productserviceimpl;
+import elms.util.ExportExcel;
 import elms.util.FrameUtil2;
+import java.awt.Color;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author YukiMuraRindon
  */
 public class kccxinternalframe extends javax.swing.JInternalFrame {
-
+    productserviceimpl p = new productserviceimpl();
     /**
      * Creates new form kccxinternalframe
      */
     public kccxinternalframe() {
         initComponents();
+        List<Product> list = p.findAll();
+        refresh(list);
+    }
+    public void refresh(List<Product> list){
+         DefaultTableModel model = (DefaultTableModel) this.tab.getModel();
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+        for (Product p : list) {
+            Vector v = new Vector();
+            v.add(p.getProid());
+            v.add(p.getProname());
+            v.add(p.getProtype());
+            v.add(p.getQuantity());
+            v.add(p.getStorecount());
+            v.add(p.getSuggestbuyprice());
+            v.add(p.getLastpurchasedate());
+            v.add(p.getSuggestsaleprice());
+            v.add(p.getLastdeliverydate());
+            model.addRow(v);
+        }
     }
 
     /**
@@ -27,12 +66,10 @@ public class kccxinternalframe extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tab = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
@@ -58,36 +95,37 @@ public class kccxinternalframe extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
-        jLabel1.setText("查询条件：");
-
-        jComboBox1.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "按条件" }));
-
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tab.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "商品编号", "商品名称", "当前库存", "安全库存", "建议采购价", "最近采购日期", "建议销售价", "最近销售日期"
+                "商品编号", "商品名称", "商品类型", "当前库存", "安全库存", "建议采购价", "最近采购日期", "建议销售价", "最近销售日期"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tab);
 
         jButton2.setText("打印报表");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("关闭");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -101,18 +139,14 @@ public class kccxinternalframe extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(24, 24, 24)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 777, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 883, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -126,17 +160,15 @@ public class kccxinternalframe extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -148,19 +180,80 @@ public class kccxinternalframe extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            this.setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(kccxinternalframe.class.getName()).log(Level.SEVERE, null, ex);
+        }
         FrameUtil2.framemap.remove(kccxinternalframe.class.getName());
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        List<Product> list = p.findAll(this.txtSearch.getText());
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String key = this.txtSearch.getText();
+        List<Product> list = p.findAll(key);
+        refresh(list);
+        JFileChooser savefile = new JFileChooser();
+        FileNameExtensionFilter  f = new FileNameExtensionFilter("Excel文件(*.xls)","*.xls");
+        savefile.addChoosableFileFilter(f);
+        savefile.setFileFilter(f);
+        int flag = savefile.showSaveDialog(this);
+        File file = null;
+        if(flag == JFileChooser.APPROVE_OPTION){
+            file = savefile.getSelectedFile();
+            System.out.println("文件名:"+file.getAbsolutePath());
+            String filename = file.getAbsolutePath();
+            String filetype = filename.substring(filename.length()-4);
+            if(!filetype.equals(".xls")){
+                file = new File(filename+".xls");
+            }
+            List<Map<String,String>> ls = new ArrayList<Map<String,String>>();
+            //String[] str ={"采购编号","商品名称","供应商","采购价格"
+            Map<String,String> map = new LinkedHashMap<String,String>();
+            map.put("商品编号", null);
+            map.put("商品名称",null);
+            map.put("商品类型",null);
+            map.put("当前库存",null);
+            map.put("安全库存",null);
+            map.put("建议采购价",null);
+            map.put("最近采购日期",null);
+            map.put("建议销售价",null);
+            map.put("最近销售日期",null);
+            ls.add(map);
+            
+            Map<String,String> mm;
+            for(Product p1:list){
+                mm = new LinkedHashMap<String,String>();
+                mm.put("商品编号",String.valueOf(p1.getProid()));
+                mm.put("商品名称",p1.getProname());
+                mm.put("商品类型",p1.getProtype());
+                mm.put("当前库存",String.valueOf(p1.getQuantity()));
+                mm.put("安全库存",String.valueOf(p1.getStorecount()));
+                mm.put("建议采购价",String.valueOf(p1.getSuggestbuyprice()));
+                mm.put("最近采购日期",String.valueOf(p1.getLastpurchasedate()));
+                mm.put("建议销售价",String.valueOf(p1.getSuggestsaleprice()));
+                mm.put("最近销售日期",String.valueOf(p1.getLastdeliverydate()));
+                ls.add(mm);
+            }
+            ExportExcel.printSale(ls, file);
+            JOptionPane.showMessageDialog(this, "打印成功");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tab;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

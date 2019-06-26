@@ -21,8 +21,8 @@ public class xsthserviceimpl {
     public boolean xsreturn(String seid, int proid, int sellreturnnum, Date sellreturntime) {
         boolean result = true;
         //修改采购表的退货数量和退货时间
-        String sql1 = "update t_sell set sellreturnamount=?,sellreturndate=?,sellnum=sellnum-? where seid=?";
-        Object[] params1 = {sellreturnnum, sellreturntime, sellreturnnum, seid};
+        String sql1 = "update t_sell set sellreturnamount=?,sellreturndate=?,sellnum=sellnum-?,sellreturnamount = sellreturnamount+? where seid=?";
+        Object[] params1 = {sellreturnnum, sellreturntime, sellreturnnum,sellreturnnum, seid};
         String sql2 = "update t_product set quantity= quantity+?  where proid=?";
         Object[] params2 = {sellreturnnum, proid};
         Connection conn = new BaseDao().getConnection();
