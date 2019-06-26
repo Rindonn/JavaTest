@@ -6,7 +6,9 @@
 package elms.bin;
 
 
+import elms.po.Employee;
 import elms.util.FrameUtil2;
+import elms.util.LocationUtil;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,15 +18,25 @@ import java.util.logging.Logger;
  * @author YukiMuraRindon1
  */
 public class elmsJFrame extends javax.swing.JFrame {
-
+        public static Employee empp;
 
     /**
      * Creates new form elmsJFrame
      */
     public elmsJFrame() {
         initComponents();
+        LocationUtil.setFullScreen(this);
         //初始化内容的显示面板
-
+        if(empp.getPosition().equals("销售员")){
+            //写不让按的按钮
+            //员工管理、供应商管理、采购出库采购入库采购查询、供货商交易统计、采购汇总
+            this.btnyggl.setEnabled(false);
+            this.empl.setEnabled(false);
+            this.slp.setEnabled(false);
+            this.jMenu4.setEnabled(false);
+            this.jMenuItem10.setEnabled(false);
+            this.jMenuItem14.setEnabled(false);
+        }
     }
 
     /**
@@ -348,8 +360,7 @@ public class elmsJFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar2);
 
-        setSize(new java.awt.Dimension(1266, 867));
-        setLocationRelativeTo(null);
+        setBounds(0, 0, 1266, 867);
     }// </editor-fold>//GEN-END:initComponents
 
     private void commodityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commodityActionPerformed
@@ -371,6 +382,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         khjyglinternalframe p = (khjyglinternalframe)FrameUtil2.buildFrame(khjyglinternalframe.class);
        this.desktop2.remove(p);
        this.desktop2.add(p);
+       LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -385,6 +397,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         kccxinternalframe p = (kccxinternalframe)FrameUtil2.buildFrame(kccxinternalframe.class);
        this.desktop2.remove(p);
        this.desktop2.add(p);
+       LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -404,6 +417,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
        this.desktop2.remove(p);
        this.desktop2.add(p);
+       LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -417,7 +431,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
          khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -431,7 +445,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
          khglinternalframe p = (khglinternalframe)FrameUtil2.buildFrame(khglinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -445,7 +459,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -459,7 +473,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         gysinternalframe p = (gysinternalframe)FrameUtil2.buildFrame(gysinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -473,7 +487,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
        ygglinternalframe p = (ygglinternalframe)FrameUtil2.buildFrame(ygglinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -487,7 +501,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         ygglinternalframe p = (ygglinternalframe)FrameUtil2.buildFrame(ygglinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -501,7 +515,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
          cginternalframe p = (cginternalframe)FrameUtil2.buildFrame(cginternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -515,7 +529,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgrkinternalframe p = (cgrkinternalframe)FrameUtil2.buildFrame(cgrkinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -529,7 +543,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgrkinternalframe p = (cgrkinternalframe)FrameUtil2.buildFrame(cgrkinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -543,7 +557,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgthinternalframe p = (cgthinternalframe)FrameUtil2.buildFrame(cgthinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -557,7 +571,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgthinternalframe p = (cgthinternalframe)FrameUtil2.buildFrame(cgthinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -571,7 +585,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         xsinternalframe p = (xsinternalframe)FrameUtil2.buildFrame(xsinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -585,7 +599,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         xsckinternalframe p = (xsckinternalframe)FrameUtil2.buildFrame(xsckinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -599,7 +613,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         xsckinternalframe p = (xsckinternalframe)FrameUtil2.buildFrame(xsckinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -613,7 +627,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         xsthinternalframe p = (xsthinternalframe)FrameUtil2.buildFrame(xsthinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -627,7 +641,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         xsthinternalframe p = (xsthinternalframe)FrameUtil2.buildFrame(xsthinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -641,7 +655,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         gysjyglinternalframe p = (gysjyglinternalframe)FrameUtil2.buildFrame(gysjyglinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -655,7 +669,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         khjyglinternalframe p = (khjyglinternalframe)FrameUtil2.buildFrame(khjyglinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -669,7 +683,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         gysjyglinternalframe p = (gysjyglinternalframe)FrameUtil2.buildFrame(gysjyglinternalframe.class);
         this.desktop2.remove(p);
-        this.desktop2.add(p);
+        this.desktop2.add(p);LocationUtil.setScreenCenter(p);
         p.setVisible(true);
            try {
                p.setSelected(true);
@@ -683,7 +697,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         kccxinternalframe p = (kccxinternalframe)FrameUtil2.buildFrame(kccxinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -697,7 +711,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgtjinternalframe p = (cgtjinternalframe)FrameUtil2.buildFrame(cgtjinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);
@@ -711,7 +725,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         cgtjinternalframe p = (cgtjinternalframe)FrameUtil2.buildFrame(cgtjinternalframe.class);
        this.desktop2.remove(p);
-       this.desktop2.add(p);
+       this.desktop2.add(p);LocationUtil.setScreenCenter(p);
        p.setVisible(true);
            try {
                p.setSelected(true);

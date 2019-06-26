@@ -5,6 +5,7 @@
  */
 package elms.service;
 
+import elms.bin.elmsJFrame;
 import elms.dao.employeedao;
 import elms.po.*;
 import java.util.List;
@@ -43,4 +44,11 @@ public class employeeserviceimpl {
         Object[] parmas = {username};
         return p.query(sql,Employee.class,parmas);
 }
+    public Employee login(String username,String password){
+        String sql = "select * from t_employee where username = ? and password = ? and state = 1";
+        Object[] params={username,password};
+        Employee e = (Employee) p.get(sql, Employee.class, params);
+        elmsJFrame.empp = e;
+        return e;
+    }
 }

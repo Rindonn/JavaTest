@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.service.employeeserviceimpl;
+import elms.util.LocationUtil;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,7 +26,9 @@ public class login extends javax.swing.JFrame {
      * Creates new form login
      */
     public login() {
+        LocationUtil.setScreenCenter(this);
         initComponents();
+        this.getRootPane().setDefaultButton(submit);
     }
 
     /**
@@ -109,25 +113,17 @@ public class login extends javax.swing.JFrame {
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
         // TODO add your handling code here:
-        String u = Username.getText();
-        String p = Password.getText();
-        //System.out.println(a);
-        //System.out.println(b);
-        JDBCUtil jdbc = new JDBCUtil();
-        String sql = "select username,password from User where username='"+u+"'&&password='"+p+"';";
-        //System.out.println(sql);
-        ResultSet res = jdbc.executeQueryRS(sql,null);
-        try {
-            if(res.next()){
-                JOptionPane.showMessageDialog(null, "登录成功！");  
-                setVisible(false);
-                new elmsJFrame().setVisible(true);
-            }
-            else{
-                JOptionPane.showMessageDialog(null, "登录失败！\n请检查用户名或密码！");  
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+        employeeserviceimpl e = new employeeserviceimpl();
+        String username = this.Username.getText();
+        String password = this.Password.getText();
+        e.login(username,password);
+        if(e != null){
+            JOptionPane.showMessageDialog(null, "登录成功！");
+            this.dispose();
+            new elmsJFrame().setVisible(true);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "登录失败！\n请检查用户名或密码！");
         }
     }//GEN-LAST:event_submitActionPerformed
 

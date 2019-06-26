@@ -4,7 +4,14 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Sell;
+import elms.service.sellserviceimpl;
+import elms.util.ChartBuilder;
 import elms.util.FrameUtil2;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author YukiMuraRindon
@@ -17,6 +24,25 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
     public xsinternalframe() {
         initComponents();
     }
+     public void refresh(List<Sell> list)
+    {
+        DefaultTableModel m = (DefaultTableModel) this.tabp.getModel();
+        while(m.getRowCount()>0){
+            m.removeRow(0);
+        }
+        for(Sell p:list){
+            Vector v = new Vector();
+            v.add(p.getSeid());
+            v.add(p.getProname());
+            v.add(p.getSellnum());
+            v.add(p.getSellprice());
+            BigDecimal b = new BigDecimal(p.getSellnum());
+            v.add(p.getSellprice().multiply(b));
+            v.add(p.getCusname());
+            v.add(p.getSelldate());
+            m.addRow(v);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,14 +54,14 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
+        txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabp = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         btndatestart = new elms.util.DateChooserJButton();
         btndateend = new elms.util.DateChooserJButton();
+        jButton3 = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -61,16 +87,16 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
 
         jLabel1.setText("-");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "商品名" }));
-
         jButton1.setText("查询");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabp.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "销售单号", "销售商品名", "销售数量", "销售价格", "销售金额", "客户", "销售时间"
@@ -84,13 +110,20 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tabp);
 
         jButton2.setText("打印报表");
 
         btndatestart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btndatestartActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("图表");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -105,10 +138,8 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btndateend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60)
-                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(87, 87, 87)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton1)
                 .addContainerGap(142, Short.MAX_VALUE))
@@ -118,25 +149,32 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(btndatestart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btndateend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btndatestart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btndateend, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         pack();
@@ -151,16 +189,38 @@ public class xsinternalframe extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btndatestartActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        String start = this.btndatestart.getText();
+        String end = this.btndateend.getText();
+        sellserviceimpl s = new sellserviceimpl();
+        List<Sell> list = s.getByEmp(start,end);
+        String datetitle = start+"到"+end+"员工销售统计";
+        ChartBuilder chart = new ChartBuilder(datetitle,list);
+        chart.pack();
+        chart.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        sellserviceimpl s = new sellserviceimpl();
+        String start = this.btndatestart.getText();
+        String end = this.btndateend.getText();
+        String key = this.txtSearch.getText();
+        List<Sell> list = s.getByEmp(start,end,key);
+        refresh(list);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private elms.util.DateChooserJButton btndateend;
     private elms.util.DateChooserJButton btndatestart;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tabp;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

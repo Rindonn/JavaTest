@@ -5,10 +5,14 @@
  */
 package elms.dao;
 
+import elms.po.Sell;
+import java.util.List;
+
 /**
  *
  * @author YukiMuraRindon
  */
 public class selldao extends BaseDao{
+
     
 }
