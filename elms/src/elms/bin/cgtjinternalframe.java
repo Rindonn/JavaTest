@@ -51,7 +51,7 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
                 model.addRow(v);
             }
         }
-        else{
+        else if(key.equals("sup")){
              DefaultTableModel model = (DefaultTableModel) this.tab.getModel();
             while (model.getRowCount() > 0) {
                 model.removeRow(0);
@@ -60,7 +60,42 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
                 Vector v = new Vector();
                 v.add(p.getSupid());
                 v.add(p.getSupfullname());
-                v.add(p.getPurnumber());
+                v.add(p.getCountmoney());
+                model.addRow(v);
+            }
+        }
+        else if(key.equals("gyssp")){
+            DefaultTableModel model = (DefaultTableModel) this.tab.getModel();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            }
+            for (Purchase p : list) {
+                Vector v = new Vector();
+                v.add(p.getSupid());
+                v.add(p.getSupfullname());
+                v.add(p.getProid());
+                v.add(p.getProname());
+                v.add(p.getProtype());
+                v.add(p.getCountnum());
+                v.add(p.getUnit());
+                v.add(p.getCountmoney());
+                model.addRow(v);
+            }
+        }
+        else{
+            DefaultTableModel model = (DefaultTableModel) this.tab.getModel();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            }
+            for (Purchase p : list) {
+                Vector v = new Vector();
+                v.add(p.getProid());
+                v.add(p.getProname());
+                v.add(p.getProtype());
+                v.add(p.getSupid());
+                v.add(p.getSupfullname());
+                v.add(p.getCountnum());
+                v.add(p.getUnit());
                 v.add(p.getCountmoney());
                 model.addRow(v);
             }
@@ -114,7 +149,7 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
         jLabel1.setText("按");
 
         box.setFont(new java.awt.Font("宋体", 0, 14)); // NOI18N
-        box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "商品", "供应商" }));
+        box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "商品", "供应商", "供应商（商品）", "商品（供应商）" }));
 
         jLabel2.setFont(new java.awt.Font("宋体", 0, 18)); // NOI18N
         jLabel2.setText("从");
@@ -218,6 +253,7 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         // TODO add your handling code here:
         FrameUtil2.framemap.remove(cgtjinternalframe.class.getName());
+        this.dispose();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -235,13 +271,13 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
         savefile.setFileFilter(filter);
         int flag = savefile.showSaveDialog(this);
         File file = null;
-        System.out.println(box);
+        //System.out.println(box);
         if (box.equals("商品")) {
             List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"pro");
             refresh(list,"pro");
             if (flag == JFileChooser.APPROVE_OPTION) {
                 file = savefile.getSelectedFile();
-                System.out.println("文件名:"+file.getAbsolutePath());
+                //System.out.println("文件名:"+file.getAbsolutePath());
                 String filename = file.getAbsolutePath();
                 String filetype = filename.substring(filename.length()-4);
                 if(!filetype.equals(".xls")){
@@ -263,7 +299,6 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
                     mm.put("商品编号", String.valueOf(p.getProid()));
                     mm.put("商品名称", p.getProname());
                     mm.put("商品型号", p.getProtype());
-                    mm.put("采购数量", String.valueOf(p.getPurnumber()));
                     mm.put("采购金额", String.valueOf(p.getCountmoney()));
                     ls.add(mm);
                 }
@@ -275,7 +310,7 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
             refresh(list,"sup");
            if (flag == JFileChooser.APPROVE_OPTION) {
                 file = savefile.getSelectedFile();
-                System.out.println("文件名:"+file.getAbsolutePath());
+                //System.out.println("文件名:"+file.getAbsolutePath());
                 String filename = file.getAbsolutePath();
                 String filetype = filename.substring(filename.length()-4);
                 if(!filetype.equals(".xls")){
@@ -286,6 +321,40 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
                 Map<String, String> map = new LinkedHashMap<String, String>();
                 map.put("供应商编号", null);
                 map.put("供应商名称", null);
+                map.put("采购金额", null);
+                ls.add(map);
+                Map<String, String> mm;
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                for (Purchase p : list) {
+                    mm = new LinkedHashMap<String, String>();
+                    mm.put("供应商编号", String.valueOf(p.getSupid()));
+                    mm.put("供应商名称", p.getSupfullname());
+                    mm.put("采购金额", String.valueOf(p.getCountmoney()));
+                    ls.add(mm);
+                }
+                ExportExcel.printSale(ls, file); 
+                JOptionPane.showMessageDialog(this, "打印成功");
+            }
+        }
+        else if (box.equals("供应商（商品）")) {
+             List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"gyssp");
+             refresh(list,"gyssp");
+             if (flag == JFileChooser.APPROVE_OPTION) {
+                file = savefile.getSelectedFile();
+                //System.out.println("文件名:"+file.getAbsolutePath());
+                String filename = file.getAbsolutePath();
+                String filetype = filename.substring(filename.length()-4);
+                if(!filetype.equals(".xls")){
+                    file = new File(filename+".xls");
+                }
+                List<Map<String,String>> ls = new ArrayList<Map<String,String>>();
+                 //String[] str ={"采购编号","商品名称","供应商","采购价格"
+                Map<String, String> map = new LinkedHashMap<String, String>();
+                map.put("供应商编号", null);
+                map.put("供应商名称", null);
+                map.put("商品编号", null);
+                map.put("商品名称", null);
+                map.put("商品型号", null);
                 map.put("采购数量", null);
                 map.put("采购金额", null);
                 ls.add(map);
@@ -295,11 +364,53 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
                     mm = new LinkedHashMap<String, String>();
                     mm.put("供应商编号", String.valueOf(p.getSupid()));
                     mm.put("供应商名称", p.getSupfullname());
-                    map.put("采购数量", String.valueOf(p.getPurnumber()));
+                    mm.put("商品编号", String.valueOf(p.getProid()));
+                    mm.put("商品名称", p.getProname());
+                    mm.put("商品型号", p.getProtype());
+                    mm.put("采购数量", String.valueOf(p.getCountnum()));
                     mm.put("采购金额", String.valueOf(p.getCountmoney()));
                     ls.add(mm);
                 }
                 ExportExcel.printSale(ls, file); 
+                JOptionPane.showMessageDialog(this, "打印成功");
+            }
+        }
+        else{
+            List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"spgys");
+            refresh(list,"spgys");
+           if (flag == JFileChooser.APPROVE_OPTION) {
+                file = savefile.getSelectedFile();
+                //System.out.println("文件名:"+file.getAbsolutePath());
+                String filename = file.getAbsolutePath();
+                String filetype = filename.substring(filename.length()-4);
+                if(!filetype.equals(".xls")){
+                    file = new File(filename+".xls");
+                }
+                List<Map<String,String>> ls = new ArrayList<Map<String,String>>();
+                 //String[] str ={"采购编号","商品名称","供应商","采购价格"
+                Map<String, String> map = new LinkedHashMap<String, String>();
+                map.put("商品编号", null);
+                map.put("商品名称", null);
+                map.put("商品型号", null);
+                map.put("供应商编号", null);
+                map.put("供应商名称", null);
+                map.put("采购数量", null);
+                map.put("采购金额", null);
+                ls.add(map);
+                Map<String, String> mm;
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                for (Purchase p : list) {
+                    mm = new LinkedHashMap<String, String>();
+                    mm.put("商品编号", String.valueOf(p.getProid()));
+                    mm.put("商品名称", p.getProname());
+                    mm.put("商品型号", p.getProtype());
+                    mm.put("供应商编号", String.valueOf(p.getSupid()));
+                    mm.put("供应商名称", p.getSupfullname());
+                    mm.put("采购数量", String.valueOf(p.getCountnum()));
+                    mm.put("采购金额", String.valueOf(p.getCountmoney()));
+                    ls.add(mm);
+                }
+                ExportExcel.printSale(ls, file);
                 JOptionPane.showMessageDialog(this, "打印成功");
             }
         }
@@ -322,11 +433,30 @@ public class cgtjinternalframe extends javax.swing.JInternalFrame {
             this.tab.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-                    "供应商编号", "供应商简称","采购数量","采购金额"
+                    "供应商编号", "供应商简称","采购金额"
                 }
             ));
             List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"sup");
             refresh(list,"sup");
+        }
+        else if (box.equals("供应商（商品）")) {
+            this.tab.setModel(new javax.swing.table.DefaultTableModel(
+                    new Object[][]{},
+                    new String[]{
+                        "供应商编号", "供应商名称", "商品编号", "商品名称", "商品型号", "采购数量", "商品单位", "采购金额"
+                    }
+            ));
+            List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"gyssp");
+            refresh(list,"gyssp");
+        } else if (box.equals("商品（供应商）")) {
+            this.tab.setModel(new javax.swing.table.DefaultTableModel(
+                    new Object[][]{},
+                    new String[]{
+                        "商品编号", "商品名称", "商品型号", "供应商编号", "供应商名称", "采购数量", "商品单位", "采购金额"
+                    }
+            ));
+            List<Purchase> list = p.get(this.datestart.getText(), this.dateend.getText(),"spgys");
+            refresh(list,"spgys");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

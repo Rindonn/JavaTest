@@ -27,7 +27,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         initComponents();
         LocationUtil.setFullScreen(this);
         //初始化内容的显示面板
-        /*
+        
         if(empp.getPosition().equals("销售员")){
             //写不让按的按钮
             //员工管理、供应商管理、采购出库采购入库采购查询、供货商交易统计、采购汇总
@@ -43,7 +43,7 @@ public class elmsJFrame extends javax.swing.JFrame {
             this.jButton21.setEnabled(false);
             this.jButton24.setEnabled(false);
         }
-        */
+        
     }
 
     /**
@@ -88,6 +88,9 @@ public class elmsJFrame extends javax.swing.JFrame {
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("进销存管理");
@@ -233,6 +236,7 @@ public class elmsJFrame extends javax.swing.JFrame {
 
         itemcommodity.setText("基本资料管理");
 
+        commodity.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/productmnu.gif"))); // NOI18N
         commodity.setText("商品资料管理");
         commodity.setActionCommand("m1");
         commodity.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -247,6 +251,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         itemcommodity.add(commodity);
 
+        slp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/suppliernum.gif"))); // NOI18N
         slp.setText("供应商资料管理");
         slp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,6 +260,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         itemcommodity.add(slp);
 
+        emp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/customermnu.gif"))); // NOI18N
         emp.setText("客户资料管理");
         emp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -263,6 +269,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         itemcommodity.add(emp);
 
+        empl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/salesmanmnu.gif"))); // NOI18N
         empl.setText("员工资料管理");
         empl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,6 +290,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem5);
 
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchasemnu.gif"))); // NOI18N
         jMenuItem6.setText("采购入库");
         jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -291,6 +299,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem6);
 
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retpurchasemnu.gif"))); // NOI18N
         jMenuItem4.setText("采购退货");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -311,6 +320,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu5.add(jMenuItem9);
 
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/sellmnu.gif"))); // NOI18N
         jMenuItem8.setText("销售出库");
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -319,6 +329,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu5.add(jMenuItem8);
 
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/retsellmnu.gif"))); // NOI18N
         jMenuItem7.setText("销售退货");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,6 +342,7 @@ public class elmsJFrame extends javax.swing.JFrame {
 
         jMenu6.setText("统计查询");
 
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/suppbusirecmnu.gif"))); // NOI18N
         jMenuItem10.setText("供应商交易统计");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,6 +351,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem10);
 
+        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/custbusirecmnu.gif"))); // NOI18N
         jMenuItem12.setText("客户交易统计");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -347,6 +360,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem12);
 
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/stockquerymnu.gif"))); // NOI18N
         jMenuItem11.setText("库存统计");
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -355,6 +369,7 @@ public class elmsJFrame extends javax.swing.JFrame {
         });
         jMenu6.add(jMenuItem11);
 
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/elms/bin/imgs/purchasegathermnu.gif"))); // NOI18N
         jMenuItem14.setText("采购汇总");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -364,6 +379,26 @@ public class elmsJFrame extends javax.swing.JFrame {
         jMenu6.add(jMenuItem14);
 
         jMenuBar2.add(jMenu6);
+
+        jMenu1.setText("更多");
+
+        jMenuItem1.setText("切换用户");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("退出");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar2.add(jMenu1);
 
         setJMenuBar(jMenuBar2);
 
@@ -449,7 +484,6 @@ public class elmsJFrame extends javax.swing.JFrame {
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // TODO add your handling code here:
-        
         productinternalframe p = (productinternalframe)FrameUtil2.buildFrame(productinternalframe.class);
        this.desktop2.remove(p);
        this.desktop2.add(p);
@@ -742,6 +776,19 @@ public class elmsJFrame extends javax.swing.JFrame {
            p.toFront();
     }//GEN-LAST:event_jButton24ActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        FrameUtil2.framemap.remove(elmsJFrame.class.getName());
+        this.dispose();
+        new login().setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        FrameUtil2.framemap.remove(elmsJFrame.class.getName());
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -795,14 +842,17 @@ public class elmsJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton24;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

@@ -11,6 +11,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="commodity">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/productmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x5546;&#x54c1;&#x8d44;&#x6599;&#x7ba1;&#x7406;"/>
                 <Property name="actionCommand" type="java.lang.String" value="m1"/>
               </Properties>
@@ -24,6 +27,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="slp">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/suppliernum.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x4f9b;&#x5e94;&#x5546;&#x8d44;&#x6599;&#x7ba1;&#x7406;"/>
               </Properties>
               <Events>
@@ -32,6 +38,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="emp">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/customermnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x5ba2;&#x6237;&#x8d44;&#x6599;&#x7ba1;&#x7406;"/>
               </Properties>
               <Events>
@@ -40,6 +49,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="empl">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/salesmanmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x5458;&#x5de5;&#x8d44;&#x6599;&#x7ba1;&#x7406;"/>
               </Properties>
               <Events>
@@ -63,6 +75,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem6">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/purchasemnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x91c7;&#x8d2d;&#x5165;&#x5e93;"/>
               </Properties>
               <Events>
@@ -71,6 +86,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/retpurchasemnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x91c7;&#x8d2d;&#x9000;&#x8d27;"/>
               </Properties>
               <Events>
@@ -94,6 +112,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem8">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/sellmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x9500;&#x552e;&#x51fa;&#x5e93;"/>
               </Properties>
               <Events>
@@ -102,6 +123,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem7">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/retsellmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x9500;&#x552e;&#x9000;&#x8d27;"/>
               </Properties>
               <Events>
@@ -117,6 +141,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem10">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/suppbusirecmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x4f9b;&#x5e94;&#x5546;&#x4ea4;&#x6613;&#x7edf;&#x8ba1;"/>
               </Properties>
               <Events>
@@ -125,6 +152,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/custbusirecmnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x5ba2;&#x6237;&#x4ea4;&#x6613;&#x7edf;&#x8ba1;"/>
               </Properties>
               <Events>
@@ -133,6 +163,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem11">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/stockquerymnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x5e93;&#x5b58;&#x7edf;&#x8ba1;"/>
               </Properties>
               <Events>
@@ -141,10 +174,36 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem14">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/elms/bin/imgs/purchasegathermnu.gif"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="&#x91c7;&#x8d2d;&#x6c47;&#x603b;"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem14ActionPerformed"/>
+              </Events>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x66f4;&#x591a;"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x5207;&#x6362;&#x7528;&#x6237;"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x9000;&#x51fa;"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

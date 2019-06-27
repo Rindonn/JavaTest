@@ -91,12 +91,20 @@ purchasedao p = new purchasedao();
             Object[] params = {start,end};
             return p.query(sql, Purchase.class, params);
         }
-        else{
-            String sql = "SELECT pur.supid,supfullname,t_purchase.purnumber,sum(totalmoney) countmoney from t_supplier sup LEFT JOIN t_purchase pur on pur.supid = sup.supid where purdate between ? and ? GROUP BY pur.supid ORDER BY countmoney DESC";
+        else if(key.equals("sup")){
+            String sql = "SELECT pur.supid,supfullname,sum(totalmoney) countmoney from t_supplier sup LEFT JOIN t_purchase pur on pur.supid = sup.supid where purdate between ? and ? GROUP BY pur.supid ORDER BY countmoney DESC";
             Object[] params = {start,end};
             return p.query(sql, Purchase.class, params);
         }
-    }
-    
-    
+        else if(key.equals("gyssp")){
+            String sql = "SELECT pur.supid,pur.proid,supfullname,proname,protype,unit,SUM(purnumber) countnum,sum(totalmoney) countmoney from t_purchase pur LEFT JOIN t_supplier sup on pur.supid = sup.supid LEFT JOIN t_product pro on pur.proid=pro.proid where  purdate between ? and ? GROUP BY pur.supid,pro.proid ORDER BY pur.supid,countmoney DESC";
+            Object[] params = {start,end};
+            return p.query(sql, Purchase.class, params);
+        }
+        else{
+       String sql = "SELECT pur.supid,pur.proid,supfullname,proname,protype,unit,SUM(purnumber) countnum,sum(totalmoney) countmoney from t_purchase pur LEFT JOIN t_supplier sup on pur.supid = sup.supid LEFT JOIN t_product pro on pur.proid=pro.proid where  purdate between ? and ? GROUP BY pro.proid,pur.supid  ORDER BY pur.proid,countmoney DESC";
+            Object[] params = {start,end};
+            return p.query(sql, Purchase.class, params);
+        }
+    } 
 }

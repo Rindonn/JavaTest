@@ -99,9 +99,11 @@
           <Font name="&#x5b8b;&#x4f53;" size="14" style="0"/>
         </Property>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
+          <StringArray count="4">
             <StringItem index="0" value="&#x5546;&#x54c1;"/>
             <StringItem index="1" value="&#x4f9b;&#x5e94;&#x5546;"/>
+            <StringItem index="2" value="&#x4f9b;&#x5e94;&#x5546;&#xff08;&#x5546;&#x54c1;&#xff09;"/>
+            <StringItem index="3" value="&#x5546;&#x54c1;&#xff08;&#x4f9b;&#x5e94;&#x5546;&#xff09;"/>
           </StringArray>
         </Property>
       </Properties>

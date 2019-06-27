@@ -4,13 +4,25 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Customer;
+import elms.po.Employee;
 import elms.po.Product;
+import elms.po.Purchase;
+import elms.po.Supplier;
+import elms.service.customerserviceimpl;
 import elms.service.productservice;
 import elms.service.productserviceimpl;
+import elms.service.purchaseserviceimpl;
+import elms.service.sellserviceimpl;
+import elms.service.supplierserviceimpl;
 import elms.util.FrameUtil2;
+import elms.util.IdUtil;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
@@ -18,16 +30,17 @@ import javax.swing.table.DefaultTableModel;
  * @author YukiMuraRindon
  */
 public class xsckinternalframe extends javax.swing.JInternalFrame {
-
+productserviceimpl p = new productserviceimpl();
     /**
      * Creates new form xsckinternalframe
      */
     public xsckinternalframe() {
-        productserviceimpl p = new productserviceimpl();
+        
         initComponents(); 
         List<Product> list = null;
         list = p.findAll();
         refresh(list);
+        initPurchase();
     }
     public void refresh(List<Product> list){
        DefaultTableModel model = (DefaultTableModel) this.tabpro.getModel();
@@ -47,6 +60,18 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
            //放到表格里
            model.addRow(v);
        }
+    }
+    public void initPurchase(){
+        //获取供应商
+        JComboBox cb = new JComboBox();
+        customerserviceimpl p = new customerserviceimpl();
+        List<Customer> list = null;
+        list = p.findAll();
+        for(Customer su :list){
+            cb.addItem(su);
+        }
+        //添加到供应商
+        this.tabxs.getColumnModel().getColumn(7).setCellEditor(new DefaultCellEditor(cb));
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -135,7 +160,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -145,6 +170,11 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
         jScrollPane2.setViewportView(tabxs);
 
         jButton2.setText("销售出库");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("删除");
         jButton3.setToolTipText("");
@@ -208,6 +238,7 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
     private void formInternalFrameClosing(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosing
         // TODO add your handling code here:
         FrameUtil2.framemap.remove(xsckinternalframe.class.getName());
+        this.dispose();
     }//GEN-LAST:event_formInternalFrameClosing
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -258,6 +289,47 @@ public class xsckinternalframe extends javax.swing.JInternalFrame {
         model.removeRow(row);
         row = -1;
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) this.tabxs.getModel();
+        Object[][] purchase = new Object[model.getRowCount()][7];
+        Object[][] product = new Object[model.getRowCount()][2];
+        for (int i = 0; i < model.getRowCount(); i++) {
+            purchase[i][0] = IdUtil.getIdByDate();
+            purchase[i][1] = this.tabxs.getValueAt(i, 0);
+            Customer c = (Customer) this.tabxs.getValueAt(i, 7);
+            purchase[i][2] = c.getCusid();
+            Customer e = (Customer) this.tabxs.getValueAt(i, 7);
+            int uid = e.getUid();
+            System.out.println(uid);
+            purchase[i][3] = uid;
+            purchase[i][4] = this.tabxs.getValueAt(i, 6);
+            purchase[i][5] = this.tabxs.getValueAt(i, 5);
+            Date date = new Date();
+            purchase[i][6] = new java.sql.Date(date.getTime());
+            product[i][0] = this.tabxs.getValueAt(i, 5);
+            System.out.println(product[i][0]);
+            product[i][1] = this.tabxs.getValueAt(i, 0);
+            if (Integer.parseInt((String) this.tabxs.getValueAt(i, 5)) > Integer.parseInt((String) this.tabxs.getValueAt(i, 3))) {
+                String name = (String) this.tabxs.getValueAt(i, 1);
+                JOptionPane.showMessageDialog(this, name + "商品库存不足");
+            }
+        }
+        sellserviceimpl s = new sellserviceimpl();
+        boolean result = s.sell(purchase, product);
+        if (result == true) {
+            JOptionPane.showMessageDialog(this, "销售出库成功");
+            List<Product> list = null;
+            list = p.findAll();
+            refresh(list);
+        } else {
+            JOptionPane.showMessageDialog(this, "销售出库失败");
+        }
+        while (model.getRowCount() > 0) {
+            model.removeRow(0);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

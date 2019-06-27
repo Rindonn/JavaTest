@@ -190,9 +190,9 @@
                 <Column editable="false" title="&#x5546;&#x54c1;&#x7c7b;&#x578b;" type="java.lang.Object"/>
                 <Column editable="false" title="&#x5e93;&#x5b58;" type="java.lang.Object"/>
                 <Column editable="false" title="&#x5efa;&#x8bae;&#x9500;&#x552e;&#x4ef7;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x6570;&#x91cf;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x9500;&#x552e;&#x4ef7;&#x683c;" type="java.lang.Object"/>
-                <Column editable="false" title="&#x5ba2;&#x6237;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x6570;&#x91cf;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x9500;&#x552e;&#x4ef7;&#x683c;" type="java.lang.Object"/>
+                <Column editable="true" title="&#x5ba2;&#x6237;" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -250,6 +250,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="&#x9500;&#x552e;&#x51fa;&#x5e93;"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton3">
       <Properties>

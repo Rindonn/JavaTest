@@ -5,9 +5,13 @@
  */
 package elms.service;
 
+import elms.dao.BaseDao;
+import elms.dao.productdao;
 import elms.dao.selldao;
 import elms.po.Customer;
 import elms.po.Sell;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -16,6 +20,7 @@ import java.util.List;
  */
 public class sellserviceimpl {
      selldao s = new selldao();
+     productdao p = new productdao();
     public List<Sell> findAll() {
         String sql = "select * from t_sell s left join t_product pro on pro.proid = s.proid left join t_customer c on s.cusid=c.cusid left join t_employee e on s.uid = e.uid;";
         Object[] params = {};
@@ -35,5 +40,26 @@ public class sellserviceimpl {
         String sql = "select * from t_sell s left join t_customer c on c.cusid = s.cusid where s.selldate between ? and ? order by s.sellprice desc";
         Object[] params = {start,end};
         return s.query(sql,Sell.class,params);
+    }
+    public boolean sell(Object[][] purchases, Object[][] product) {
+        boolean result = true;
+        String sql1 = "insert into t_sell(seid,proid,cusid,uid,sellprice,sellnum,selldate) values(?,?,?,?,?,?,?)";
+        String sql2 = "update t_product set quantity = quantity - ? where proid=?";
+        Connection conn = new selldao().getConnection();   
+        try {
+            conn.setAutoCommit(false);
+            s.batchUpdate(conn, sql1, purchases);
+            p.batchUpdate(conn, sql2, product);
+            conn.commit();
+        } catch (Exception e) {
+            try {
+                result = false;
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        return result;
     }
 }
