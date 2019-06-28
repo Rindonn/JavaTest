@@ -27,7 +27,6 @@ public class elmsJFrame extends javax.swing.JFrame {
         initComponents();
         LocationUtil.setFullScreen(this);
         //初始化内容的显示面板
-        
         if(empp.getPosition().equals("销售员")){
             //写不让按的按钮
             //员工管理、供应商管理、采购出库采购入库采购查询、供货商交易统计、采购汇总
@@ -42,6 +41,9 @@ public class elmsJFrame extends javax.swing.JFrame {
             this.jButton18.setEnabled(false);
             this.jButton21.setEnabled(false);
             this.jButton24.setEnabled(false);
+        }
+        else{
+            
         }
         
     }

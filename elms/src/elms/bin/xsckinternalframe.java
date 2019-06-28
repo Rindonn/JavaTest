@@ -302,14 +302,14 @@ productserviceimpl p = new productserviceimpl();
             purchase[i][2] = c.getCusid();
             Customer e = (Customer) this.tabxs.getValueAt(i, 7);
             int uid = e.getUid();
-            System.out.println(uid);
+            //System.out.println(uid);
             purchase[i][3] = uid;
             purchase[i][4] = this.tabxs.getValueAt(i, 6);
             purchase[i][5] = this.tabxs.getValueAt(i, 5);
             Date date = new Date();
             purchase[i][6] = new java.sql.Date(date.getTime());
             product[i][0] = this.tabxs.getValueAt(i, 5);
-            System.out.println(product[i][0]);
+            //System.out.println(product[i][0]);
             product[i][1] = this.tabxs.getValueAt(i, 0);
             if (Integer.parseInt((String) this.tabxs.getValueAt(i, 5)) > Integer.parseInt((String) this.tabxs.getValueAt(i, 3))) {
                 String name = (String) this.tabxs.getValueAt(i, 1);
