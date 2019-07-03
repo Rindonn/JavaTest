@@ -51,7 +51,8 @@ public class adminservlet extends HttpServlet {
 		Admin admin = b.login(a);
 		if(admin == null) {
 			request.setAttribute("msg","µÇÂ¼Ê§°Ü");
-			request.getRequestDispatcher("adminjsps/login.jsp").forward(request,response);
+			request.getRequestDispatcher("adminjsps/error.jsp").forward(request,response);
+			//response.setHeader("Refresh","3;url=adminjsps/error.jsp");
 		}else {
 			request.setAttribute("msg","µÇÂ¼³É¹¦");
 			request.getSession().setAttribute("admin",admin);

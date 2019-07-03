@@ -1,0 +1,11 @@
+package com.bookstore.service;
+
+import java.awt.List;
+import com.bookstore.po.*;
+
+public class admincategoryservice {
+	public List<Category>findall{
+		String sql = "select * from t_category where pid is null order by orderby";
+		
+	}
+}

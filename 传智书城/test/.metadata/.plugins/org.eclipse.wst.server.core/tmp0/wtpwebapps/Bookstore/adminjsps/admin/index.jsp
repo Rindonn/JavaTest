@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+			<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+	
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="css/b.tabs.css">
+<link rel="stylesheet" type="text/css" href="<c:url value='css/bootstrap.css'/>">
+<link rel="stylesheet" type="text/css" href="<c:url value='css/font-awesome.min.css'/>">
+<link rel="stylesheet" type="text/css" href="<c:url value='css/b.tabs.css'/>">
 <style type="text/css">
 div.menuSideBar li.nav-header {
 	font-size: 14px;
@@ -33,7 +35,7 @@ div.menuSideBar .nav-list>li>a, div.menuSideBar .dropdown-menu li a {
 							<ul class="nav nav-list" id="menuSideBar">
 								<li class="nav-header">导航菜单</li>
 								<li class="nav-divider"></li>
-								<li mid="tab1" funurl="../admin/category/list.jsp"><a
+								<li mid="tab1" funurl="<c:url value='/admincategoryservlet?method=findall'/>"><a
 									tabindex="-1" href="javascript:void(0);">分类管理</a></li>
 								<li mid="tab2" funurl="../admin/book/list.jsp"><a
 									tabindex="-1" href="javascript:void(0);">图书管理</a></li>

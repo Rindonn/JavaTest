@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -12,9 +13,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css"
-	href="adminjsps/admin/css/bootstrap.css">
-<script type="text/javascript" src="adminjsps/admin/js/jquery.min.js"></script>
-<script type="text/javascript" src="adminjsps/admin/js/bootstrap.min.js"></script>
+	href="<c:url value='adminjsps/admin/css/bootstrap.css'/>">
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/bootstrap.min.js'/>"></script>
 	<script type="text/javascript">
 		function checkForm() {
 			if(!$("#cname").val()) {
@@ -38,17 +39,17 @@
 		<h3 align="center">添加二级分类</h3><br/>
 		<p style="font-weight: 900; color: red">${msg}</p>
 		<form class="form-horizontal"
-			action="adminjsps/admin/category/list.jsp>" method="post"
+			action="<c:url value='admincategoryservlet'/>" method="post"
 			onsubmit="return checkForm()">
-			<input type="hidden" name="method" value='addTwoLevel'/>
+			<input type="hidden" name="method" value='addChildren'/>
 			<div class="form-group">
 				<label for="cname" class="col-sm-offset-1 col-sm-2 control-label">一级分类：</label>
 				<div class="col-sm-7">
-					<select class="form-control">
+					<select class="form-control" name = "pid" id = "pid">
 			    		<option value="">===选择1级分类===</option>
-			    		<option value="1">程序设计</option>
-			    		<option value="2">办公室用书</option>
-			    		<option value="3">图形 图像 多媒体</option>
+			    		<c:forEach items="${parents}" var = "parent">
+			    		<option value="${parent.cid }" <c:if test="${parent.cid eq pid}">selected="selected"</c:if>>${parent.cname }</option>
+			    		</c:forEach>
 					</select>
 				</div>
 			</div>

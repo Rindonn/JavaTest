@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+	
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -12,9 +14,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css"
-	href="adminjsps/admin/css/bootstrap.css">
-<script type="text/javascript" src="adminjsps/admin/js/jquery.min.js"></script>
-<script type="text/javascript" src="adminjsps/admin/js/bootstrap.min.js"></script>
+	href="<c:url value='adminjsps/admin/css/bootstrap.css'/>">
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/bootstrap.min.js'/>"></script>
 	<script type="text/javascript">
 		function checkForm() {
 			if(!$("#cname").val()) {
@@ -33,10 +35,9 @@
 	<div class="page-header">
 		<h3 align="center">添加一级分类</h3><br/>
 		<p style="font-weight: 900; color: red">${msg}</p>
-		<form class="form-horizontal"
-			action="adminjsps/admin/category/list.jsp>" method="post"
+		<form class="form-horizontal" action="<c:url value='/admincategoryservlet'/>" method="post"
 			onsubmit="return checkForm()">
-			<input type="hidden" name="method" value="addOneLevel" />
+			<input type="hidden" name="method" value="addParent" />
 			<div class="form-group">
 				<label for="cname" class="col-sm-offset-1 col-sm-2 control-label">分类名称：</label>
 				<div class="col-sm-7">

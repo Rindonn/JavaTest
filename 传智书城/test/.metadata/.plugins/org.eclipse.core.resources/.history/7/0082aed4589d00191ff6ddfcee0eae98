@@ -1,0 +1,21 @@
+package com.bookstore.servlet;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+
+/**
+ * Servlet implementation class admincategoryservlet
+ */
+@WebServlet("/admincategoryservlet")
+public class admincategoryservlet extends BaseServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public admincategoryservlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+}
