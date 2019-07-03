@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/com/bookstore/dao/BaseDao.java=UTF-8
+encoding//src/com/bookstore/po/Book.java=UTF-8
+encoding//src/com/bookstore/po/CartItem.java=UTF-8
+encoding//src/com/bookstore/po/Category.java=UTF-8
+encoding//src/com/bookstore/po/Order.java=UTF-8
+encoding//src/com/bookstore/po/OrderItem.java=UTF-8

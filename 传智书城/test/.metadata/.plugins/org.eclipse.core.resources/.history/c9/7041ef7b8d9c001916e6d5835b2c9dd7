@@ -1,0 +1,10 @@
+package com.bookstore.service;
+
+import com.bookstore.po.Admin;
+
+public class adminservice {
+	public Admin login(Admin admin) {
+		String sql ="select * from t_admin where adminname = ? and adminpwd = ?";
+		Object[] params = {admin.getAdminname(),admin.getAdminpwd()};
+	}
+}
