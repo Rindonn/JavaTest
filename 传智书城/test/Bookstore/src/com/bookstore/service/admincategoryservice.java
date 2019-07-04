@@ -41,7 +41,31 @@ public class admincategoryservice {
 		String sql = "select * from t_category where pid is null order by orderBy";
 		Object[] params = {};
 		List<Category> p = c.query(sql, Category.class, params);
-		
 		return p;
+	}
+	public Category load(String cid) {
+		String sql = "select * from t_category where cid=?";
+		Object[] params = {cid};
+		return (Category) c.get(sql, Category.class, params);
+	}
+	public void edit(Category cc) {
+		String sql = "update t_category set cname=?,pid=?,`desc`=? where cid = ?";
+		String pid = null;
+		if(cc.getPid()!=null) {
+			pid=cc.getPid();
+		}
+		Object[] params = {cc.getCname(),pid,cc.getDesc(),cc.getCid()};
+		c.update(sql, params);
+	}
+	public int findChildrenCategoryByParent(String pid) {
+		String sql = "select count(*) from t_category where pid=?";
+		Object[] params= {pid};
+		Number num = c.getCount(sql, params);
+		return num == null ? 0 : num.intValue();
+	}
+	public void delete(String id) {
+		String sql = "delete from t_category where cid =?";
+		Object[] params= {id};
+		c.update(sql, params);
 	}
 }

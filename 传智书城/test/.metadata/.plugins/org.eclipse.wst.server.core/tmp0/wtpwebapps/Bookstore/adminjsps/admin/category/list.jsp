@@ -35,18 +35,18 @@
 				<td>${parent.desc }</td>
 				<td align="right"><a class="btn btn-primary btn-xs active"
 					href="<c:url value='admincategoryservlet?method=addChild&pid=${parent.cid} '/>">添加二级分类</a>
-					<a class="btn btn-primary btn-xs active" href="adminjsps/admin/category/edit.jsp">修改</a>
+					<a class="btn btn-primary btn-xs active" href="<c:url value='admincategoryservlet?method=editParentPre&cid=${parent.cid }'/>">修改</a>
 					<a class="btn btn-danger btn-xs active" onclick="return confirm('您是否真要删除该一级分类？')"
-					href="javascript:alert('删除一级分类成功！');">删除</a></td>
+					href="<c:url value='admincategoryservlet?method=deleteParent&cid=${parent.cid}'/>">删除</a></td>
 			</tr>
 			<c:forEach items="${parent.children}" var = "child">
 			<tr class="trTwoLevelinfo">
 				<td>${child.cname}</td>
 				<td>${child.desc}</td>
 				<td align="right">
-					<a class="btn btn-primary btn-xs active" href="adminjsps/admin/category/edit.jsp">修改</a>
+					<a class="btn btn-primary btn-xs active" href="<c:url value='admincategoryservlet?method=editChildPre&cid=${child.cid }'/>">修改</a>
 					<a class="btn btn-danger btn-xs active" onclick="return confirm('您是否真要删除该二级分类？')"
-					href="javascript:alert('删除二级分类成功！');">删除</a></td>
+					href="<c:url value='admincategoryservlet?method=deleteChild&cid=${child.cid}'/>">删除</a></td>
 			</tr></c:forEach>
 			</c:forEach>
 		</table>
