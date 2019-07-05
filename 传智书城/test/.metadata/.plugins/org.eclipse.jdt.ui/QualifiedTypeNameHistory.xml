@@ -10,10 +10,17 @@
     <fullyQualifiedTypeName name="com.bookstore.dao.admincategorydao"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpServletResponse"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpServletRequest"/>
-    <fullyQualifiedTypeName name="com.bookstore.service.admincategoryservice"/>
-    <fullyQualifiedTypeName name="com.bookstore.po.Category"/>
-    <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="javax.servlet.ServletException"/>
     <fullyQualifiedTypeName name="java.io.IOException"/>
     <fullyQualifiedTypeName name="com.bookstore.util.CommonUtils"/>
+    <fullyQualifiedTypeName name="com.bookstore.dao.adminbookdao"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.bookstore.dao.BaseDao"/>
+    <fullyQualifiedTypeName name="java.lang.Integer"/>
+    <fullyQualifiedTypeName name="com.bookstore.po.Book"/>
+    <fullyQualifiedTypeName name="com.bookstore.service.admincategoryservice"/>
+    <fullyQualifiedTypeName name="com.bookstore.service.adminbookservice"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.bookstore.po.Category"/>
+    <fullyQualifiedTypeName name="com.bookstore.util.PageBean"/>
 </qualifiedTypeNameHistroy>

@@ -37,7 +37,7 @@ div.menuSideBar .nav-list>li>a, div.menuSideBar .dropdown-menu li a {
 								<li class="nav-divider"></li>
 								<li mid="tab1" funurl="<c:url value='/admincategoryservlet?method=findall'/>"><a
 									tabindex="-1" href="javascript:void(0);">分类管理</a></li>
-								<li mid="tab2" funurl="../admin/book/list.jsp"><a
+								<li mid="tab2" funurl="<c:url value='/adminbookservlet?method=findbycombination'/>"><a
 									tabindex="-1" href="javascript:void(0);">图书管理</a></li>
 								<li mid="tab3" funurl="../admin/order/list.jsp"><a
 									tabindex="-1" href="javascript:void(0);">订单管理</a></li>

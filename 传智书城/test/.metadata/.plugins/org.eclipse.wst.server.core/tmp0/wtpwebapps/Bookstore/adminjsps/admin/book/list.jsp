@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -11,113 +12,119 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>图书分类</title>
-<link rel="stylesheet" type="text/css"
-	href="adminjsps/admin/css/bootstrap.css">
-<script type="text/javascript" src="adminjsps/admin/js/jquery.min.js"></script>
-<script type="text/javascript" src="adminjsps/admin/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="<c:url value='adminjsps/admin/css/bootstrap.css'/>">
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='adminjsps/admin/js/bootstrap.min.js'/>"></script>
 <style type="text/css">
 .td {
-	white-space:nowrap;
-   	overflow:hidden;
-   	text-overflow:ellipsis;  
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 </style>
+<script type="text/javascript">
+	function LoadChildren() {
+		/*
+		1. 获取pid
+		2. 发出异步请求，功能之：
+		  3. 得到一个数组
+		  4. 获取cid元素(<select>)，把内部的<option>全部删除
+		  5. 添加一个头（<option>请选择2级分类</option>）
+		  6. 循环数组，把数组中每个对象转换成一个<option>添加到cid中
+		 */
+		// 1. 获取pid
+		var pid = $("#pid").val();
+		// 2. 发送异步请求
+		$.ajax({
+			async : true,
+			cache : false,
+			url : "/Bookstore/adminbookservlet",
+			data : {
+				method : "ajaxfindchildren",
+				pid : pid
+			},
+			type : "POST",
+			dataType : "json",
+			success : function(json) {
+				// 3. 得到cid，删除它的内容
+				//console.log(arr);
+				$("#cid").empty();//删除元素的子元素
+				$("#cid").append($("<option value=\"\">====请选择2级分类====</option>"));//4.添加头
+				// 5. 循环遍历数组，把每个对象转换成<option>添加到cid中
+				for (var i = 0; i < json.length; i++) {
+					var option = $("<option>").val(json[i].cid).text(
+							json[i].cname);
+					$("#cid").append(option);
+				}
+			},
+			error : function(json){
+				console.log(json);
+			}
+		});
+	}
+</script>
 </head>
 <body>
 	<div class="page-header">
-		<div align="right">
-			<a class="btn btn-primary btn-xs active"
-				href="adminjsps/admin/book/add.jsp">添加图书</a>
-		</div>
-		<form class="form-inline">
+		<form class="form-inline" action="/Bookstore/adminbookservlet">
+			<input type="hidden" name="method" value="findbycombination">
 			<div class="form-group">
-				<label for="exampleInput">一级分类:</label> <select
-					class="form-control input-sm" id="exampleInput">
+				<label for="pid">一级分类:</label> 
+				<select class="form-control input-sm" id="pid" name="pid" onchange="LoadChildren()">
 					<option value="" selected='selected'>===选择1级分类===</option>
-					<option value="1">程序设计</option>
-					<option value="2">办公室用书</option>
-					<option value="3">图形 图像 多媒体</option>
+					<c:forEach items="${parents}" var="parent">
+						<option value="${parent.cid}">${parent.cname}</option>
+					</c:forEach>
 				</select>
 			</div>
-
 			<div class="form-group">
-				<label for="exampleInput2 input-sm">二级分类:</label> <select
-					class="form-control" id="exampleInput2">
-					<option value="" selected='selected'>===选择2级分类===</option>
-					<option value="1">Java Javascript</option>
-					<option value="2">JSP</option>
-					<option value="3">C C++ VC VC++</option>
+				<label for="cid ">二级分类:</label> 
+				<select class="form-control input-sm" id="cid" name="cid">
+					<option value="">====请选择2级分类====</option>
 				</select>
 			</div>
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="请输入你要查询的书名">
+				<input type="text" name="bname" class="form-control" placeholder="请输入你要查询的书名">
 				<span class="input-group-btn">
 					<button class="btn  btn-info" type="submit">搜索</button>
 				</span>
 			</div>
+			<div class="input-group pull-right">
+				<a class="btn btn-primary btn-xs active" href="<c:url value='/admin/adminbookservlet?method=addPre'/>">添加图书</a>
+			</div>
 			<!-- /input-group -->
 		</form>
-		<br/>
-		<table class="table table-condensed" style="table-layout:fixed;">
+		<br />
+		<table class="table table-condensed" style="table-layout: fixed;">
 			<tr>
 				<th width="200px">书名</th>
 				<th>封面</th>
 				<th>定价</th>
 				<th>折扣</th>
-				<th>现价</th>
-				<th>一级分类</th>
-				<th width="160px">二级分类</th>
+				<th>当前价</th>
 				<th>操作</th>
 			</tr>
-			<tr>
-				<td class="td"><a href="adminjsps/admin/book/desc.jsp">Spring实战(第3版)（In
-					Action系列中最畅销的Spring图书，近十万读者学习Spring的共同选择）</a></td>
-				<td>
-					<a href="adminjsps/admin/book/desc.jsp">
-						<img border="0" width="70"src="<%=path%>/book_img/23254532-1_b.jpg" />
-					</a>
-				</td>
-				<td>&yen;59</td>
-				<td>6.7折</td>
-				<td>&yen;40.7</td>
-				<td>程序设计</td>
-				<td>Java JavaScript</td>
-				<td><a class="btn btn-primary btn-xs active"
-					href="adminjsps/admin/book/edit.jsp">修改</a> <a
-					class="btn btn-danger btn-xs active"
-					onclick="return confirm('您是否真要删除该二级分类？')"
-					href="javascript:alert('删除二级分类成功！');">删除</a></td>
-			</tr>
-			<tr>
-				<td class="td"><a href="adminjsps/admin/book/desc.jsp">Spring实战(第3版)（In
-					Action系列中最畅销的Spring图书，近十万读者学习Spring的共同选择）</a></td>
-				<td>
-					<a href="adminjsps/admin/book/desc.jsp">
-						<img border="0" width="70"src="<%=path%>/book_img/23254532-1_b.jpg" />
-					</a>
-				</td>
-				<td>&yen;59</td>
-				<td>6.7折</td>
-				<td>&yen;40.7</td>
-				<td>程序设计</td>
-				<td>Java JavaScript</td>
-				<td><a class="btn btn-primary btn-xs active"
-					href="adminjsps/admin/book/edit.jsp">修改</a> <a
-					class="btn btn-danger btn-xs active"
-					onclick="return confirm('您是否真要删除该图书？')"
-					href="javascript:alert('删除成功！');">删除</a></td>
-			</tr>
+			<c:forEach items="${pb.beanList}" var="book">
+				<tr>
+					<td class="td"><a href="<c:url value='/admin/adminbookservlet?method=load&bid=${book.bid}'/>">${book.bname}</a>
+					</td>
+					<td>
+						<a href="<c:url value='/admin/adminbookservlet?method=load&bid=${book.bid}'/>"> 
+							<img border="0" width="70" src="<c:url value='/${book.image_b}'/>" />
+						</a>
+					</td>
+					<td>&yen;${book.price}</td>
+					<td>${book.discount}折</td>
+					<td>&yen;${book.currPrice}</td>
+					<td>
+						<a class="btn btn-primary btn-xs active" href="<c:url value='/admin/AdminBookServlet?method=editPre&bid=${book.bid}'/>">修改</a> 
+						<a class="btn btn-danger btn-xs active" onclick="return confirm('您是否真要删除该二级分类？')" href="<c:url value='/admin/AdminBookServlet?method=delete&bid=${book.bid}'/>">删除</a>
+					</td>
+				</tr>
+			</c:forEach>
 		</table>
 		<div class="pull-right">
-			<ul class="pagination">
-			    <li><a href="#">&laquo;</a></li>
-			    <li><a href="#">1</a></li>
-			    <li><a href="#">2</a></li>
-			    <li><a href="#">3</a></li>
-			    <li><a href="#">4</a></li>
-			    <li><a href="#">5</a></li>
-			    <li><a href="#">&raquo;</a></li>
-			</ul>
+			<%@include file="/adminjsps/pager/pager.jsp" %>
 		</div>
 	</div>
 </body>

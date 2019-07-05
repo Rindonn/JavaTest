@@ -8,3 +8,5 @@ encoding//src/com/bookstore/po/Order.java=UTF-8
 encoding//src/com/bookstore/po/OrderItem.java=UTF-8
 encoding//src/com/bookstore/po/User.java=UTF-8
 encoding//src/com/bookstore/util/JDBCUtils.java=UTF-8
+encoding//src/com/bookstore/util/PageBean.java=UTF-8
+encoding//src/com/bookstore/util/PageConstants.java=UTF-8
