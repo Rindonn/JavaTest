@@ -9,17 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bookstore.po.Book;
-import com.bookstore.po.Category;
-import com.bookstore.service.adminbookservice;
-import com.bookstore.service.admincategoryservice;
-import com.bookstore.util.PageBean;
+import com.bookstore.po.*;
+import com.bookstore.service.*;
+import com.bookstore.util.*;
 
 /**
  * Servlet implementation class adminbookservlet
  */
 @WebServlet("/adminbookservlet")
 public class adminbookservlet extends BaseServlet {
+	admincategoryservice casd = new admincategoryservice();
+	adminbookservice b = new adminbookservice();
+	
 	private int getPc(HttpServletRequest req) {
 		int pc=1;
 		String param =req.getParameter("pc");
@@ -36,8 +37,7 @@ public class adminbookservlet extends BaseServlet {
 		}
 		return url;
 	}
-	admincategoryservice c = new admincategoryservice();
-	adminbookservice b = new adminbookservice();
+
 	public String findbycombination(HttpServletRequest req,HttpServletResponse res) 
 		throws ServletException,IOException{
 			int pc=getPc(req);
@@ -56,7 +56,7 @@ public class adminbookservlet extends BaseServlet {
 			book.setPid(pid);
 			book.setCid(cid);
 			book.setBname(bname);
-			List<Category> list = c.findall();
+			List<Category> list = casd.findall();
 			req.setAttribute("parents", list);
 			PageBean<Book> bp = b.findbycombination(book, pc);
 			bp.setUrl(url);
@@ -66,7 +66,7 @@ public class adminbookservlet extends BaseServlet {
 	public void ajaxfindchildren(HttpServletRequest req,HttpServletResponse res) 
 			throws ServletException,IOException{
 		String pid = req.getParameter("pid");
-		List<Category> list = c.findbyparent(pid);
+		List<Category> list = casd.findbyparent(pid);
 		String json = tojson(list);
 		//System.out.print(json);
 		res.getWriter().print(json);
@@ -89,5 +89,11 @@ public class adminbookservlet extends BaseServlet {
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+	public String addPre(HttpServletRequest req,HttpServletResponse res) throws ServletException,IOException{
+
+		List<Category> list = casd.findbyparents();
+ 		req.setAttribute("parents", list);
+		return "f:/adminjsps/admin/book/add.jsp";
 	}
 }

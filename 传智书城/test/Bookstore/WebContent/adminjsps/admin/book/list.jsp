@@ -85,12 +85,12 @@
 			</div>
 			<div class="input-group">
 				<input type="text" name="bname" class="form-control" placeholder="请输入你要查询的书名">
-				<span class="input-group-btn">
+				<span class="input-group-btn"> 
 					<button class="btn  btn-info" type="submit">搜索</button>
 				</span>
 			</div>
 			<div class="input-group pull-right">
-				<a class="btn btn-primary btn-xs active" href="<c:url value='/admin/adminbookservlet?method=addPre'/>">添加图书</a>
+				<a class="btn btn-primary btn-xs active" href="<c:url value='/adminbookservlet?method=addPre'/>">添加图书</a>
 			</div>
 			<!-- /input-group -->
 		</form>
@@ -106,7 +106,7 @@
 			</tr>
 			<c:forEach items="${pb.beanList}" var="book">
 				<tr>
-					<td class="td"><a href="<c:url value='/admin/adminbookservlet?method=load&bid=${book.bid}'/>">${book.bname}</a>
+					<td class="td"><a href="<c:url value='admin/adminbookservlet?method=load&bid=${book.bid}'/>">${book.bname}</a>
 					</td>
 					<td>
 						<a href="<c:url value='/admin/adminbookservlet?method=load&bid=${book.bid}'/>"> 

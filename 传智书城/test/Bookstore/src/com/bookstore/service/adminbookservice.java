@@ -25,7 +25,7 @@ public class adminbookservice {
 			list.add(new Expression("pid","=",book.getPid()));
 		}
 		if(book.getCid() !=null && !book.getCid().equals("")) {
-			list.add(new Expression("cid","=",book.getCid()));
+			list.add(new Expression("b.cid","=",book.getCid()));
 		}
 		if(book.getPress() !=null && !book.getPress().equals("")) {
 			list.add(new Expression("press","like","%"+book.getPress()+"%"));
@@ -103,5 +103,9 @@ public class adminbookservice {
 		pb.setTr(tr);
 		return pb;
 	}
-
+	public void add(Book book) {
+		String sql = "insert into t_book (bid,bname,author,price,currprice,discount,press,publishtime,edition,pagenum,wordNum,printtime,booksize,paper,cid,image_w,image_b) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		Object[] params = {book.getBid(),book.getBname(),book.getAuthor(),book.getPrice(),book.getDiscount(),book.getDiscount(),book.getPress(),book.getPublishtime(),book.getEdition(),book.getPageNum(),book.getWordNum(),book.getPrinttime(),book.getBooksize(),book.getPaper(),book.getCid(),book.getImage_w(),book.getImage_b()};
+		a.update(sql, params);
+	}
 }

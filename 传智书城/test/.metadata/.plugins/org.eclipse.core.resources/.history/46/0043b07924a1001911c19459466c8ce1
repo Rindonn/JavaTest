@@ -1,0 +1,47 @@
+package com.bookstore.servlet;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+/**
+ * Servlet implementation class adminaddbookservlet
+ */
+@WebServlet("/adminaddbookservlet")
+public class adminaddbookservlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    public adminaddbookservlet() {
+        super();
+
+    }
+
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=utf-8");
+		FileItemFactory f = new DiskFileItemFactory();
+		ServletFileUpload s = new ServletFileUpload(f);
+		s.setFileSizeMax(80*1024*1024);
+		List<FileItem> file =  null;
+		try {
+			file=s.parseRequest(request);
+		} catch (FileUploadException e) {
+			//文件过大
+			e.printStackTrace();
+		}
+		Map<String,Object> map = new HashMap<String,Object>;
+	}
+
+}
