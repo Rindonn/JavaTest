@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -11,9 +11,9 @@
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>订单详情</title>
-<link rel="stylesheet" type="text/css" href="adminjsps/admin/css/bootstrap.css">
-<script type="text/javascript" src="adminjsps/admin/js/jquery.min.js"></script>
-<script type="text/javascript" src="adminjsps/admin/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="<c:url value='/adminjsps/admin/css/bootstrap.css'/>">
+<script type="text/javascript" src="<c:url value='/adminjsps/admin/js/jquery.min.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/adminjsps/admin/js/bootstrap.min.js'/>"></script>
 <style>
 .divRow {
 	border: 2px solid #e9c9b2;
@@ -23,8 +23,10 @@
 	padding-left: 20px;
 	padding-right: 20px;
 }
-td{
-	vertical-align: middle;
+.td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 </style>
 </head>
@@ -32,14 +34,16 @@ td{
 	<div class="page-header">
 		<div class="row">
 			<div class="col-xs-10">
-				<strong>订单号：</strong>E3A1EB6D0543489F9729B2B5BC5DB366 (等待付款)&nbsp;&nbsp;
-				<!-- 
-					(准备发货)
-					(等待确认)
-					(交易成功)
-					(已取消)
-				 -->
-				<strong>下单时间：</strong>2018-11-01 19:30:22
+				<strong>订单号：</strong>${order.oid}(
+				<c:choose>
+					<c:when test="${order.status eq 1 }">等待付款</c:when>
+					<c:when test="${order.status eq 2 }">准备发货</c:when>
+					<c:when test="${order.status eq 3 }">等待确认</c:when>
+					<c:when test="${order.status eq 4 }">交易成功</c:when>
+					<c:when test="${order.status eq 5 }">已取消</c:when>
+				</c:choose>
+				)&nbsp;&nbsp;
+				<strong>下单时间：</strong>${order.ordertime}
 			</div>
 			<div class="col-xs-2">
 				<input  type="button"  class="btn btn-primary active" onclick="history.go(-1)" value="返回列表"/>
@@ -49,47 +53,39 @@ td{
 		<div class="divRow">
 			<dl>
 				<dt>收货人信息</dt>
-				<dd>山东省济南市长清区 创新谷Z-2 307  山东师创  张老师</dd>
+				<dd>${order.address }</dd>
 			</dl>
 			<dl>
 				<dt>商品清单</dt>
 			</dl>
 			<table class="table">
 				<tr class="active"> 
-					<th>商品名称</th>
-					<th align="left">单价</th>
-					<th align="left">数量</th>
-					<th align="left">小计</th>
+					<th colspan="2">商品名称</th>
+					<th align="left" width="50px">单价</th>
+					<th align="left" width="50px">数量</th>
+					<th align="left" width="50px">小计</th>
 				</tr>
-				<tr>
-					<td>
-						<div>
-							<img width="70" src="<%=path%>/book_img/23254532-1_b.jpg" />
-							Spring实战(第3版)（In Action系列中最畅销的Spring图书，近十万读者学习Spring的共同选择）
-						</div>
-					</td>
-					<td>&yen;40.7</td>
-					<td>1</td>
-					<td>&yen;40.7</td>
-				</tr>
-				<tr>
-					<td>
-						<div>
-							<img width="70" src="<%=path%>/book_img/23254532-1_b.jpg" />
-							Spring实战(第3版)（In Action系列中最畅销的Spring图书，近十万读者学习Spring的共同选择）
-						</div>
-					</td>
-					<td>&yen;40.7</td>
-					<td>2</td>
-					<td>&yen;81.4</td>
-				</tr>
+				<c:forEach items="${order.orderItemList }" var="orderItem">
+					<tr>
+						<td width="75px">
+							<img width="70" src="<c:url value='/${orderItem.image_b }'/>" />
+						</td>
+						<td >${orderItem.bname }</td>
+						<td>&yen;${orderItem.currPrice }</td>
+						<td>${orderItem.quantity }</td>
+						<td>&yen;${orderItem.subtotal }</td>
+					</tr>
+				</c:forEach>
 			</table>
 			<div align="right">
 				<strong>合　　计：</strong>
-				<strong class="text-warning">&yen;203.5</strong><br/><br/>
-	
-				<a id="deliver" class="btn btn-primary btn-xs active" href="javascript:alert('订单发货成功！')">发　　货</a>
-				<a id="cancel" class="btn btn-danger btn-xs active" href="javascript:alert('订单取消成功！')">取　　消</a>
+				<strong class="text-warning">&yen;${order.total }</strong><br/><br/>
+				<c:if test="${order.status eq 2 and btn eq 'deliver' }">
+					<a id="deliver" class="btn btn-primary btn-xs active" href="<c:url value='/adminorderservlet?method=deliver&oid=${order.oid }'/>">发　　货</a>
+				</c:if>
+				<c:if test="${order.status eq 1 and btn eq 'cancel' }">
+					<a id="cancel" class="btn btn-primary btn-xs active" href="<c:url value='/adminorderservlet?method=cancel&oid=${order.oid }'/>">取　　消</a>
+				</c:if>
 			</div>
 		</div>
 	</div>

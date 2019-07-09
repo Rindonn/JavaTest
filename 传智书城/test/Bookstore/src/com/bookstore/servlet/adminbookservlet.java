@@ -1,5 +1,6 @@
 package com.bookstore.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -95,5 +96,32 @@ public class adminbookservlet extends BaseServlet {
 		List<Category> list = casd.findbyparents();
  		req.setAttribute("parents", list);
 		return "f:/adminjsps/admin/book/add.jsp";
+	}
+	public String load(HttpServletRequest req,HttpServletResponse res) throws ServletException,IOException {
+		String bid = req.getParameter("bid");
+		Book book = b.load(bid);
+		req.setAttribute("book", book);
+		return "f:/adminjsps/admin/book/desc.jsp";
+	}
+	public String editPre(HttpServletRequest req,HttpServletResponse res) throws ServletException,IOException{
+		String bid = req.getParameter("bid");
+		Book book = b.load(bid);
+		req.setAttribute("book", book);
+		List<Category> list = casd.findbyparent(book.getPid());
+		req.setAttribute("childs", list);
+		List<Category> parents = casd.findbyparents();
+		req.setAttribute("parents", parents);
+		return "f:/adminjsps/admin/book/edit.jsp";
+	}
+	public String delete(HttpServletRequest req,HttpServletResponse res) throws ServletException,IOException{
+		String bid = req.getParameter("bid");
+		Book book = b.load(bid);
+		String savepath = this.getServletContext().getRealPath("/");
+		new File(savepath,book.getImage_w()).delete();
+		new File(savepath,book.getImage_b()).delete();
+		b.delete(bid);
+		req.setAttribute("msg", "É¾³ý³É¹¦");
+		return "f:/adminjsps/msg.jsp";
+		
 	}
 }

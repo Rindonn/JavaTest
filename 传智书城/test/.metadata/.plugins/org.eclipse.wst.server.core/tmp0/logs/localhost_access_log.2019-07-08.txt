@@ -208,3 +208,12 @@
 0:0:0:0:0:0:0:1 - - [08/Jul/2019:11:52:55 +0800] "GET /Bookstore/adminbookservlet?method=findbycombination&pid=&cid=&bname=212121 HTTP/1.1" 200 5094
 0:0:0:0:0:0:0:1 - - [08/Jul/2019:11:52:55 +0800] "GET /Bookstore/book_img/81173D4DC29744328922DBFA249DFF88_2.jpg HTTP/1.1" 304 -
 0:0:0:0:0:0:0:1 - - [08/Jul/2019:11:52:55 +0800] "GET /Bookstore/adminjsps/admin/css/bootstrap.css.map HTTP/1.1" 404 1137
+127.0.0.1 - - [08/Jul/2019:14:02:42 +0800] "GET / HTTP/1.1" 404 1074
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:02:42 +0800] "GET /Bookstore/adminjsps/admin/index.jsp HTTP/1.1" 200 2675
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:05 +0800] "GET /Bookstore/adminjsps/admin/index.jsp HTTP/1.1" 200 2675
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:05 +0800] "GET /Bookstore/adminjsps/admin/js/jquery.min.js HTTP/1.1" 200 93106
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:05 +0800] "GET /Bookstore/adminjsps/admin/js/bootstrap.min.js HTTP/1.1" 200 35951
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:05 +0800] "GET /Bookstore/adminjsps/admin/fonts/glyphicons-halflings-regular.woff2 HTTP/1.1" 200 18028
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:09 +0800] "GET /Bookstore/adminbookservlet?method=findbycombination HTTP/1.1" 200 16254
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:10 +0800] "GET /Bookstore/admin/adminbookservlet?method=load&bid=5C4A6F0F4A3B4672AD8C5F89BF5D37D2 HTTP/1.1" 404 1114
+0:0:0:0:0:0:0:1 - - [08/Jul/2019:14:03:23 +0800] "GET /Bookstore/admin/adminbookservlet?method=load&bid=CE01F15D435A4C51B0AD8202A318DCA7 HTTP/1.1" 404 1114

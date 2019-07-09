@@ -66,7 +66,7 @@
 </head>
 <body>
 	<div class="page-header">
-		<form class="form-inline" action="/Bookstore/adminbookservlet">
+		<form class="form-inline" action="/adminbookservlet">
 			<input type="hidden" name="method" value="findbycombination">
 			<div class="form-group">
 				<label for="pid">一级分类:</label> 
@@ -106,10 +106,10 @@
 			</tr>
 			<c:forEach items="${pb.beanList}" var="book">
 				<tr>
-					<td class="td"><a href="<c:url value='admin/adminbookservlet?method=load&bid=${book.bid}'/>">${book.bname}</a>
+					<td class="td"><a href="<c:url value='/adminbookservlet?method=load&bid=${book.bid}'/>">${book.bname}</a>
 					</td>
 					<td>
-						<a href="<c:url value='/admin/adminbookservlet?method=load&bid=${book.bid}'/>"> 
+						<a href="<c:url value='/adminbookservlet?method=load&bid=${book.bid}'/>"> 
 							<img border="0" width="70" src="<c:url value='/${book.image_b}'/>" />
 						</a>
 					</td>
@@ -117,8 +117,8 @@
 					<td>${book.discount}折</td>
 					<td>&yen;${book.currPrice}</td>
 					<td>
-						<a class="btn btn-primary btn-xs active" href="<c:url value='/admin/AdminBookServlet?method=editPre&bid=${book.bid}'/>">修改</a> 
-						<a class="btn btn-danger btn-xs active" onclick="return confirm('您是否真要删除该二级分类？')" href="<c:url value='/admin/AdminBookServlet?method=delete&bid=${book.bid}'/>">删除</a>
+						<a class="btn btn-primary btn-xs active" href="<c:url value='/adminbookservlet?method=editPre&bid=${book.bid}'/>">修改</a> 
+						<a class="btn btn-danger btn-xs active" onclick="return confirm('您是否真要删除该书？')" href="<c:url value='/adminbookservlet?method=delete&bid=${book.bid}'/>">删除</a>
 					</td>
 				</tr>
 			</c:forEach>

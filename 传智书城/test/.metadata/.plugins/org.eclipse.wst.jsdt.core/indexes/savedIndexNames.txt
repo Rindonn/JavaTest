@@ -1,22 +1,7 @@
 INDEX VERSION 1.4+E:\OneDrive\Github\JavaTest\´«ÖÇÊé³Ç\test\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-2340496148.index
-3128312673.index
-4230564352.index
-3472325979.index
-3051733219.index
-405538074.index
-2472960614.index
-3159622351.index
-36197511.index
-1663687258.index
 2573102083.index
-2619329636.index
-1271335058.index
-1993649044.index
-1570297237.index
+4230564352.index
 2679503833.index
-8311822.index
-4093687208.index
-3042465752.index
-229735914.index
 2846994049.index
+3042465752.index
+1570297237.index
