@@ -90,22 +90,6 @@ public class adminorderservlet extends BaseServlet {
 			req.setAttribute("msg", "订单状态错误不能取消！");
 			return "f:/adminjsps/msg.jsp";
 		}
-		o.updatestatus(oid, 5);
-		req.setAttribute("code", "sucess");
-		req.setAttribute("msg","订单已取消");
-		return "f:/adminjsps/msg.jsp";
-	}
-	public String deliver(HttpServletRequest req,HttpServletResponse res) throws ServletException,IOException{
-		String oid =  req.getParameter("oid");
-		int status = o.findstatus(oid);
-		if(status !=2) {
-			req.setAttribute("code", "error");
-			req.setAttribute("msg", "订单状态错误不能发货！");
-			return "f:/adminjsps/msg.jsp";
-		}
-		o.updatestatus(oid, 3);
-		req.setAttribute("code", "sucess");
-		req.setAttribute("msg","订单已发货");
-		return "f:/adminjsps/msg.jsp";
+		return null;
 	}
 }

@@ -123,8 +123,6 @@ public class orderservice {
 		return order.getStatus();
 	}
 	public void updatestatus(String oid,int status) {
-		String sql = "update t_order set status = ? where oid =?";
-		Object[] params= {status,oid};
-		o.update(sql, params);
+		
 	}
 }

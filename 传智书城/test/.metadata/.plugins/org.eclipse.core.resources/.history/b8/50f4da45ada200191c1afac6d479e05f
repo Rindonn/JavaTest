@@ -117,14 +117,10 @@ public class orderservice {
 		return oo;
 	}
 	public int findstatus(String oid) {
-		String sql = "select status from t_order where oid = ? ";
-		Object[] params= {oid};
-		Order order =(Order) o.get(sql, Order.class, params);
-		return order.getStatus();
+		
+		return null;
 	}
-	public void updatestatus(String oid,int status) {
-		String sql = "update t_order set status = ? where oid =?";
-		Object[] params= {status,oid};
-		o.update(sql, params);
+	public void updatestatus(String oid) {
+		
 	}
 }
