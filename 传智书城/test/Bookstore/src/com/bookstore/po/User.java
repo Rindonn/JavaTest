@@ -1,7 +1,7 @@
 package com.bookstore.po;
 
 /**
- * 鐢ㄦ埛妯″潡瀹炰綋绫�
+ * 鐢ㄦ埛妯″潡瀹炰綋绫� 
  * @author qdmmy6
  *
  */

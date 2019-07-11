@@ -29,7 +29,6 @@ public class BaseDao<T> {
                 e.printStackTrace();
             }
         }
-        
     }
 
     // 创建连接

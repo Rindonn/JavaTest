@@ -69,7 +69,7 @@ public class Book {
 	}
 
 
-	public String getBid() {
+	public String getBid()  {
 		return bid;
 	}
 	public void setBid(String bid) {

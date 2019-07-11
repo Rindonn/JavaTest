@@ -12,10 +12,7 @@ public class CartItem {
 	private String image_b;//灏忓浘璺緞
 	// 娣诲姞灏忚鏂规硶
 	public double getSubtotal() {
-		/*
-		 * 浣跨敤BigDecimal涓嶄細鏈夎宸�
-		 * 瑕佹眰蹇呴』浣跨敤String绫诲瀷鏋勯�犲櫒
-		 */
+
 		BigDecimal b1 = new BigDecimal(currPrice+ "");
 		BigDecimal b2 = new BigDecimal(quantity + "");
 		BigDecimal b3 = b1.multiply(b2);

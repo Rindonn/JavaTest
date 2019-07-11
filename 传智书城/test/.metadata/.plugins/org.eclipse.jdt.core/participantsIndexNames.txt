@@ -11,6 +11,8 @@ E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp
 \Bookstore\src
 C:\Users\rinnd\Desktop\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2325557930.index
 \goods\src
+E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2791728531.index
+\test\src
 C:\Users\rinnd\Desktop\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2076288981.index
 \goods\src
 C:\Users\rinnd\Desktop\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\36197511.index
@@ -45,6 +47,8 @@ E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp
 \Bookstore\src
 E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2472960614.index
 \Bookstore\src
+E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\4293742506.index
+\test\src
 E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\36197511.index
 \Bookstore\src
 E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3128312673.index
@@ -79,3 +83,5 @@ C:\Users\rinnd\Desktop\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearc
 \Bookstore\src
 C:\Users\rinnd\Desktop\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\405538074.index
 \Bookstore\src
+E:\OneDrive\Github\JavaTest\传智书城\test\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\648987399.index
+\test\src

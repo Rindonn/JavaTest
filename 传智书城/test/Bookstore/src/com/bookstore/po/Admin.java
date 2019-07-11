@@ -7,7 +7,6 @@ public class Admin {
 	public Admin() {
 		
 	}
-	
 	public Admin(String name,String pwd) {
 		this.adminname = name;
 		this.adminpwd = pwd;

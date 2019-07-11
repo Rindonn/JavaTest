@@ -1,6 +1,6 @@
 package com.bookstore.po;
 
-import java.util.List;
+import java.util.List; 
 
 /**
  * 鍒嗙被妯″潡鐨勫疄浣撶被

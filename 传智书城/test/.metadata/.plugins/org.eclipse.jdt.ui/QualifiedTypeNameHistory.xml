@@ -5,7 +5,6 @@
     <fullyQualifiedTypeName name="com.bookstore.service.adminservice"/>
     <fullyQualifiedTypeName name="com.bookstore.po.Admin"/>
     <fullyQualifiedTypeName name="javax.servlet.Filter"/>
-    <fullyQualifiedTypeName name="org.apache.commons.dbutils.DbUtils"/>
     <fullyQualifiedTypeName name="java.awt.List"/>
     <fullyQualifiedTypeName name="com.bookstore.dao.admincategorydao"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpServletResponse"/>
@@ -41,4 +40,12 @@
     <fullyQualifiedTypeName name="com.bookstore.po.Order"/>
     <fullyQualifiedTypeName name="com.bookstore.dao.orderdao"/>
     <fullyQualifiedTypeName name="com.bookstore.servlet.adminorderservlet"/>
+    <fullyQualifiedTypeName name="java.sql.Connection"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbutils.DbUtils"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbutils.QueryRunner"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbutils.handlers.BeanHandler"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbutils.handlers.BeanListHandler"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbutils.handlers.ScalarHandler"/>
+    <fullyQualifiedTypeName name="object.user"/>
+    <fullyQualifiedTypeName name="dao.BaseDao"/>
 </qualifiedTypeNameHistroy>
