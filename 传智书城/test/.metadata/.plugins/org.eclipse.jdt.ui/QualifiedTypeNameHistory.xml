@@ -30,8 +30,6 @@
     <fullyQualifiedTypeName name="com.bookstore.service.admincategoryservice"/>
     <fullyQualifiedTypeName name="java.io.File"/>
     <fullyQualifiedTypeName name="com.bookstore.util.PageBean"/>
-    <fullyQualifiedTypeName name="java.util.ArrayList"/>
-    <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="com.bookstore.util.Expression"/>
     <fullyQualifiedTypeName name="com.bookstore.po.OrderItem"/>
     <fullyQualifiedTypeName name="com.bookstore.dao.BaseDao"/>
@@ -47,5 +45,9 @@
     <fullyQualifiedTypeName name="org.apache.commons.dbutils.handlers.BeanListHandler"/>
     <fullyQualifiedTypeName name="org.apache.commons.dbutils.handlers.ScalarHandler"/>
     <fullyQualifiedTypeName name="object.user"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="service.userservice"/>
     <fullyQualifiedTypeName name="dao.BaseDao"/>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="po.user"/>
 </qualifiedTypeNameHistroy>
