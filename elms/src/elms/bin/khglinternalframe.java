@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class khglinternalframe extends javax.swing.JInternalFrame {
 
     /**
-     * Creates new form khglinternalframe
+     * Creates new form khglinternalframe 
      */
     public khglinternalframe() {
         customerserviceimpl p = new customerserviceimpl();
@@ -29,6 +29,7 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         List<Customer> list = null;
         list = p.findAll("123");
         refresh(list);
+       //txtcusid.setEnabled(false);
     }
     public void refresh(List<Customer> list){
        DefaultTableModel model = (DefaultTableModel) this.tabcustomer.getModel();
@@ -337,7 +338,11 @@ public class khglinternalframe extends javax.swing.JInternalFrame {
         this.txtcusphone.setText(this.tabcustomer.getValueAt(row,3).toString());
         this.txtpostcard.setText(this.tabcustomer.getValueAt(row,4).toString());
         this.txtcusaddress.setText(this.tabcustomer.getValueAt(row,5).toString());
-        this.txtemployee.setText(this.tabcustomer.getValueAt(row,7).toString());
+        try{
+            this.txtemployee.setText(this.tabcustomer.getValueAt(row,7).toString());
+        }catch(Exception e){
+            
+        }
     }//GEN-LAST:event_tabcustomerMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

@@ -29,6 +29,7 @@ public class ygglinternalframe extends javax.swing.JInternalFrame {
         List<Employee> list = null;
         list = p.findAll();
         refresh(list);
+        //txtid.setEnabled(false);
     }
     public void refresh(List<Employee> list){
        DefaultTableModel model = (DefaultTableModel) this.tabemployee.getModel();

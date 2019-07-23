@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package elms.bin;
+import elms.po.Employee;
 import elms.service.employeeserviceimpl;
 import elms.util.LocationUtil;
 import java.sql.CallableStatement;
@@ -116,8 +117,7 @@ public class login extends javax.swing.JFrame {
         employeeserviceimpl e = new employeeserviceimpl();
         String username = this.Username.getText();
         String password = this.Password.getText();
-        e.login(username,password);
-        if(e != null){
+        if(!(e.login(username,password) == null)){
             JOptionPane.showMessageDialog(null, "登录成功！");
             this.dispose();
             new elmsJFrame().setVisible(true);

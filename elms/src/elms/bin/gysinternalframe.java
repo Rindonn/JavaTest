@@ -26,8 +26,9 @@ public class gysinternalframe extends javax.swing.JInternalFrame {
         supplierserviceimpl p = new supplierserviceimpl();
         initComponents(); 
         List<Supplier> list = null;
-        list = p.findAll();
+        list = p.findAll();//
         refresh(list);
+        //txtsupid.setEnabled(false);
     }
     public void refresh(List<Supplier> list){
        DefaultTableModel model = (DefaultTableModel) this.tabSupplier.getModel();

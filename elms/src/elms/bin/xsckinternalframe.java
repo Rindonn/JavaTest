@@ -293,7 +293,7 @@ productserviceimpl p = new productserviceimpl();
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel) this.tabxs.getModel();
-        Object[][] purchase = new Object[model.getRowCount()][7];
+        Object[][] purchase = new Object[model.getRowCount()][8];
         Object[][] product = new Object[model.getRowCount()][2];
         for (int i = 0; i < model.getRowCount(); i++) {
             purchase[i][0] = IdUtil.getIdByDate();
@@ -302,12 +302,14 @@ productserviceimpl p = new productserviceimpl();
             purchase[i][2] = c.getCusid();
             Customer e = (Customer) this.tabxs.getValueAt(i, 7);
             int uid = e.getUid();
-            //System.out.println(uid);
+            //System.out.println(uid+"+++++++++++++++++++"+e.getUid()+"+++++++++++++++++++++++"+c.getCusid());
             purchase[i][3] = uid;
             purchase[i][4] = this.tabxs.getValueAt(i, 6);
             purchase[i][5] = this.tabxs.getValueAt(i, 5);
             Date date = new Date();
-            purchase[i][6] = new java.sql.Date(date.getTime());
+            purchase[i][6] = new java.sql.Date(date.getTime()); 
+            int a = 0;
+            purchase[i][7] = a;
             product[i][0] = this.tabxs.getValueAt(i, 5);
             //System.out.println(product[i][0]);
             product[i][1] = this.tabxs.getValueAt(i, 0);

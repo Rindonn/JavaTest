@@ -30,6 +30,7 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         List<Product> list = null;
         list = p.findAll();
         refresh(list);
+        //txtPid.setEnabled(false);
     }
     public void refresh(List<Product> list){
        DefaultTableModel model = (DefaultTableModel) this.tabProduct.getModel();
@@ -380,7 +381,7 @@ public class productinternalframe extends javax.swing.JInternalFrame {
         int scount = Integer.parseInt(this.txtScount.getText().trim());
         BigDecimal jmoney = new BigDecimal(this.txtJmoney.getText().trim());
         BigDecimal smoney = new BigDecimal(this.txtSmoney.getText().trim());
-        System.out.println("123");
+        //System.out.println("123");
         Product p = new Product(id,pname,ptype,scount,pcount,jmoney,smoney,null,null);
         if(pp.insert(p)){
            //弹出框  提示修改成功

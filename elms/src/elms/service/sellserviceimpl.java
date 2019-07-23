@@ -43,7 +43,7 @@ public class sellserviceimpl {
     }
     public boolean sell(Object[][] purchases, Object[][] product) {
         boolean result = true;
-        String sql1 = "insert into t_sell(seid,proid,cusid,uid,sellprice,sellnum,selldate) values(?,?,?,?,?,?,?)";
+        String sql1 = "insert into t_sell(seid,proid,cusid,uid,sellprice,sellnum,selldate,sellreturnamount) values(?,?,?,?,?,?,?,?)";
         String sql2 = "update t_product set quantity = quantity - ? where proid=?";
         Connection conn = new selldao().getConnection();   
         try {
