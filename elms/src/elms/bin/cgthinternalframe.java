@@ -329,7 +329,7 @@ public class cgthinternalframe extends javax.swing.JInternalFrame {
         this.txt3.setText(this.tabcaigou.getValueAt(row, 7).toString());
         this.txt4.setText(this.tabcaigou.getValueAt(row,9).toString());
         try {
-        this.txt5.setText(this.tabcaigou.getValueAt(row,10).toString());
+            this.txt5.setText(this.tabcaigou.getValueAt(row,10).toString());
         }catch(Exception e){
             this.txt5.setText("");
         }
