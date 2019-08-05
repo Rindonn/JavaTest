@@ -1,0 +1,302 @@
+* {  
+    margin: 0;  
+    padding: 0;  
+    font-family: Arial, "宋体";  
+    font-size: 14px;  
+}  
+  
+/*header设置*/  
+.header {  
+    width: 1200px;  
+    height: 100px;  
+    margin: 0 auto;  
+    margin-top: 15px;  
+    margin-bottom: 20px;  
+}  
+          
+.baidu {  
+    background: url(../img/logo.gif);  
+    width: 137px;  
+    height: 46px;  
+    float: left;  
+    margin: 0 15px 15px 100px;  
+}  
+  
+.logo {  
+    background: url(../img/baidu.jpg);  
+    width: 180px;  
+    height: 44px;  
+    float: left;  
+}  
+  
+.login {  
+    float: right;  
+    margin: 10px 110px 0 0;  
+}  
+  
+.login span {  
+    font: 12px/32px '宋体';  
+    color: #666;  
+}  
+  
+.login .login_icon {  
+    display: block;  
+    background: url(../img/login.jpg);  
+    width: 64px;  
+    height: 32px;  
+    float: right;  
+    margin-left: 5px;  
+}  
+  
+.login a {  
+    font: bold 13px/32px '宋体';  
+    color: #666;  
+    text-decoration: none;  
+    text-align: center;  
+}  
+  
+.hr {  
+    background: url(../img/hr.jpg) no-repeat;  
+    height: 20px;  
+    clear: both;  
+}  
+  
+/*content设置*/  
+input {  
+    outline: 0 none;  
+}  
+  
+.reg {  
+    width: 650px;  
+    float: left;  
+    margin-left: 180px;  
+}  
+  
+dl {  
+    height: 62px;  
+}  
+  
+dt {  
+    width: 70px;  
+    height: 42px;  
+    float: left;  
+    margin-right: 10px;  
+    font: bold 14px/42px "宋体";  
+    color: #666;  
+    text-align: right;  
+}  
+  
+.ipt_box {  
+    float: left;  
+    position: relative;  
+}  
+  
+.ipt_box input {  
+    display: block;  
+    width: 300px;  
+    height: 16px;  
+    color: #666;  
+    margin-right: 10px;  
+    padding: 11px 10px 11px 10px;  
+    border: 1px solid #ddd;  
+    border-radius: 1px;  
+    transition: border 0.3s;  
+}  
+  
+.mes {  
+    width: 232px;  
+    height: 42px;  
+    float: left;  
+}  
+  
+.mes .tip {  
+    margin-top: 4px;  
+    color: #aaa;  
+    font: 12px/18px '宋体';  
+}  
+  
+.mes .error {  
+    line-height: 42px;   
+}  
+  
+.mes .error img {  
+    line-height: 42px;  
+}  
+  
+.mes .error_span {  
+    color: red;  
+    font-size: 12px;  
+    float: left; 
+	display: inline-block;	
+}  
+  
+.mes .error .error_icon {  
+    background: url(../img/false.png) no-repeat center;  
+    width: 24px;  
+    height: 24px;  
+    margin-top: 8px;  
+    margin-right: 1px;  
+	display: inline-block;
+	float: left;
+}  
+  
+.mes .error .ok_icon {  
+    background: url(../img/true.png) no-repeat center;  
+    width: 24px;  
+    height: 24px;  
+    margin-top: 8px;  
+    margin-right: 1px;   
+	display: inline-block;
+	float: left;
+}  
+  
+  
+.mes ul {  
+    background: url(../img/pwd_tip.png) no-repeat center;  
+    width: 232px;  
+    height: 70px;  
+    list-style: none;  
+}  
+  
+.mes ul li {  
+    height: 22px;  
+    line-height: 22px;  
+    list-style: none;  
+    margin-left: 8px;  
+}   
+.mes ul li span {  
+    font-size: 12px;  
+    color: #999; 
+    display: inline-block;  
+    float: left;  
+}  
+  
+.mes ul li .pwd_icon {  
+    color: #ccc;  
+    width: 22px;  
+    height: 22px;  
+    text-align: center;  
+    line-height: 22px;  
+}  
+.pwdok {  
+    background: url(../img/pwd_ok.png) no-repeat center;  
+    width: 22px;  
+    height: 22px;  
+}  
+  
+.pwdno {  
+    background: url(../img/pwd_no.png) no-repeat center;
+	width: 22px;  
+    height: 22px;   
+	
+}   
+.mes ul li .nocolor{  
+    font-size: 12px; 
+	color:red;	
+ }
+.pro span {  
+    color: #666;  
+    font-size: 12px;  
+}  
+  
+.pro span a {  
+    color: #3F89EC;  
+    font-size: 12px;  
+    text-decoration: none;  
+}  
+  
+.pro span a:hover {  
+    text-decoration: underline;  
+}  
+  
+.pro #agree {  
+    width: 13px;  
+    height: 13px;  
+    float: left;  
+    position: relative;  
+    top: 2px;  
+}  
+  
+.mes .agreeErr {  
+    float: left;  
+    position: relative;  
+    top: -25px;  
+    left: 10px;  
+}  
+  
+.regBtn {  
+    height: 50px;  
+    width: 320px;  
+    font: bold 16px '宋体';  
+    color: #fff;  
+    background: #3F89EC;  
+    border: 0 none;  
+    border-radius: 3px;  
+    cursor: pointer;  
+    float: left;  
+    position: relative;  
+    top: -30px;  
+}  
+  
+.regBtn:hover {  
+    background: #4490f7  
+}  
+  
+.right {  
+    background-color: #f5fbff;  
+    width: 258px;  
+    height: 390px;  
+    border: 1px solid #d1eeff;  
+    float: right;  
+    margin-right: 200px;  
+}  
+
+  
+.phoneReg {  
+    margin: 0 10px;  
+    padding-left: 30px;  
+    height: 50px;  
+    line-height: 50px;  
+    background: url(../img/phone.png) left center no-repeat;  
+    border-bottom: 1px solid #e6edf2;  
+    font-size: 14px;  
+    color: #666;  
+}  
+  
+.right p{  
+    margin-left: 10px;  
+}  
+  
+.right .p1 {  
+    color: #666;  
+    font-size: 12px;  
+    margin-top: 20px;  
+    margin-bottom: 5px;  
+}  
+  
+.right .p2 {  
+    font-size: 14px;  
+    color: #f18300;  
+    font-weight: 700;  
+}  
+  
+.right .p3 {  
+    color: #666;  
+    font-size: 12px;  
+    margin-top: 5px;  
+}  
+  
+/*footer设置*/  
+.footer{  
+    clear: both;  
+    width: 100px;  
+    margin: 0 auto;  
+    padding-top: 100px;  
+}  
+  
+.footer p{  
+    font: 12px Arial;  
+    color: #7a77c8;  
+}  
+
+.

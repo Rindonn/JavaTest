@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<link rel="stylesheet" href="register.css">
+<div id="header"><img src="img/register_logo.gif" alt="logo"/></div>
+<div id="main">
+<table width="100%" border="0" cellpadding="0"  cellspacing="0">
+
+<tr>
+    <td class="bg bg_top_left"></td>
+    <td class="bg_top"></td>
+    <td class="bg bg_top_right"></td>
+</tr>
+
+<tr>
+    <td class="bg_left"></td>
+    <td class="content">
+    
+    <form action="" method="post" name="myform" onsubmit="return checkForm()">
+        
+        <dl>
+            <dt>通行证用户名：</dt>
+            <dd><input type="text" id="userName" class="inputs userWidth" onfocus="userNameFocus()" onblur="userNameBlur()"/>@163.com</dd>
+            <div id="userNameId"></div>
+        </dl>
+
+        <dl>
+            <dt>登录密码：</dt>
+            <dd><input type="password" id="pwd" class="inputs" onfocus="pwdFocus()" onblur="pwdBlur()"/></dd>
+            <div id="pwdId"></div>
+        </dl>
+
+        <dl>
+            <dt>重复登录密码：</dt>
+            <dd><input type="password" id="repwd" class="inputs" onblur="repwdBlur()"/></dd>
+            <div id="repwdId"></div>
+        </dl>
+
+        <dl>
+            <dt>性别：</dt>
+            <dd><input type="radio" name="sex" value="男" checked="checked"/>男
+                <input type="radio" name="sex" value="女" />女
+            </dd>                           
+        </dl>
+
+        <dl>
+            <dt>真实姓名：</dt>
+            <dd><input type="text" id="realName" class="inputs" onblur="aa()"/></dd>
+            <div id="userNameId"></div>
+        </dl>
+
+        <dl>
+            <dt>昵称：</dt>
+            <dd><input type="text" id="nickName" class="inputs" onfocus="nickNameFocus()" onblur="nickNameBlur()"/></dd>
+            <div id="nickNameId"></div>
+        </dl>
+
+        <dl>
+            <dt>关联手机号：</dt>
+            <dd><input type="text" id="tel" class="inputs" onfocus="telFocus()" onblur="telBlur()"/></dd>
+            <div id="telId"></div>
+        </dl>
+
+        <dl>
+            <dt>保密邮箱：</dt>
+            <dd><input type="text" id="email" class="inputs" onfocus="emailFocus()" onblur="emailBlur()"/></dd>
+            <div id="emailId"></div>
+        </dl>
+
+        <dl>
+            <dt></dt>
+            <dd><input name=" " type="image" src="img/button.gif"/></dd>
+        </dl>
+
+    </form>
+    </td>
+
+    <td class="bg_right"></td>
+</tr>
+<tr>
+    <td class="bg bg_end_left"></td>
+    <td class="bg bg_end"></td>
+    <td class="bg bg_end_right"></td>
+</tr>
+</table>
+</div>
+	</body>
+</html>

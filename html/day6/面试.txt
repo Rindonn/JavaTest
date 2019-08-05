@@ -1,0 +1,2927 @@
+
+=====================================================================================================================================
+总结：
+	1、Struts2的执行流程：
+		1-1:一个请求过来，走前端控制器StrutsPrepareAndExecuteFilter
+		    前端控制器是一个过滤器，过滤器中有doFilter()方法，在这个方法中，
+		    首先处理了字符集，然后将request和response放到ThreadLocal,表示线程安全
+		1-2:接下来判断是否是一个.action请求，如果不是直接跳转视图；否则继续走struts的流程
+		1-3:判断ActionMapping对象是否为空，为空转向视图；不为空，继续走struts的流程 
+		1-4:创建ActionProxy代理对象，在创建代理对象的时候，创建了一个struts2的核心对象ActionInvocation,ActionInvocation贯穿了			   
+		    整个struts的执行流程，代理、目标action、拦截器、结果都在ActionInvocation的成员变量位置
+		1-5:代理对象调用init方法进行初始化，在init方法中创建了目标action，在创建目标action的时候，使用了struts的ObjectFactory
+		1-6:将创建好的action赋值给ActionInvocation对象的成员变量
+		    取出默认的20个拦截器，放到ActionInvocation的迭代器上
+		1-7:ActionProxy代理执行execute方法
+		    ActionInvocation的invoke方法会被调用
+		    调用20个拦截器，拦截器执行完毕之后，调用目标action的execute()方法
+		    目标action的execute()方法执行结束之后，返回一个字符串，根据这个字符串，
+		    struts的ObjectFactory对象会封装一个Result对象，result指向了具体的视图
+		    拦截器出栈，response响应给浏览器
+====================================================================================================================================		
+	2、在struts2的流程中涉及的设计模式
+		StrutsPrepareAndExecuteFilter前端控制器  JavaEE的设计模式
+		ActionProxy 	代理
+		ObjectFactory	工厂
+		拦截器   	责任链、适配器
+		result 	        策略、模版方法
+===================================================================================================================================
+	
+	3、表比较多的时候怎么提高查询效率：
+		可以使用索引的方法提高效率，索引是一种算法,通过二叉树形式保存数据,提高查询的效率。
+		1. index 虽然提高了查询速度,但是大幅度增加 删除,更新,插入的操作时间
+                   每次进行插入,删除,更新操作时,都需要将原来的二叉树销毁掉,建立新的二叉树
+                2. 表中数据,被修改比较频繁,但是被查询表较少,这样表就不适合建立索引.
+		3. 表中数据量比较巨大.数据极少被修改,(数据字典表),但查询十分频繁.就适合建立索引.
+====================================================================================================================================           
+	4、事物的理解：
+		事务:数据库操作的一种管理方式.
+		     事务允许我们回滚到操作开始之前.
+                     不能解决错误操作,但是可以保持数据完整性.
+
+    		事务操作:
+                     1、开启事务:Start Transaction 通知数据库,从此刻开始,所有的操作都要放入到同一个事务对象中.
+                     2、数据库操作
+                     inser into table (sno,sname) values(1,'mike')
+                     inser into table (sno,sname) value(2,'smith')-----------------error
+                     3、回滚事务: rollback: 通知数据库,恢复到当前事务开始的状态
+                     4、提交事务: commit:如果在事务中,所有的操作都能正常运行,通过提交事务.通知数据库将本次操作都持久化到硬盘中表.
+
+    		事务工作原理:
+                      1.开启一个事务时,数据库会在内存中开发一个空间,用于保存操作时生成sql
+                      2.执行具体操作时,并不会直接影响到硬盘上数据库文件,而是会影响到内存中内容.       
+                      3.如果发现操作失误,可以通过回滚通知数据库,当前的操作无效.
+			数据库就会将内容空间销毁掉,因此不会影响硬盘上数据库文件内容.
+                      4.如果认为当前操作没有失误,可以通过提交事务,通知数据库将内存空间的内容保存到硬盘上,不能回滚.
+
+        	事务具有四个特征：ACID 
+		      A: 原子性: 事务管理中的数据,要么全部被持久化到硬盘上,要么被全部销毁,不会部分内容被持久化
+             	      B: 一致性: 在事务开始时,到事务回滚后,表中的数据时不受任何影响与改变.
+             	      C: 隔离性: 事务与事务之间,理论上是不应该互相影响的  
+             	      D: 持久性: 在事务提交之前,可以进行回滚操作.在事务提交之后,不能进行回滚操作.
+
+    		事务是在什么被建立的.
+        	     事务建立: 数据库默认情况下,会为每一条sql命令,创建一个事务管理对象,并自动提交这个事务
+
+    		什么时候手动事务管理:
+			  0.setAutoCommit(false);
+                          1.查询命令,不需要进行手动事务管理
+                          2.单条sql,不需要进行手动事务管理
+                          3.批处理操作:对一张表进行大量插入和大量删除
+                          4.需要某个业务连续对多张表,进行操作,必须进行手动事务管理
+
+     		事务的隔离级别：
+		          mysql事务隔离方案可以解决：     
+                		1.脏读取（Dirty Read);
+               			2.不可重复读（Non-repeatable Read）
+                		3.幻像读（Phantom Read）
+                	  isolation level: 
+                                1.READ UNCOMMITTED（读未提交）这是事务最低的隔离级别，它充许别外一个事务可以看到这个事务未提交的数据		   						      这种隔离级别会产生脏读，不可重复读和幻像读
+                                2.READ COMMITTED（读已提交） （Oracle默认隔离级别）
+                   					      保证一个事务修改的数据提交后才能被另外一个事务读取。
+							      另外一个事务不能读取该事务未提交的数据。
+		   					      这种事务隔离级别可以避免脏读出现，但是可能会出现不可重复读和幻像读。
+                                3.REPEATABLE READ（可重复读） MySQL 默认隔离级别）
+                  	 				      这种事务隔离级别可以防止脏读，不可重复读。但是可能出现幻像读。
+		   					      它除了保证一个事务不能读取另一个事务未提交的数据外，
+							      还保证了避免下面的情况产生(不可重复读)。
+                                4.SERIALIZABLE（可序列化的）  事务被处理为顺序执行。除了防止脏读，不可重复读外，还避免了幻像读。
+
+                SET GLOBAL TRANSACTION ISOLATION LEVEL 隔离级别名称; 设置整个数据库的事务隔离级别
+                SELECT @@global.tx_isolation;          查看当前数据库中采用事务隔离级别
+			
+	
+		事物的传播行为：(PROPAGATION), 多个事务嵌套时，事务的传递方式
+			1、REQUIRED(重点)
+   		  	 业务方法需要在一个事务中运行，如果方法运行时，已经存在一个事务中，那么加入到该事务，否则自己创建一个新事务。
+			2、SUPPORTS:
+   		  	如果存在一个事务，那么使用当前事务，如果没有事务，则不使用事务。
+			3、MANDATORY：
+   		   	如果有一个事务，则使用事务，如果没有可以使用的事务，则发生异常。
+			4、REQUIRES_NEW:
+  		   	不管是否存在事务，业务方法总为自己发起一个新事务；
+		   	如果方法已经运行在一个事务中，则原有事务会被挂起，新的事务会被创建，
+		   	直到方法调用结束，新事务才结束，原先的事务再恢复执行。
+			5、NOT_SUPPORTED:
+                   	声明方法不需要事务，如果方法没有关联到事务，容器不会为它开启事务，
+		   	如果方法在一个事务中被调用，该事务会被挂起，在方法调用结束后，原先的事务便会恢复执行。
+			6、NEVER:
+                   	业务方法绝对不能在事务范围内执行，如果方法在某个事务中执行，容器会抛出例外，
+		   	只有业务方法没有关联到任何事务，方法才能够正常执行。
+                	7、NESTED:
+                   	如果一个活动的事务存在，则运行在一个嵌套的事务中，如果没有活动事务，则按照REQUIRED属性执行，
+		   	它使用了一个单独的事务，这个事务有多个可以回滚的保存点，内部事务的回滚不会对外部事务产生影响。
+		   	它只对DataSourceTransactionManager事务管理器有效。			
+====================================================================================================================================	
+
+	5、JSP的九大内置对象：
+		内置对象的名称			对应名称			对应的完整类名
+		--------------------------------------------------------------------------------------------------		
+			pageContext		当前页作用域				javax.servlet.jsp.PageContext
+			request			请求作用域				javax.servlet.http.HttpServletRequest
+			session			会话作用域				javax.servlet.http.HttpSession
+			application		全局作用域				javax.servlet.ServletContext
+			
+			out			输出对象				javax.servlet.jsp.JspWriter
+			response		响应对象				javax.servlet.http.HttpServletResponse
+
+			exception		jsp异常对象				java.lang.Exception
+			config			初始化配置对象				javax.servlet.ServletConfig
+			page			当前jsp对象				java.lang.Object
+			
+		四个内置的范围： pageContext(页面范围) <  request(请求范围)<  session(会话范围) <  application(应用范围)
+
+		作用域数据保存
+                 setAttribute
+                 getAttribute
+		SP九大内置对象 =   jsp四大作用域+五个内置对象.
+===================================================================================================================================	
+	6、El表达式：
+		从范围对象中读取数据，并且将读取到的数据直接打印输出到浏览器上
+		隐含对象
+			pageScope(从jsp页面的范围读取数据并输出到浏览器上)
+			requestScope(从jsp请求的范围读取数据并输出到浏览器上)
+			sessionScope(从jsp会话的范围读取数据并输出到浏览器上)
+			applicationScope(从jsp应用的范围读取数据并输出到浏览器上)
+			param（取从URL直接传送的属性值）
+			initParam（取从web.xml中取初始化属性值）
+			pageContext（相当于JSP中的本页上下文对象）	
+=====================================================================================================================================
+	7、转发和重定向的区别：
+		请求转发:某个请求发出时,当前servelt只能完成请求一部分内容,由当前servlet将完成的内容和请求一起发送其他servlet 
+                   
+     		请求转发的特征:
+                    1 在请求过程中,通过请求对象(ServletRequest)保存数据.
+                    2 请求转发中,产生新的request.tomcat将forward方法中request的内容复制出来,交给新的request对象(重要)
+                    3 请求转发中,只能访问当前系统的内部资源,无法访问系统以外的资源.
+                    4 请求转发是发生在服务器端,不会修改浏览器地址.
+                    5 请求的资源路径,只能是系统内部的相对路径,不能带有工程名                                       
+                           
+        	重定向:当前Servlet接受请求后,发现无法实现请求,于是将另一个Servlet地址,交给浏览器.浏览器接受到新地址后,发出新的请求              
+                重定向特征:
+                    1 重定向发生在客户端,由客户端接受新的地址后,发出新的请求.
+                    2 sendRedirect("地址"),将地址输送到浏览器的地址栏.
+                    3 重定向中,浏览器的地址栏内容会发生变化   
+                    4 重定向过程中,因为发送请求的浏览器没有改变,因此tomcat认为两次请求都是相同,只产生一个request对象    
+                    5 重定向过程中,虽然使用的是同一个request对象,但是无法使用request进行数据的传递
+                      重定向时,将servlet请求地址发送到浏览器,浏览器通过地址栏发送请求,此时因为地址栏中请求信息没有任何参数的,        
+		      因此,tomcat接受到请求后,会根据当前请求中内容,重新为request对象,进行赋值(清空request原有数据) 
+                    6 重定向时,可以访问系统以外的资源. 
+                    7 重定向时,需要将地址发送回浏览器,再有浏览器发出请求,因此效率相对请求转发较低.
+		      只在系统内部,需要访问外部资源时,才会使用.  
+===================================================================================================================================
+	
+	8、jquery选择器:用于获取页面元素
+		
+		常用选择器:id选择器、元素( 标签)选择器、类选择器、合并选择、器属性选择器...
+	
+		ID选择器：$("#ID名称")
+		利用页面元素的id的属性名称来获取页面元素对象,一般获取一个
+	
+		元素选择器：$("标签名称")
+		利用页面元素的标签的名称来获取页面元素对象,可能多个
+	
+		类选择器：$(".CSS样式类名称");
+		利用页面元素所采用CSS样式来获取页面元素对象
+	
+		合并选择器：$("选择器1,选择器2,..");
+	
+		同辈选择器：$("选择器1 ~ 选择器2")	
+	
+		属性选择器：$("标签名称[属性名称]")、$("标签名称[属性名称='值']") 		
+===================================================================================================================================	
+	
+	9、过滤器是怎么控制非法登陆的;
+		过滤器: 是一种特殊Servlet,在请求到达具体的servlet之前,进行拦截,获得请求对象(request).对request进行操作.
+                         根据操作的结果,决定请求是否可以继续传递下去.
+                  
+   		实际应用:1、post请求的中文转码 request.setCharacterEncoding("utf-8");2、防止恶意登陆；3、延长session的生命周期	
+		
+		防止恶意登陆： 
+		1. LoginServlet 对用户身份进行验证.如果合法用户,派发一个标识,存入到当前用户的session
+          	2. 在所有的业务Servlet之前.身份验证 session
+          	3. 业务Servlet,不需要进行身份验证.
+====================================================================================================================================
+	
+	10、客户端发送数据的方式：
+     		Post方式:<form   method="post">
+     		Get方式 :<form> 默认情况下,发送的方式就是 get。
+			通过地址栏向服务器端发送请求
+                        通过超链接发送请求,发送方式get方式   
+                                   
+     		Post方式
+             	*.1 发送数据时,参数保存Http协议中请求体中,因此在地址栏中看不到请求信息的.
+             	*.2 post方式没有参数大小限定(20G)
+             	*.3 post对于传递参数的数据类型没有限定.文件上传功能时,采用只能是post  
+     		
+		Get方式
+            	*.1 发送数据时,在地址栏中看到所有的参数的.
+             	*.2 get限定传递参数的大小(2K)
+             	*.3 get只能传递字符串类型的数据.
+             
+             
+        请求转发时,使用post/get?  会保持请求方式的一致性.  发送的post,接受方也是post  发送方式get  接受方也是get
+        重定向时, 使用post/get ?  因为重定向,是通过地址栏发送的请求,而地址栏发送请求方式只能是get  ,接收方获得请求方式只能是GET       	
+===================================================================================================================================	
+	
+	11、Session的生命周期：
+		会话类型   HttpSession:用户浏览器对象信息
+      		* 每次用户通过浏览器对象,访问服务器(tomcat),tomcat在服务器端开辟一块内存用于保存当前用户浏览器对象信息
+      		* tomcat每次创建一个HttpSession对象时,都会生成一个唯一编号(sessionId),
+        	tomcat将sessionId保存当前的HttpSession对象中
+        	tomcat将sessionId传送到当前用户浏览器上.
+      		* 如何获得HttpSession对象.
+                     因为一个HttpSession对象占用服务器内存时间过长,因此tomcat不会主动为
+                     当前浏览器对象,开辟一块内存.只有用户要求使用对应HttpSession时,tomcat才会被动创建一个session.
+          
+         	request.getSession();  request.getSession(true); (面试)  
+         	tomcat判断在服务器端是否存在于当前浏览器对应HttpSession对象 
+                     如果存在对应HttpSession,就直接返回.
+                     如果不存在,tomcat负责为当前浏览器创建一个对象.
+                     
+         	reqeust.getSession(false)                        
+         	tomcat判断在服务器端是否存在于当前浏览器对应HttpSession对象  
+                     如果存在对应HttpSession,就直接返回. 
+                     如果不存在,tomcat会返回null  
+                     
+      		HttpSession消亡并不是跟浏览器对象同步.
+       		     1)手动关闭  
+        	     2)空闲时间  每一个session被创建时,tomcat都会为session指定一个空闲时间.
+                                 如果session在指定时间内,没有被使用,tomcat自动销毁掉session
+		     3）服务器关闭的时候关闭
+                        
+       		使用session存取数据
+          	session.setAttribute("关键字",数据);
+          	session.getAttribute("关键字");                 
+      
+      		应用场合: 定位当前用户
+               		1)电商购物
+               		2)防止用户恶意登录系统.
+               		3)重定向--------session进行数据传递
+	
+		session什么时候不能用：
+			1、cookie禁用后，如果不使用url重写机制，无法获取session
+			2、第一次生成的session的jsp目录层次过深，也会导致session不能使用
+
+		session.invalidate();   销毁session
+===================================================================================================================================
+	
+	12、枚举，final，Object中常用的方法。
+		12-1：final是java中的关键字，final表示最终的
+		      final修饰的类无法被继承
+		      final修饰的变量一旦赋值，不可重新赋值
+		      final修饰的方法无法被覆盖
+		      final修饰的实例变量必须手动赋值，不能采用系统默认值，只要在构造方法执行结束之前手动赋值即可
+	              final修饰的实例变量一般在前面添加static修饰，这种变量叫做常量。
+		      final修饰的引用，指向某个java对象之后不能再指向其它java对象，但是指向的java对象内部可以修改。
+		
+		12-2：枚举（enum）：列举，可以数得清的，有限的，枚举的每一个值全部大写
+		      定义一个枚举：
+				public enum Color{
+					RED,BLUE,GREEN
+				}	
+		
+		12-3：Object中常用的方法：
+			1、toString方法:返回当前对象的字符串表示
+					Object类的默认实现：类名@十六进制的值
+					缺省实现可以当作一个java对象的内存地址
+			
+			2、hashCode方法：
+			     Object中的hashCode方法是这样实现的：
+			     public native int hashCode();  不是抽象方法，底层调用了dll程序【C++实现的】
+			     对于Object类中的hashCode方法来说，只要对象的内存地址不同，hashCode方法的返回值int类型的数据就是不一样的
+
+			3、finalize方法作用：是SUN为java程序员提供的一个特定的时刻，对象销毁时刻
+				如果没有更多的引用指向该java对象，该java对象会被垃圾回收器回收，
+				垃圾回收器在释放这个对象的内存之前，会由GC调用该对象的finalize方法
+				如果期望在对象内存释放的那个时刻执行一段特殊的程序，需要将这个程序
+				finalize方法是需要重写的，但是不需要程序员手动的调用，自动被调用。
+
+			4、equals方法的作用：比较两个java对象是否相等
+				equals方法的作用是比较两个java对象是否相等，而Object给的缺省实现比较的是两个java
+				对象内存地址，在实际开发中大多数应该是通过比较两个java对象的内容来判断两个java对象
+				是否相等。所以equals方法也是需要重写的，根据需求进行重写。
+
+				String中已经重写了equals方法，所以在比较两个字符串大小的时候，不能使用“==”进行比较。
+=====================================================================================================================================
+	
+	13、Spring的AOP和IOC和相关的注解。
+		
+		13-1：IoC: Inversion of Control (控制反转) 是一种编程思想.
+		       将对象创建的责任,以及对象之间依赖关系,反转给框架来管理;(提供服务) 	
+		       反转目的:低耦合
+		       容器: 管理系统Bean对象的生命周期(对象的创建,初始化,使用,销毁过程).	
+		       IOC容器 : BeanFactory(反射) -> XML
+			
+		        从实现上分为2种
+			DI ( Dependency Injection ) 依赖注入
+			SL( Service Locator ) 服务定位器,JNDI绑定特定对象,获取使用.
+			
+			Spring使用DI方式实现控制反转。
+			依赖注入的方式，从实现上来将，分为3种
+			    1、nterface Injection( 接口注入 ) 有侵入性
+			       容器运行时，目标对象实现特定的接口，然后容器通过接口将关联对象注入到目标对象中
+			    2、Setter Injection( 属性set方法注入 )
+			       容器运行时，通过类属性的set方法将关联对象注入到目标对象中
+			    3、Constructor Injection( 构造方法注入 )
+			       容器运行时，将关联对象通过目标对象的构造方法注入进去。
+			    Spring框架支持Setter方法注入,构造方法注入.
+			
+			为了简化手动注入.提高开发效率，可以使用自动装配功能
+			自动装配功能对于简单类型不起作用（字符串，基本类型，日期类型）
+			Spring框架的自动装配功能5种方式：
+				1-1) byName：从Spring容器中获取Bean对象时,目标对象中的属性会根据属性名称,
+				     到整个Spring运行环境中查找Bean对象的id名称,是否存在名称一致的,
+				     如果存在一致名称,获取这个关联对象,注入给目标对象;
+				     采用setter方法注入;
+		
+				1-2) byType：从Spring容器中获取Bean对象时,目标对象中的属性会根据属性类型,
+				     到整个Spring运行环境中查找Bean对象的class类型,是否存在类型一致的,
+			             如果存在一致类型对象,获取这个关联对象,注入给目标对象;
+				     采用setter方法注入;
+				     可能存在问题:
+				     如果根据类型查找到多个对象,那么必须采用数组或集合(泛型)进行注入多个关联对象;
+		
+		                1-3) constructor(了解,不需要掌握)：采用构造方法注入;
+		
+				1-4) no：不支持自动装配.
+		
+				1-5) default(默认值)
+				     表示与<beans>标签的自动装配方式采用一样的装配策略;
+			             由于<beans>标签的default-autowire的默认取值为no,而<bean>标签默认取值为default,
+				     所以,自动装配功能默认是不起作用的.
+			
+				一般设置<beans>标签的装配方式了,那么<bean>标签就保持与<beans>标签的装配方式一致;
+				如果<bean>标签的装配方式与<beans>标签的方式不一致,那么,按照<bean>标签设置的装配方式起作用.
+
+		13-2:AOP: Aspect Oriented Programming (面向切面编程) 是一种编程思想.
+			  对系统功能进行扩展,遵循OCP原则.
+			  解决重复性代码问题.可以将业务代码和非业务代码分离(属于低耦合)
+
+			  Spring默认不支持AOP功能。所以如果使用，需要拷贝相关组件的jar包以及相关的配置
+			  配置AOP功能，最重要的就是切入点表达式声明正确。
+			  AOP可以采用JDK的动态代理（基于接口）或CGLIB代理（基于继承）实现
+		          AOP配置事务，事务边界应该设置service层。
+	
+			 	AOP相关术语:
+				切面:Aspect   抽象概念
+				具体:日志,权限,事务,异常...
+				
+				连接点:JoinPoint
+				在Spring中指的就是方法(目标对象的业务方法).
+				
+				通知:Advice 5种
+				前置通知: 表示在执行连接点前执行功能扩展.
+				方法返回通知: 表示在执行连接点返回时执行功能扩展
+				异常通知: 表示在执行连接点发生异常时执行功能扩展
+				最终通知: 表示在执行连接点方法时,不管是否出现异常,都将执行功能扩展
+				环绕通知: 表示在执行连接点之前和之后都将执行功能扩展(相当于前置通知和最终通知一个组合)
+				
+				切入点:PointCuts
+				通过切入点表达式来匹配的连接点(需要被扩展的目标对象中的业务方法).	
+				切入点是所有连接的集合；
+				
+				织入:Weave
+				表示在执行连接点时,使用通知来动态执行扩展代码,往往表示的是整个配置,以及动态执行的扩展过程.
+				
+				代理:  目标对象,代理对象
+					JDK动态代理: 基于接口的
+					Cglib动态代理: 基于继承的
+				功能：完成事务功能的扩展和日志打印。
+
+
+		13-3: Spring框架的注解：
+	
+		    作用：简化配置信息
+	            如果需要使用注解，必须使用特定的标签。<context:component-scan base-package=""/>
+                    通过扫描的方式查找所有增加了注解的类。
+	            Spring框架的注解开发
+	
+		    利用注解代替XML配置,简化XML配置,提高开发效率.
+		
+		    1-1) 需要增加context命名空间和约束文件
+		
+		    1-2) 设置扫描的父包：在applicationContext.xml中配置：
+			 <!-- 设置扫描父包:框架底层利用反射机制读取类中注解 -->
+    		         <context:component-scan base-package="com.bjpowernode.*"/>
+    		
+    	            常用IOC功能注解	
+    	
+    		    分层注解: 默认声明Bean对象的id为类名称首字母小写
+    			@Controller		用于控制器对象
+    			@Service		用于Service层
+    			@Repository		用于DAO层
+    			@Component              组件注解,一般用于声明哪些不太明确属于某一个层Bean对象;可以代替分层注解.
+    			
+    		    对象创建方式注解:
+    			多例创建bean对象@Scope(value="prototype") 
+			默认情况下单例:@Scope(value="singleton")	
+				
+		    资源注入注解:
+				
+		        资源注解,JDK提供的,类似Spring框架自动装配功能.
+		        默认采用装配方式:
+			首先根据byName查找Bean对象,如果查找到了就直接注入(类型不对会报错);
+			如果没查找到,那么会再根据byType进行查找,
+			如果查找到一个的时候进行注入,
+			如果查找到多个或一个都没有会报错.(如果查询多个,需要使用数组或集合(泛型)方式解决)
+			
+			@Autowired默认根据类型装配，可以装配多个参数的setter方法
+			@Resource，是Java的，必须是JDK6及以上，默认根据名称装配，如果找不到会根据类型装配
+			@Resource(name="userService",type=UserServiceImpl.class)
+=====================================================================================================================================	
+	
+	14、用到的开发原则:
+	  	合成聚合复用原则: 推荐采用关联关系代替继承关系
+		OCP(开/闭)原则: 进行功能扩展时,不要对已有代码进行修改,而是,增加新代码实现功能扩展.
+		里氏代换原则: 多态编程(父类子类;父引用指向子类;运行时类型识别(instanceof))
+		迪米特法则: 低耦合，单线联系。 
+		依赖倒转原则,面向抽象编程;依赖抽象而不要依赖具体
+		接口隔离：接口应该尽量定义的专一，不要把所有的方法都放到一个接口中声明
+=====================================================================================================================================
+	
+	15、存在多个配置文件如何加载：
+		applicationContext-action.xml
+		applicationContext-dao.xml
+		applicationContext-service.xml
+		applicationContext.xml	总文件:
+			<!-- 包含子文件 -->
+			<import resource="applicationContext-action.xml"/>
+			<import resource="applicationContext-service.xml"/>
+			<import resource="applicationContext-dao.xml"/>
+		
+		 第一种:通过包含子文件方式,由总文件统一加载
+			ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext.xml");		
+			
+		 第二种:采用可变参数加载多个文件,不需要总文件
+			AbstractApplicationContext ac = new ClassPathXmlApplicationContext
+			("applicationContext-action.xml","applicationContext-service.xml","applicationContext-dao.xml");	
+		
+		  第三种：通过*通配符匹配多个文件进行加载(推荐)	
+ 			ApplicationContext ac = new ClassPathXmlApplicationContext("applicationContext-*.xml");	
+===================================================================================================================================		
+	16、SSH框架的集成原理：
+		struts2框架：是一个轻量级的MVC流程框架，主要是用来进行数据的流转的。
+		hibernate框架：是一个基于元数据的轻量级的ORM框架，主要用来与数据库进行交互。
+		spring框架：是一个轻量级的IOC和AOP容器框架。对对象进行管理。
+
+		-没有spring，只用struts和hibernate也可以进行开发。只不过这个时候struts的action是由struts的
+			ObjectFactory创建的，action和service以及service和dao之间的关系，是由程序员自己维护；
+		-没有spring，hibernate中的事务也是程序员自己控制的
+		-spring在三大框架的整合过程中，充当粘合剂的作用,主要负责粘合struts和hibernate
+		-spring提供IOC容器，这样struts的action以及action和service、service和dao之间的关系都交给
+			spring的IOC容器进行管理
+		-spring提供了AOP(面向切面编程)，hibernate的事务 不需要程序编写代码，只需要在配置文件中做些配置即可
+		
+		注意：IOC控制反转 ，是一种编程思想；  DI依赖注入 是IOC的具体实现
+===================================================================================================================================
+	
+	17、String、StringBuilder、StringBuffer的区别和联系：
+		-都可以表示字符串。
+		-String、StringBuffer、StringBuilder的底层都是char[]数组实现
+		-String是不可变的(任何对字符串的修改操作都会创建新的对象)，存储字符串常量池中
+		-StringBuffer、StringBuilder是可变的
+		-StringBuffer、StringBuilder底层的扩容采用的是数组拷贝的方式 System.arraycopy
+		 该方法前面用native修饰，属于java本地调用，调用了底层的c++程序，这种机制叫JNI(Java Native Invoke)
+			调用底层dll文件，c++,vb等编程语言都可以开发这种程序
+			长度都是在 原长度*2+2
+		-StringBuffer、StringBuilder默认初始化容量是16，可以通过指定初始长度进行优化
+			*减少扩容次数、减少数组拷贝的次数
+		-StringBuilder @since       1.5   比较新
+		-StringBuffer @since   JDK1.0 比较老  从1.0版本就出现了，而且其中的方法都是用synchronized修饰，表示线程安全
+			但是并发性不行，效率较低。（因为有些情况不需要考虑线程安全的问题，例如局部变量）
+==================================================================================================================================
+	
+	18、解决乱码问题：   
+		解决post：request.setCharacterEncoding("urf-8");
+		解决get:在con/server.xml中加URIEncoding="UTF-8"
+		
+		万能的解决方式    先解码，再编码
+			browser-------------->>>>>>>>>>[ISO8859-1]>>>>>>>>>>--------------Server
+			String s = "中文";
+			先解码: 将乱的数据还原成最初的字节数组   byte[] bytes = s.getBytes("ISO-8859-1"); 
+			再编码:使用一种支持中文的编码方式对字节数组进行重新编码 :   String  ss = new String(bytes,"UTF-8");
+					
+			Server-------------->>>>>>>>>>[ISO8859-1]>>>>>>>>>>--------------browser			
+			先解码: 将乱的数据还原成最初的字节数组   byte[] bytes = s.getBytes("UTF-8"); 
+			再编码:使用一种支持中文的编码方式对字节数组进行重新编码 :   String  ss = new String(bytes,"ISO8859-1");
+				
+			new String("操作日志".getBytes("UTF-8"),"ISO8859-1");
+==================================================================================================================================	
+	
+	19、Oracle和Mysql实现分页的方式：
+		Oracle提供了rownum，rownum是一个隐含的查询结果字段，rownum是一个行号，从1开始，rownum在执行select语句时才会有值
+		采用order by不会改变rownum，rownum的值在数据插入到表中时已经形成，
+
+		oracle采用rownum进行分页：
+		因为rownum存在问题，所以需要采用三层的select嵌套完成分页，嵌套的目的将rownum转换成我们自己的字段，
+		注意：
+		1) rownum在oracle不能使用大于或大于等于的操作
+		2) order by 和rownum不能联合使用
+		
+		MySql：分页使用limit。
+	
+		通用的分页SQL
+		每页显示3条记录
+		第1页:(0-3]
+		第2页:(3-6]
+		第3页:(6-9]
+
+		每页显示pageSize条记录
+		第pageNo页:((pageNo-1)*pageSize ~ pageNo*pageSize]
+
+		通用的SQL：
+
+		select 
+			empno,ename,sal,linenum 
+		from
+			(select 
+				empno,ename,sal,rownum linenum 
+			from 
+				(select 
+					empno,ename,sal 
+				from 
+					emp 
+				order by sal desc) 
+			where  rownum<=9)
+			
+		where 
+			linenum>=3;
+
+
+		select 
+			t1.*
+		from
+			(select 
+				t.*,rownum as linenum 
+			from 
+				(业务sql ) t
+			where  rownum<=(pageNo*pageSize)) t1
+		
+		where 
+			linenum>(pageNo-1)*pageSize;
+		
+		最好写上排序
+==================================================================================================================================
+	
+	20、JDBC操作数据库时候的执行步骤：
+		1、注册驱动。
+		2、获取数据库链接。
+		3、获取数据库操作对象（运输工具）。
+		4、执行SQL语句，
+		5、如果执行的是查询语句，处理结果集。
+		6、释放资源（在finally语句中释放）
+====================================================================================================================================
+	
+	21、在配置Hibernate one-to-many的映射时候，需要注意：
+	       	将关系交给多的一方表维护：（inverse="true"）
+		作用1：减少发送update语句的数量。
+		作用2：避免多的一方外键更新为空。	
+===================================================================================================================================
+	
+	22、Hibernate中get和load的区别：
+		load延迟加载，如果对象不存在，抛出异常。
+		get不支持延迟加载，如果对象不存在，返回null
+===============================================================================================================================
+	
+	23、八种基本数据类型：
+		byte int short long bealoon char  float double  
+==================================================================================================================================
+	
+	24、=  ==  ===  的区别:
+		=        代表赋值运算
+		==       只比较两个数的数值是否相等
+		===      即比较两个数的数值大小，又比较两个数的类型是否相同。
+==================================================================================================================================
+	
+	25、SQL语句的执行顺序：
+		1. from      --------------------    经硬盘上表文件拖入到内存
+                2. where     --------------------    根据条件筛选数据行,生成新的临时表
+                3. group by  --------------------    根据字段中数据种类,划分成若干临时表.
+                4. having    --------------------    将分组后,不满足条件的临时表进行删除
+                5. select    --------------------    没有分组时,进行整列读取.，分组后,只能读取当前列中第一行数据.
+		6. order by  --------------------    select 获得临时表,进行排序
+======================================================================================================================================
+
+	26、MVC的架构和三层架构：
+
+		表示层 (Action)---业务层(Service)---持久层(DAO)
+==============================================================================================================================
+	
+	27、JDK动态代理和Cglib动态代理：
+		
+		代理设计模式可以对目标对象访问时进行功能扩展,或者对目标不方便访问时采用代理方式访问.
+	
+		常见实现功能:日志打印,权限控制,访问控制,事务处理,异常处理等.
+	
+		代理设计模式中包含三种角色类:
+		
+		抽象角色类:定义业务方法声明
+		目标角色类:实现抽象角色类中声明业务方法.(具体业务实现代码)
+		代理角色类:编写扩展功能代码(类似日志,权限验证,事务处理,异常处理...)
+				应该持有目标对象的引用,调用目标对象所实现的业务逻辑代码.
+			
+			
+		代理设计模式要求:
+			目标角色类和代理角色类实现共同的抽象角色类;
+			代理角色对象一定持有目标角色对象的引用;
+			执行代理中的方法名称和执行目标中的方法名称一致的;
+			一般情况下,非特殊代理对象不要修改请求参数及目标对象返回的结果;
+			
+		代理设计模式存在两种代理方式:
+		静态代理和动态代理
+		
+		静态代理:
+			静态代理只能代理一种接口类型的对象;如果目标接口比较多,那么需要增加多个代理类;
+			代理的方法比较多时,出现大量重复性代码;
+			这种代理方式,不利用程序维护和管理;
+			
+		动态代理:	
+			
+			JDK动态代理:（基于接口）
+			
+				JDK1.3版本提供Proxy类,提供一个用于在内存中动态生成代理类,及代理对象的方法;
+				
+					public static Object newProxyInstance(ClassLoader loader,
+					  			Class<?>[] interfaces,InvocationHandler h)
+		
+				A(客户端) ->	B(动态代理对象 -> 扩展对象(InvocationHandler(日志扩展代码)))	->  C(目标对象)
+		
+				解决问题:
+					解决静态代理中所存在问题;
+					扩展类代码只需要编写一次;
+						
+				JDK动态代理使用要求:
+					1.代理对象和目标对象必须实现共同的抽象角色(必须是接口)	
+					2.在内存中动态生成代理类名称规则: $ + "Proxy" + 数字
+						
+
+			Cglib动态代理:（基于父类，基于继承）
+			
+				Code Generation Library (开源代理组件,通过字节码增强工具类库在内存中动态生成代理类)
+					
+				拷贝:cglib-nodep-2.1_3.jar	
+				
+				Cglib动态代理:指在内存中通过字节码增强工具动态生成代理类,代理类是目标类的子类;
+			
+			
+			Javassist动态代理:取代了cglib动态代理
+=============================================================================================================================
+	
+	28、单元测试：no-sesson问题的产生和解决
+		产生原因：在进行ssh单元测试的时候，如果service上的方法结束之后，使用了延迟加载，会出现延迟加载的no-session异常
+		解决方法：让测试类继承spring-test中提供的AbstractTransactionalJUnit4SpringContextTests
+			  如果继承了该类，那么spring配置文件中的事物控制将不起作用，它将事物控制在测试方式上，方法结束之后，
+			  事物结束，而且默认对事物的操作是回滚
+
+		 测试方法	
+ 			 * 必须是public修饰的
+			 * 必须是void
+			 * 必须是以小写test单词开头
+			 * 必须是无参数的
+			 * 异常可以省略的
+
+	    单元测试的注解：
+		采用junit4对ssh进行单元测试，spring提供了对junit支持可以直接通过注解的方式指定测试环境。
+		@RunWith(SpringJUnit4ClassRunner.class)
+		指定spring测试环境
+		@ContextConfiguration({"/applicationContext-base.xml","/applicationContext-dao.xml"})
+		指定spring的配置文件   / 表示classpath下取				
+		@Resource(name="orgTypeService")
+		获取orgTypeService对象	
+	
+	   单元测试中有一个断言机制   实际值-期望值
+		public void testMethed(){
+			String actual = methed();
+			String expected = "java";
+			Assert.assertEquals(expected, actual);
+		}
+	
+		public String methed(){
+			return "java";
+		}
+====================================================================================================================================
+	
+	29、HibernatePOJO对象的三种状态：
+		1-1) 临时状态/瞬时状态(Transient Object)
+		
+			没有被框架关联
+			数据库没有与之对应数据
+
+		1-2) 持久化状态(Persistence Object)
+		
+			一定交给框架管理
+			数据库中存在与之对应记录
+
+		1-3) 游离状态/脱管状态/离线状态(Detached Object)	
+		
+			没有被框架管理
+			数据库存在记录与之对应	
+====================================================================================================================================	
+	
+	30、JSON对象的表示：
+		JavaScript Object Notation 是一种轻量级的数据交换格式.
+		
+		使用JSON格式表示:
+			
+			表示一个对象  :   {"name":"zhangsan","age":"23"}
+			数组表示多个对象: [{"name":"zhangsan","age":"23"},{"name":"lisi","age":"22"}]
+
+			JSON数据格式可以直接利用JS进行解析;
+
+			JSON格式中的属性名称和字符串值必须采用双引号,而不能使用单引号.
+===================================================================================================================================
+
+	31、编写ajax的步骤：
+		1、创建对象
+		2、注册主调函数
+		3、建立通道
+		4、调用send方法，发送请求。
+
+	
+   		作用:实现页面局部刷新.
+     		过程：
+ 		1.浏览器将请求交给ajax
+        	2.ajax负责在合适的情况下,将请求发送到servlet,浏览器不需要关心何时发送请求.
+        	3.servlet接受请求后,将结果返回ajax.
+        	4.ajax接受到servlet返回的数据后,将数据转型javascript可以操作的数据.
+        	5.ajax,通过javascript技术,修改页面中控件的内容,从而实现页面的局部刷新功能.
+        
+        	*  ajax 隔离 浏览器和servlet之间联系.浏览器在发出请求后,不需要等待servelt返回结果，可以做其他工作       
+        	*  ajax避免servlet通过I/O流直接修改页面内容.由ajax接受数据,并使用javascript修改页面控件，实现页面局部刷新功能. 
+                          
+  		AJAX 核心对象 ：来自于JavaScript技术 xmlHttpRequest(异步请求对象)   xmlHttpRequest负责跟servelt进行交互
+       
+   		xmlHttpRequest 工作流程
+    		1.在客户端创建一个异步请求对象     
+   		2.指定异步对象请求的路径,请求方式,是否使用异步操作.
+       		异步请求对象.open(请求方式(GET/POST),请求资源路径,是否采用异步操作(true/false))
+    		xmlHttpRequest.open("post","/myExam/user/findById",true);  
+   		3.发送请求：异步对象.send();           
+   		4.接收后台返回的数据：异步对象.onreadystatechange = js函数            
+  		
+		onreadystatechange时间在何时被触发.
+        	异步对象中有一个readyState属性 ,当readyState属性内容发生变化时,就会触发onreadystatechange  
+       
+  		readyState表示异步对象工作状态.
+   		readyState =0  表示异步对象被创建        
+   		readyState =1  表示异步对象被初始化完毕          
+   		readyState =2  表示异步对象发送请求,                                                
+   		readyState =3  后台将数据返回到异步对象                                           
+   		readyState =4  异步对象将后台传回的数据转变为javascript能够识别数据
+====================================================================================================================================
+	
+	32、get方式发送ajax请求存在缓冲问题：
+		1、使用时间戳解决，只要让每一次发送的get请求的路径不同则不会走缓存
+			$.get("路径"，{"org.code":code,"-":new Date().geyTime()},回调函数)
+		2、配置ajax中的属性cache为fasle 不缓冲
+==================================================================================================================================
+	
+	33、在struts2的action中获取servletAPI(request\response\session\application)
+		-直接从ActionContext中取
+		-使用工具类ServletActionContext
+		-使用装配接口(ServletRequestAware\ServletResponseAware\SessionAware....)
+=================================================================================================================================
+	
+	34、超链接 href中的target属性
+
+		target的取值：
+			_self:在当前窗口打开资源，缺省值
+			_parent:在父窗口打开资源
+			_top:在顶层窗口打开资源
+			_blank:在新窗口打开资源
+			target="I2":在指定的帧中打开资源
+=================================================================================================================================	
+	
+	35、Hibernate框架中的缓冲：
+		多次查询相同数据时,将第一次查询结果放置缓存(内存临时区域)中,给下次访问时利用的;为了提高访问效率.
+		
+		一级缓存(Session缓存)
+		 	一级缓存的生命周期是由Session对象决定的,一旦Session对象被销毁了,那么一级缓存就消失了.
+			一级缓存的范围比较小,相当于请求范围中的数据
+			一级缓存是Hibernate自带的,一般情况下不需要自己来管理.
+						
+			注意:缓存溢出问题
+			大批量操作数据时,通过小批量进行清理缓存控制内存溢出.
+				session.flush();  //表示将内存中的持久化状态信息持久化到数据库中
+				session.clear(); //清理所有对象;
+				session.evict(user); //清理某一个对象	
+							
+		
+		二级缓存(SessionFactory级别缓存)
+			SessionFactory对象本身是属于应用级别,一个SessionFactory对应一个应用程序,对应一个数据库;
+			是线程安全的对象,可以被多个请求共享,可以创建多个Session对象;
+			所以,二级缓存中的数据可以被多个session所共享.
+			
+			Hibernate框架默认提供自身一个二级缓存,是通过Hashtable实现的,但是比较简陋,不能用于生产阶段.
+			一般会利用第三方的ehcache缓存组件
+			
+		
+		查询缓存:一般和二级缓存一起使用.	
+			通过ehcache缓存组件,配置查询缓存.			
+			<!-- 启用查询缓存 -->
+			<property name="hibernate.cache.use_query_cache">true</property>					
+			
+			在程序中需要启用查询缓存.
+			query.setCacheable(true);
+				
+		
+		查询缓存使用:
+			实体查询:(缓存实体对象的id)
+			
+			第一次查询query.list(),将查询结果放置一级和二级缓存中,查询缓存中只存放实体对象的id值;
+			再次查询时,如果是同一个Session(而且查询语句没变化),那么,根据查询缓存获取id值,到一级缓存中获取实体对象
+			如果不是同一个Session(而且语句没有变化),那么,根据查询缓存获取id值,一级缓存中没有,到二级缓存中获取实体对象
+			如果一级,二级缓存中数据被清理,会再次从数据库中获取.	
+					
+			属性查询:(缓存是属性值)	
+			
+			查询语句一旦修改,那么查询缓存失效.			
+
+		缓存数据查找过程:
+			查询数据时,先从一级缓存中查找数据,如果一级缓存中存在了,那么获取利用;
+			如果一级缓存中没有,判断是否启用二级缓存,如果启用,从二级缓存中查找数据:
+				如果二级缓存中存在,那么获取利用;
+				如果二级缓存中没有,那么就需要查找数据库,加载数据;
+			从数据库中查询到的数据,会存放到一级和二级缓存中;
+			再次访问相同数据时,就可以利用一级或二级缓存中的数据了;	
+				
+		
+		缓存使用原则:
+			
+			a. 缓存存在大小的,所以要控制数据量
+			b. 频繁访问的数据存放缓存中
+			c. 缓存中数据不要频繁修改,否则会降低系统性能
+			d. 缓存中不能被第三方系统修改.
+			f. 安全性高的数据不能利用缓存.
+			
+			安全性高于性能
+=================================================================================================================================	
+	
+	36、js的数据类型：
+		"undefined"    如果这个值未定义；
+		"boolean"      如果这个值是布尔值；
+		"string"       如果这个值是字符串；
+		"number"       如果这个值是数值；
+		"object"       如果这个值是对象或null；
+		"function"     如果这个值是函数；
+		
+		undifined属于unidifined类型表示：该类只有这一个值
+		NaN属于number类型：表示不是一个数字
+		Infinity属于number类型：表示无穷大
+		在js中的typeof运算符可以动态的判断变量的数据类型
+
+		JS中的parseInt函数：取整   在java语言中5/2 = 2,在js中 5/2 = 2.5     parseInt(2.9)=2
+=================================================================================================================================
+	
+	37、Hibernate的注解：
+		XML映射配置,在不进行属性映射时,字段不会生成;
+		Annotation映射配置,在不进行任何属性映射配置时,会自动进行映射,字段会生成;						
+			
+		@Entity		声明实体类
+		@Table(name="t_account")  声明实体类所映射的表	
+		@Transient 标明属性为临时属性,不需要映射到表中
+		@Id	声明主键属性
+		@Column(name="aid")  声明表的字段相关约束（可以加在get方法前）
+					
+		主键生成策略:
+					
+		1. 自己维护主键:在不进行任何主键生成策略的设置时,默认采用自己维护主键
+		2.数据库维护主键:
+		@GeneratedValue(strategy=GenerationType.AUTO)  // AUTO 相当于Hibernate中native
+		3.框架维护主键:
+		@GenericGenerator//(name="hibernate-uuid",strategy="uuid")
+		@GeneratedValue(generator="hibernate-uuid")      引入Hibernate注解
+
+		@ManyToOne
+		默认延迟加载失效（fetch=FetchType.LAZY）
+		外键命名规则：关联对象+下划线+关联对象的主键字段名称（如果改名：@JoinColumn）
+		
+		@OneToMany
+		一对多关系需要将关系交给多的一方维护，配置文件通过设置 inverse=true  
+
+		@OrderBy 排序
+			
+		关于Hibernate中几个比较关键的属性
+		-cascade 级联操作：只影响DML操作，对select不起作用
+			思考：如果存在一对多的关系，查询一的一方的时候会将多的一方数据一起查出，这里和级联是否存在关系？
+				*以上操作和级联没有关系，是hibernate的set标签起的作用
+		
+		-lazy (延迟加载，只影响select)
+			*延迟加载，可以提高效率
+			
+		-inverse (关系交给多的一方维护 ，对insert及update有影响)
+		
+		使用时需要注意：
+			在applicationContext.xml的sessionFactory中增加配置：
+			<property name="packagesToScan">
+				<list>
+					<value>com.bjpowernode.egov.domain</value>
+				</list>
+			</property>
+	
+			打开：<prop key="hibernate.hbm2ddl.auto">update</prop>	
+=================================================================================================================================
+	
+	38、Struts2的注解：
+		常用注解使用
+			@ParentPackage("struts-default")  //表示继承父包
+			@Namespace("/user")		  //声明命名空间
+			@Action(
+				value="login",results={
+							@Result(name="success",type="dispatcher",location="/success.jsp"),
+							@Result(name="login",type="redirect",location="/login.jsp")			
+						       }
+				)	
+					
+=================================================================================================================================
+	
+	39、JDK注解：
+		JDK常用注解
+	
+		@Override 		检查重写规则
+		@Deprecated 		声明元素过时
+		@SuppressWarnings 	去除警告	
+	
+		元注解(4个)
+	
+		@Target			应用目标元素元注解
+		@Retention		保持性策略元注解	
+				SOURCE	注解在源代码中有效的,一旦编译字节码就无效了.
+				CLASS	注解在字节码中有效,在运行期是无效的.
+				RUNTIME 注解在运行期有效,可以通过Java反射机制分析类中注解.
+			
+		@Documented		表示文档化元注解
+				可以通过javadoc命令,将注解生成API文档中
+		
+		@Inherited		标注继承元注解
+				子类继承父类时,默认是不能继承父类元素上注解的;
+				注解要想继承到子类元素上,那么,这个注解必须是通过@Inherited元注解进行声明的;
+						
+	
+		自定义注解开发
+		
+		定义注解：可以用@interface定义注解：
+			
+				@Target(ElementType.METHOD)  //注解只能应用在方法元素
+				@Retention(RetentionPolicy.RUNTIME)  //注解的应用生命周期是在JVM运行期有效的
+				public @interface Test {
+				
+				}
+
+		 利用反射机制可以分析类
+			isAnnotationPresent(Test.class) 判断某个元素上是否存在指定类型注解
+			getAnnotation(Test.class)  	获取某个元素上指定类型的注解对象
+			getAnnotations()	 	获取某个元素上所有类型的注解对象
+
+=================================================================================================================================
+	
+	40、DBCP和C3P0连接池：
+		连接池（一种缓存技术，提高程序的执行效率，直接从缓存中获取空闲的连接对象，连接对象不需要创建）
+		连接池,可以事先创建好连接,请求直接从连接池中获取空闲连接,提高访问效率;
+		连接池连接数量可以任意调整,扩展性强,具有很强伸缩性;
+		重复利用
+		
+	<!--配置数据源 ，连接池 c3p0-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${driver}"></property>
+		<property name="jdbcUrl" value="${url}"></property>
+		<property name="user" value="${user}"></property>
+		<property name="password" value="${password}"></property>
+		<property name="initialPoolSize" value="${initialPoolSize}"></property>  初始化连接数
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>  最大连接数
+		<property name="maxIdleTime" value="${maxIdleTime}"></property>  最大空闲时间
+		<property name="checkoutTimeout" value="${checkoutTimeout}"></property>  最大等待时间
+	</bean>
+	
+	
+	<!--配置数据源 ，连接池 dbcp-->(Tomcat默认的)
+	<bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${driver}"></property>
+		<property name="url" value="${url}"></property>
+		<property name="username" value="${user}"></property>
+		<property name="password" value="${password}"></property>
+		<property name="initialSize" value="${initialSize}"></property>   初始化连接数
+		<property name="maxActive" value="${maxActive}"></property>   最大连接数
+		<property name="maxIdle" value="${maxIdle}"></property>  最大空闲时间
+		<property name="maxWait" value="${maxWait}"></property>  最大等待时间
+	</bean>
+
+===================================================================================================================================	
+
+	41、Session的实现原理（session和Cookie的区别）：
+		当客户端访问服务器的时候，服务器会为客户端创建一个session对象，并且把session 的相关信息	
+	通过Cookie响应到浏览器存储在浏览器的缓存中。当客户端再次访问服务器的时候，浏览器会自动发送缓存中的Cookie
+	（cookie中有sessionid的信息）到服务器，服务器取出与sessionid对应的session对象。这样就可以保证多次请求获取的是同一个session对象		cookie禁用的话，需要url重写。	
+			
+====================================================================================================================================
+	
+	42、关于tomcat和jre提供的类加载器
+		-web应用类加载器，这个类加载器主要负责加载CATALINA_HOME/webapps/mywebapp/WEB-INF/lib中的字节码文件（apache提供的）
+			WebappClassLoader
+			  context: /egov
+			  delegate: false
+			  repositories:
+			    /WEB-INF/classes/
+			----------> Parent Classloader:
+			org.apache.catalina.loader.StandardClassLoader@1eb9b0d		
+			
+		-标准类加载器，这个类加载器主要负责加载CATALINE_HOME/lib中的字节码文件	(apache提供的)
+			org.apache.catalina.loader.StandardClassLoader@1107db9
+		
+		-应用类加载器，该类加载器主要负责加载classpath下的字节码文件(sun提供的)
+			sun.misc.Launcher$AppClassLoader@40d7b9
+			
+		-扩展类加载器，该类加载器主要负责加载JAVA_HOME/jre/lib/ext目录下的字节码文件(sun提供的)
+			sun.misc.Launcher$ExtClassLoader@1dbac11
+			
+		-启动类加载器，sun为了安全考虑，该类加载器没有名字，主要负责加载rt.jar中的字节码文件(sun提供的)
+			null
+	
+		分析：自己编写了一个类，java.lang.String.class,在rt.jar包下，sun公司也提供了java.lang.String类
+		在使用的时候，是用自己编写的类还是sun公司的提供的?
+		-加载sun提供的类
+		-类加载器的加载顺序   启动->扩展->应用
+		-双亲委派机制:是一种安全机制  		
+		
+		apache提供的web应用类加载器不遵循双亲委派机制的，优先从/WEB-INF/lib中加载
+
+====================================================================================================================================
+
+	43、权限：
+		权限一般分类：功能(操作)权限（OPS：OPerationS）、数据权限（OBS:OBjectS）
+
+		权限管理主要组成分为两部分：授权（正向授权和负向授权）、认证
+	
+		RBAC(Role Based Access Control)基于角色的访问控制，RBAC是一种分析层面的模式，主要分为
+	
+		RBAC0，是RBAC的核心（用户，认证，角色，会话session）
+		RBAC1，它是RBAC角色的分层模型（引入了角色继承概念，有了继承就有了上下级关系）
+			
+		RBAC2，它是RBAC约束模型（引入了SSD（静态职责分离）和DSD（动态职责分离））
+			SSD:主要应用在用户和角色之间（授权阶段）
+				1、互斥角色，同一个用户不能授予互斥关系的角色
+				2、基数约束，一个用户拥有的角色是有限的，一个角色拥有的许可是有限的
+				3、先决条件约束，用户想得到高级的权利，必须先拥有低级的权利
+			DSD：会话和角色之间的约束，主要动态决定怎么样计划角色，如：一个用户拥有5个角色，只激活2个
+		RBAC3，它是RBAC1+RBAC2
+
+		1.EGOV项目使用RBAC0模型实现权限。
+		2.权限涉及5个实体类，对应数据库中的5张表。（用户，角色，许可，用户和角色关系表，角色和许可的关系表）
+		3.用户和角色多对多，角色和许可多对多，项目中没有直接使用多对多进行映射，我们将一个多对多拆分为了两个多对一。
+		4.查询用户的许可的时候，通过查询用户所拥有的角色进行查询。（关系表中的字段便于扩展）
+
+================================================================================================================================
+
+	44、对XML文件的解析：
+		无论哪种编程语言，基本上都支持xml文件的解析，xml解析主要有两种方式
+		
+		DOM解析
+		原理：开始解析的时候，会将整个xml文件全部加载到内存中，在内存中生成一颗dom树，树上的任何一个节点都是一个java对象，
+		      我们可以通过编程语言对这颗树上的节点进行增删改查操作。
+		优点：灵活，解析过去的节点可以重复解析
+		缺点：如果xml足够大，容易导致内存溢出
+		
+		SAX解析	 
+		原理：基于事件型的解析方式，不需要将xml文件全部加载到内存，从xml的头开始解析，顺序解析从左到右，从上到下的解析方式，
+		例如：遇到开始节点，表示发生了一个特殊的事件，此时会调用一段特殊的程序完成解析；
+		      再例如遇到属性节点，表示又发生了一个特殊的事件，会再次调用一段特殊的代码进行处理。
+		优点：不会导致内存溢出
+		缺点：不灵活，解析过去的节点如果想要重新解析的话只能从头开始解析
+		但是这个问题不严重，因为在解析xml文件的时候，有一种重要的语法叫做:XPATH)  
+		xpath:可以快速的定位到xml文件中的某一个标签。
+				
+		java语言是如何支持xml解析的?
+		-java的jdk中自带了一个w3c的实现，可以完成xml文件的解析(dom编程规范的实现)
+		注意:javaScript也对w3c的规范进行了实现，所以在javascript和java语言中，都存在document.getElementById()方法
+			
+		-第三方组件 DOM4j(dom for java) 
+		
+		-第三方组件 JDom(java dom)
+		
+		-联合xpath机制，完成对xml的解析 (可以快速的定位xml中标签的位置，提高解析效率)
+=================================================================================================================================
+
+	45、web项目目录结构 各个配置文件中应该有什么。
+		目录结构：表示层，业务层，持久层
+		web.xml中配置：（rederme）
+			1、配置Struts2的核心控制器，是一个过滤器。
+			2、配置openSessionInViewFilter，解决延迟加载问题，在struts2的核心过滤器之上。
+	 	           视图层，例如jsp中，仍然开启session，解决延迟加载的问题。该过滤器应该先于struts的过滤器执行，
+			   所以配置struts2的过滤器之上
+	 		3、配置spring的监听器，spring提供的对上下文监听的监听器，在服务器启动的阶段，实例化该对象，
+			   解析spring的配置文件
+  		           该监听器实现了 javax.servlet.ServletContextListener ，
+			   在ServletContext对象创建和销毁的时候，监听器中方法会被执行
+			4、上下文初始化参数，指定spring的配置文件的路径
+		
+		applicationContext中配置：（rederme）
+			1、单独的读取外部的配置文件，这个配置文件中配置了数据库连接的信息 （读取jdbc.prooerties）	
+			2、配置数据源，连接池。
+			3、配置sessionfactory。
+			4、配置AOP事务管理
+			
+			5、管理了bean对象的创建：
+			
+			<bean id="orgTypeDao" class="com.bjpowernode.egov.dao.impl.OrgTypeDaoImpl">
+				<property name="sessionFactory" ref="sessionFactory"/>
+			</bean>
+			
+			<bean id="orgAction" class="com.bjpowernode.egov.web.action.OrgAction" scope="prototype">
+				<property name="orgService" ref="orgService"></property>
+				<property name="orgTypeService" ref="orgTypeService"></property>
+			</bean>
+
+			<bean id="orgTypeService" class="com.bjpowernode.egov.service.impl.OrgTypeServiceImpl">
+				<property name="orgTypeDao" ref="orgTypeDao"></property>
+			</bean>
+	
+		struts2.xml中配置：
+			<struts>
+			<!-- 指定字符集 -->
+			<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+			<!-- 指定开发模式，可以得到更好的异常报告 -->
+			<constant name="struts.devMode" value="true"></constant>
+			<!-- 修改国际化文件自动重新加载 -->
+			<constant name="struts.i18n.reload" value="true"></constant>
+			<!-- 修改struts的配置文件自动重新加载 -->
+			<constant name="struts.configuration.xml.reload" value="true"></constant>
+	
+			<package name="org-package" namespace="/org" extends="struts-default">
+				<action name="index" class="orgAction" method="index">
+					<result>/WEB-INF/jsp/org/index.jsp</result>
+				</action>
+			</struts>
+		
+			struts2中的Action如果没有自定义，缺省会调用ActionSupport，由struts-default.xml文件中决定的
+			不再编写method，缺省method就是execute
+
+=================================================================================================================================
+	
+	46:关于线程安全：
+		什么时候涉及线程安全问题：
+		  1.多线程环境下
+		  2.有共享数据
+		  3.共享数据涉及到修改操作
+		     堆内存、方法区内存(实例变量、静态变量存在线程安全问题，实例变量在堆内存、静态变量在方法区中)
+	             栈内存独立的，一个线程一个栈(局部变量不涉及线程安全问题，因为局部变量不共享)
+		怎么解决线程安全问题
+		   方案1：尽量定义为局部变量
+	           方案2：如果是实例变量，我们可以让对象变成多例也可以解决线程安全问题
+	           方案3：如果是实例变量，我们还可以添加synchronized关键字进行控制
+
+		为什么放到ThreadLocale中就能做到线程安全的？
+		因为ThreadLocal是当前线程的一个实例变量，可以保证在同一个线程中共享同一个java对象
+====================================================================================================================================
+
+	47、开发过程中遇到的比较难以解决的问题：
+		浏览器兼容问题：
+		1.base标签在IE浏览器中存在兼容问题，在js代码中使用js代码做页面跳转的时候，页面路径有兼容问题，base不起作用怎么解决。
+		以后遇到js代码跳转页面的时候，都采用绝对路径（pageConetext.request.conetextPath）
+		2.innerhtml和innertext(利用jQuery中的text方法和html方法解决；FF浏览器提供了textContent替换innerText)
+		3.Trim方法：去除字符串的前后空格。
+		4、keydown和keypress中keypress存在浏览器兼容问题
+
+		25-1、innerhtml 和innertext，html和text的区别：
+	
+			js中的innerHTML和innerText
+			innerHTML里面的内容会被当作html代码解析
+			innerText即使里面的内容是html格式，也只是当作普通的字符串处理
+			innerText存在浏览器兼容问题，在FF浏览器下，innerText不支持
+			FF浏览器提供了textContent替换innerText
+
+			jquery中的text和html方法。
+
+		25-2、trim方法的使用：去除字符串中前后的空格。存在浏览兼容冲问题。
+			解决方法：用jquery解决浏览器兼容问题
+			s = $.trim(s);
+	
+			可以自己给String扩展一个trim方法   
+			prototype属性可以给js中的类动态的扩展属性和方法
+
+		25-3、keydown:表示按下键盘上的任意键都会被触发
+		      keypress:表示按下键盘上的字面键会被触发 (不包括功能键f1-f12,不包括编辑键，方向键，以及他们的任意组合)
+		      keydown不存在浏览器兼容问题，但是keypress存在浏览器兼容问题，在FF浏览器下，keypress和keydown效果相同
+		
+			回车键值:13
+			ESC键值:27
+			event.keycode   获取键值
+==============================================================================================================================	
+
+	48、设计模式:
+		26-1:什么是设计模式
+		
+		设计模式是可以重复利用的解决方案。
+		是为某一个特定的问题存在的一种解决方案。
+		以后再遇到这个特定的问题，直接套用方案解决。
+		设计模式是前辈总结的，可以直接拿来使用。
+		设计模式不属于java，属于整个软件行业。
+
+		26-2:设计模式的分类？
+		"创建型" 设计模式 : 解决对象的创建问题，例如单例模式属于创建型
+		"行为型" 设计模式 : 和方法/算法有关的设计模式
+		"结构型" 设计模式 : 更多类或者更多的对象组合成更大的结构来解决某个特定的问题
+
+		其实除了Gof95的23种设计模式之外，还有像JavaEE的设计模式。
+
+
+		26-3：单例模式【Singleton】创建型设计模式：
+		主要解决的问题：保证某种类型的java对象在JVM中只有1个。
+		真单例和伪单例
+		GoF中的单例是真单例（构造器私有化）
+		Spring中的单例是伪单例（构造器没有私有化）
+		关于真单例（gof设计模式之一）
+		饿汉式（类加载时创建，只创建一次）
+		懒汉式（调用方法获取对象的时候才会创建）
+
+		单例模式的缺点：
+		无法继承（由于构造函数私有化所以单例类型没有子类）
+		无法被垃圾回收器回收（通常会使用单例设计“缓存”）
+		26-4:怎么实现一个单例模式？
+		第一步：所有构造函数私有化
+		第二步：对外提供一个公开的静态的返回本身类型的getInstance方法
+		第三步：提供一个私有的静态的本身类型的变量
+
+		懒汉：getInstance方法调用的时候对象创建
+		饿汉：类加载的时候对象创建
+
+		26-5：单例模式的优缺点
+
+		优点：* 节省内存的开销
+		缺点：* 单例模式的对象无法被垃圾回收器回收
+		      * 单例模式的类无法被继承
+		26-6：使用单例模式需要注意什么
+		懒汉单例在使用的时候getInstance方法需要注意线程安全问题。
+		多线程并发的环境下，getInstance方法会导致创建多个java对象。
+		所以getInstance方法在同一个时间点上只能有一个线程执行这个
+		方法，所以这个方法需要使用synchronized关键字修饰，让这个
+		方法变成线程排队执行的方法。
+
+		26-5：单例模式的具体应用场景
+
+		- 使用单例模式来实现缓存机制，缓存不希望被回收，单例模式的对象正好永远不会被回收。
+
+		- 使用单例模式构造函数只执行1次的特点，可以考虑在构造方法中读取配置文件，
+		  保证配置文件只读取一次。【也可以采用静态语句块】
+
+		26-6:主要掌握的设计模式
+		1、工厂方法（创建型：解决对象创建问题的）：工厂模式不属于GOF设计模式，也不属于JavaEE设计模式
+						        生产单系列产品
+		2、抽象工厂（创建型）：生产多系列产品
+		
+		3、单例模式（创建型）：
+		保证内存中某个类型的对象只能创建一个，单例对象无法被垃圾回收器回收，所以通常用来做缓存，
+		单例构造方法私有化所以单例类型无法继承，单例分为懒汉和饿汉，懒汉获取对象的方法需要添加synchronized同步机制
+		4、（缺省）适配器模式（结构型）：如果实现类中实现接口中的一个方法时，定义一个抽象类，通过抽象类进行实现，可以避免不必						 要的方法的实现。
+		5、装饰模式（结构型）：IO使用了大量的装饰者模式
+			装饰者设计模式
+				装饰者、被装饰者
+				装饰者中应该含有被装饰者的引用  通过装饰者可以找到被装饰者  关联关系
+				装饰者和被装饰者应该具有相同的行为，在调用装饰者中的方法的时候就像在调用被装饰者的方法一样
+				实现相同的接口或者继承相同的抽象类
+		6、代理模式（结构型）：AOP编程中使用了大量的动态代理模式
+			代理设计模式
+				代理类、目标类
+				代理类中含有目标类的引用
+				代理和目标应该具有相同的行为，实现相同的接口或者继承相同的抽象类
+
+		代理设计模式和装饰者设计模式的区别：
+			代理模式
+			A代理B，A会控制B
+			目标对象的创建被隐藏
+			代理对象和目标对象之间的关系是在编译器确定的
+	
+			装饰模式
+			A装饰B，A不会对B施加控制，只扩展功能
+			被装饰对象的创建细节是暴露在外面的，调用者知道装饰的对象是谁
+			装饰者和被装饰者之间的关系是运行阶段确定的
+		7、策略模式（行为型：但凡是和方法或者算法有关系的设计模式被归类到行为型设计模式）：集合体现了策略模式
+		8、模板方法模式（行为型）：HttpServlet体现了模板方法模式，准备一个抽象类，
+		   定义一个操作过程中的算法骨架，将一些步骤委派给子类去实现，不同的子类会有不同的实现
+		9、观察者模式（行为型）：ServletContextListener以及其它的监听器都使用了观察者模式。MVC也是一个观察者模式。
+		   观察者模式中包括：观察者、主题（被观察者）、要执行callback
+		10、责任链模式（行为型）：Filter和struts2中的拦截器interceptor都使用了责任链模式
+
+
+		23种设计模式：
+			创建型：（5种）工厂方法模式，抽象工厂模式，单例模式，建造者模式，原型模式
+			结构型：（7种）适配器模式，装饰者模式，代理模式，外观模式，桥接模式，组合模式，亨九模式
+			行为型：（11种）策略模式，模版方法模式，状态模式，观察者模式，迭代模式，责任链模式，命令模式，备忘录模式、、、
+
+===============================================================================================================================
+	
+	50、优化：
+	1:关于Java优化
+		a)集合的选择
+		b)String、StringBuffer、StringBuilder
+		d)减少I/O访问（缓存）
+		e)读写分开（分盘）
+		f)线程同步块
+		g)单例模式实现缓存（Map）
+
+	2:数据库优化
+		a)数据库表设计优化，建表时不要加入冗余字段，减少关联查询
+		b)尽量使用PrepareStatement，减少编译次数，提高效率（SQL语句也需要先编译再执行）
+		c)Connection设置为readOnly，表示启动只读模式，启动数据库的优化策略。
+		d)在jdbc中采用批量
+		e)索引优化，对常查询的字段建立索引
+		f)尽量减少嵌套查询（select(select(select))）
+		g)尽量减少group和having子句的应用
+		h)利用视图
+		i)采用数据库机制进行分页查询，提高性能，尽量使用物理分页（和物理分页相对的还有逻辑分页）
+		j)调整连接池中的连接数量和等待时间，调整数据库本身对Connection数量的支持
+		k)引入连接池（最小连接数、最大连接数、最大等待时间、最大空闲时间等）
+		
+	3:中间件（Tomcat、Weblogic、Jboss）优化
+		a)调整中间件虚拟机内存（堆内存、栈内存）
+		b)调整线程数
+		c)在运行环境下（生产环境下）屏蔽控制台日志的输出
+
+	4:js优化
+		a)压缩
+		b)js文件加载位置
+
+
+	5:Hibernate的优化：
+		1、合理使用延迟加载
+			选择session.load() 使用代理机制（cglib动态代理，cglib存在bug，hibernate3.3以上使用了jboss公司的javassist）
+			选择session.get()
+		2、抓取策略（一次全部取出，避免N+1）
+			在HQL语句中使用抓取连接查询，通过写一条left join fetch 语句把相关联的两个实体的数据一次性从数据库中加载上来。			这样可以在特定情况下（同时需要使用到这两个实体的数据）减少SQL的数量来提高查询效率
+		3、Query.iterate()和Query.list()的选择
+			Query.iterate():支持从一级缓存和二级缓存中取数据，但是可能导致N+1问题，
+			假如缓存中没有数据，iterate方法会发送一条SQL将所有数据的id查询出来放到缓存中，
+			当迭代使用对象的时候会再发送N条SQL语句根据id查询对象。
+			不过已查询出的对象会被放入一级缓存和二级缓存中，当第二次再访问该对象的时候会直接从缓存中取。
+			Query.list():不支持从一级缓存和二级缓存中取数据，但是查询结果会被放入一级缓存和二级缓存中，
+			每一次查询都会从数据库中，除非使用了查询缓存，使用了查询缓存，list方法会从查询缓存中取数据。
+
+	6:struts2的优化：
+		struts.xml:在生产环境可以禁用一些配置：开发模式，自动重启（稳定性）
+		<constant name="struts.devMode" value="false"></constant>
+		<constant name="struts.i18n.reload" value="false"></constant>
+		<constant name="struts.configuration.xml.reload" value="false"></constant>
+		修改为基本栈：struts.xml，login.action（性能）
+		尽量不要使用struts的ajax标签，底层使用的是IBM的DOJO，效率有问题
+==================================================================================================================================
+ 	
+	51、处理常见的关于404（文件找不到）、500（服务器内部错误）的处理：
+		web.xml:error-page标签
+		<error-page>
+  			<error-code>404</error-code>
+  			<location>/WEB-INF/jsp/common/404.jsp</location>
+  		</error-page>
+
+	    	退出的时候要将session销毁：
+		退出按钮样式存在浏览器兼容问题 
+		
+		FF和Chrome浏览器不支持style="cursor: hand，只有ie支持，style="cursor: pointer通用
+===================================================================================================================================
+	52、servlet的生命周期：
+		1.在tomcat运行期间，每个Servlet实现类，只能被创建一个对象
+		2.在tomcat运行期间，servlet实现类对象，不能由程序员手动关闭，只能由tomcat负责关闭
+		  tomcat关闭时，tomcat负责将所有servlet对象销毁，在销毁时调用servlet实现类destory
+		3.初始化流程：tomcat定位到具体的servlet实现类，判断servlet实现类是否被创建过，如果发现有对应的对象，就直接调用；如果		  	  没有对应的对象，就按照如下步骤进行初始化：
+			-调用servlet实现类的构造方法（只能被调用一次）
+			-创建ServletConfig对象，将一些配置信息保存到ServletConfig对象（只能被调用一次）
+			-调用servlet实现类中init（ServletConfig config），完成辅助功能（只能被调用一次）
+			-调用servlet实现类中service（），处理具体请求
+			-关闭tomcat时，tomcat负责将所有的servlet对象销毁，在销毁时，调用servlet实现类destory
+
+		servlet ,servletConfig（servlet初始化信息对象） ,servletContext（web工程上下文环境，全局作用域)创建顺序  
+			tomcat启动时  创建servletContext对象                                                          
+                        当servlet第一次被请求时,tomcat创建servlet对象
+			tomcat创建一个servlet对象后,创建与之关联的servletConfig对象.
+
+==================================================================================================================================
+	53、MVC模型：
+		C:control 控制层：接受请求，根据请求调用M层，负责将结果返回给客户端（servlet实现类）
+		M：model 业务层：
+			service层：业务处理层，将控制层传递过来的数据，进行业务处理，将处理后的数据交给业务访问层
+			dao层：数据访问层/持久化层：负责与数据库进行交互
+		V：view 视图层：用于想客户展示数据（jsp，html）
+
+		优点：1.实现了松耦合结构，降低了维护成本
+		      2.提高了项目的管理精度
+====================================================================================================================================
+1、tomcat支持的最大线程：200，mysql默认连接数：100，oracle默认连接数：150
+
+2、组织机构中实现树型结构：自关联
+	在表中有id和pid
+	在类中有自身类型的 parent属性和自身类型的set集合 childNodes
+	
+3、项目版本控制工具：SVN subversion
+
+4、如何提高并发性能？
+	加大服务器的线程数量，MaxThreads
+	加大连接池的数量，Connection Pool
+	加大数据库的连接数量
+	考虑硬件问题
+
+5、jquery的好处：
+	体积小，功能强大
+	插件多（免费）
+	解决浏览器兼容问题，简化DOM操作。
+
+6、内存泄漏和内存溢出：	
+	内存泄露导致内存溢出（内存泄漏是一个过程，内存溢出是一个结果）	
+	Map集合当做缓存使用，key重复则不添加，key不重复则添加。key中的对象不复写hashCode和equals方法导致内存泄露。
+	怎么解决：首先加大内存，如果没有解决查看程序是否出现内存泄露
+7、JSP：
+	1、JSP的生命周期：
+	jsp-java-class
+	首先,执行的时候的得翻译一下,翻译成为java文件,之后编译一下,把java文件编译成为class字节码文件,然后运行.
+
+	2、JSP什么时候会被重新翻译,通过什么机制来完成。
+   	JSP的执行过程，修改的时候会重新编译，通过最后修改时间机制进行
+	
+	3、在JSP表示页面加载完成之后执行：
+		控件中的onload事件
+		$(document).ready(functon(){})
+		$(functon(){})
+
+8、JavaScript中的提示框：prompt(可以输入)，alert（只有确认），confirm（可以取消）	
+
+9、spring中配置read-only标签什么作用?
+	1.启动数据库的优化策略,相当于调用了setconnection底层的readonly方法
+	2.只读数据,启动特性readonly
+
+10、在Struts2的action中获取页面的值的方式，模型驱动和域驱动的区别：（需要补充）
+		-普通属性(常用)
+		-域驱动(常用)
+		-模型驱动(ModelDriven)
+
+
+13、Jquery中的相关插件：Jquery.treeview、jQqery.form、Jquery.pagination（翻页）
+			jQuery.ui（和页面有关的显示有关的插件）			
+			jquery.autocomplete(自动补全)
+
+14、tree的插件：jquery.treeview(菜单树),dhtmlxTree（机构树）,d-tree,z-tree
+
+15、获取页面数据的几种方式：
+	getElementById("code").value    //dom编程
+	$("#code").value   		//基于jquery
+	this.value   	 		//dom编程
+	$(this).value   		//将dom转化为jquery  
+
+16、span和div的区别：
+	span：不会独占一行
+	div：独占一行
+
+17、java中的浮点数：
+	2.0-1.1=0.8999999
+	用bigDecimal解决
+
+18、和浏览器交互，用过哪些格式：
+	json，xml（建立机构树）
+
+19、$("").attr("")  传一个参数表示取值
+    $("").attr("")  传二个参数表示赋值
+
+20、正则表达式的创建方式：
+	var regExp = /^[a-zA-Z0-9]+$/flag;创建正则表达式的第一种方式
+	var regExp = new RegExp("^[a-zA-Z0-9]+$",flag);//创建正则表达式的第二种方式
+	flag的可选值：g全局匹配   i忽略大小写    m可以匹配多行
+
+21、delete数据时候的方法：UML图-用例实现-删除角色
+
+22、数据库中的聚合函数：sum    max    min    avg    count
+
+23、oracle的数据类型：数字：number    字符：char，varchar，varchar2    日期：date   
+	blob
+		Binary Large OBject(二进制大数据)
+		例如:图片,音频,视频...
+	clob
+		Character Large OBject(字符大数据)
+		一般用来存放大文本
+
+    MySQL的数据类型：数字：int，double    字符：char，varchar   日期：date   布尔类型：boolean
+
+24、final，finally，fianlize的区别：
+	final是一个关键字，表示最终的。
+	finally是异常处理机制中的，放在finally语句块中的程序是一定会执行的
+	finalize 是Object中的一个方法
+
+25、内部类：
+	静态内部类：等同于静态变量，可以直接访问外部类中所有的静态相关的数据，不能直接访问外部类中实例相关的数据
+		    外部类的访问控制权限只能写：public或者缺省
+		    静态内部类的访问权限可以是任意的
+	实例内部类：实例内部类和实例变量一样
+		    实例内部类中不能有静态声明
+    		    实例内部类可以直接访问外部类中所有的数据
+		    实例内部类的访问权限可以是任意的
+	局部内部类：局部内部类等同于局部变量
+		    局部内部类的生命周期比较短暂，有效范围是方法体，方法执行结束后局部内部类就消失了
+		    局部内部类和局部变量一样，不能使用访问权限符进行修饰
+		    局部内部类访问外部类的局部变量的时候，需要被final修饰
+	匿名内部类：特殊的局部内部类，这个局部内部类没有名字，无法复用，可读性差（实际开发中不建议这样写）
+
+26、静态语句块：
+	静态语句块在类加载的时候执行，并且只执行一次
+	静态语句块在同一个类中可以编写多个，遵守自上而下的方式一次执行
+	静态语句块在main方法被调用之前执行
+	
+	static{
+		System.out.println("2");
+	}	
+====================================================================================================================================
+	1、JS中字符串的截取：
+		var s = "abcdefghigklmn";
+		substring(startIndex,endIndex) 从startIndex(包括开始索引)开始截取，到endIndex(不包括结束索引)结束
+		s = s.substring(4, 6); //ef
+		substr(startIndex,length)  从startIndex(包括开始索引)开始截取，截取length长度
+		s = s.substr(4,6);//efghig
+		如果只传一个参数，substr和subString效果相同，都是从指定的位置开始截取，到最后结束
+		s = s.substr(1); ==>s= s.substring(1);
+
+	2、js中的数组等同于栈数据结构
+		-pop  删除元素，相当于弹栈
+		-push 添加元素，相当于压栈
+		-join 用指定的字符串对数组中的元素进行连接，形成一个新的字符串
+
+   		js中[]是一个数组对象，{}是一个json对象，它们都属于Object类型
+
+	3、Hibernate什么时候生成SQL语句：
+		什么时候生成sql语句，事务结束前，自动调用session.flush()，但是并不会结束事务，
+		service上的方法结束的时候，事务才会结束，关闭session.
+		也就是说，在事务结束前的一系列操作，如果没有手动的调用session.flush()方法，不会生成sql语句，
+		只有事务结束前调用session.flush()后，sql语句才会生成，生成的顺序是insert->update->delete
+		
+		如果有特殊的业务需要，要按照特定的顺序执行sql,需要手动调用session.flush方法
+		
+		hibernate会将删除，更新和插入的数据先放到session对象的成员变量List集合中，
+		在提交事务之前会执行session.flush()再将临时性集合中的数据形成SQL，按照insert-->update-->delete顺序执行，
+		如果按照特定的业务要求执行，必须手动调用session.flush();  
+		session.flush() 生成SQL执行
+		session.clear() 清空一级缓存
+		session.evict() 有选择清除一级缓存
+
+	4、自定义标签：
+		必须以 .tld 结尾
+		1.创建一个tld文件，将一个存在的tld文件内容拷贝进来。
+		2.<short-name>egov</short-time>
+	 	 <uri>http://www.bjpowernode.com/functions</uri>
+		3.设置function函数：{
+			name : 函数名
+			function-class : 类名
+			function-signature : 调用方法名（参数）
+			}
+
+
+	5、欢迎界面：
+		局部配置：如果当前项目的web.xml中配置了欢迎页面从这里找。（优先）
+		全局配置：如果局部没有配置，则从服务器con/web.xml文件中查找
+
+
+	6、JS中的语法：
+		<% %>  写java代码，属于js脚本 可以直接嵌套java代码
+		<%= %> jsp表达式，可输出值
+		<%@ %> jsp指令，只有3个 <%@ page %>
+					<%@ taglib%>
+					<%@ include%> 
+		<%! %>  jsp声明
+		<jsp:>  jsp动作  <jsp:include>
+			 	 <jsp:forward>
+    
+	7、jQuery.ui 插件的复选框问题
+		1：表示加入checkbox，0：表示取消checkbox
+		tree.enableCheckBoxes(1);
+		是否级联选中 （三种状态全选，全不选，部分选）
+		tree.enableThreeStateCheckboxes(true);
+	
+	8、switch中的数据类型：
+  		byte short int long char string（1.6） 枚举
+
+
+	9、注释大全：
+		java：
+			//   ：单行注释
+	
+			/*
+	     		     ：多行注释（可嵌套单行注释，不可嵌套多行注释）
+			 */
+
+			/**
+	     		 *   ：多行注释（可被javadoc命令解析成文档）		
+			 */
+
+		js：
+			//  :单行注释
+			/*
+			    :多行注释
+			*/
+
+		jsp/html的注释：
+			<！-- 注释-->  用于注释，会被发送到客户端，考虑线程安全性，不推荐使用
+				       用于jsp，也可用于html文件中，注释不彻底，其内容可能会影响到程序
+			<%--注解--%>   是jsp本身采用的注释，该注释会注释掉其中所有的内容，不会对程序产生任何影响。推荐使用
+ 
+	10.jQuery中的循环遍历是怎么实现的。
+		通过each方法实现：$.each() 
+	
+	11.java.util包中的类：Date，集合。
+		
+==================================================================================================================================
+集合：
+	1.集合中常用的方法：
+	  boolean  add(Object e) 向集合中添加元素e
+	  void   clear() 清空集合中所有的元素
+	  boolean isEmpty() 判断集合中是否有元素
+	  int  size()  获取集合中元素的个数
+	  Object[] toArray() 将集合转换成一维数组
+	  boolean  contains(Object o)	判断集合中是否包含元素o
+	  boolean  remove(Object o)	删除集合中的元素o
+	  Iterator iterator()	从java.util.Iterable接口中继承过来的方法，获取当前集合对象依赖的迭代器对象
+		
+	2.集合的遍历：
+		Iterator it = c.iterator();
+		while(it.hasNext()){
+			Object element = it.next();
+			System.out.println(element);
+			System.out.println(it.next());
+		}
+		for(Iterator it = c.iterator();it.hasNext();){
+			System.out.println(it.next());
+		}
+		//list集合中特有的方法：
+		for(int i=0;i<myList.size();i++){
+			System.out.println(myList.get(i));
+		}
+		for each :
+  		for(数组或者集合中元素的类型  变量名 : 数组或者集合){
+ 			循环体;
+  		}
+  		for each的缺点：没有下标，程序中需要使用下标的时候需要单独定义
+		for(String e : s){
+			System.out.println(e);
+		}
+	
+	3.java中Collection和Collections有什么区别：
+		Collection 是集合的一个接口
+		Collection 是集合的工具类 java.util.Collections
+
+	工具类的定义方法：
+		构造函数私有化，方法是静态的，不需要实例化对象即可使用类名的方式调用
+		
+		Collections.reverse(myList);集合的反转，取出的顺序和放进去的顺序相反
+		Collections.sort(myList);   对集合中的元素进行排序，能够排序List集合，不能排序set集合，要求List集合中的元素都是可比					    较的，实现java.lang.Comparable接口
+		将set集合转化为List集合：List list = new ArrayList(s);
+		Collections.synchronizedList(List);将集合编程线程安全的
+	
+	4.HashMap集合key部分的元素需要同时重写hashCode+equals
+		userMap.put(u1, 10);
+	  放在HashSet集合中的元素也需要同时重写hashCode + equals方法
+		userSet.add(u1);
+
+	5.Map集合：
+	  Map和Collection没有直接关系，Map集合以键值对的方式存储元素，key和value都是存储引用，以下主要讲解Map集合中的常用方法：
+		void clear()	清空Map集合
+		Object get(Object key)	通过Map集合的key获取对应的value
+		Set keySet()	获取Map集合中所有的key
+		Object put(Object key, Object value)	向Map集合中添加键值对
+		int   size()	获取Map集合中键值对的个数		
+		boolean	containsKey(Object key)	 判断Map集合中是否包含这样的key
+		boolean	containsValue(Object value)	判断Map集合中是否包含这样的value
+		Object remove(Object key)    通过key来删除整个Map集合中的键值对
+		boolean	isEmpty()    判断Map集合是否有元素
+		Collection values()    获取Map集合中所有的value
+		
+	   Map集合的特点：
+		key特点：无序不可重复，key元素如果重复，value覆盖
+
+	   Map集合的遍历方式：
+		Iterator it = keys.iterator();
+		while(it.hasNext()){
+			Object key = it.next();
+			Object value = map.get(key); //通过key获取value
+			System.out.println(key + " : " + value);
+		}
+	
+	6.properties：
+	      java.util.Map<interface>
+ 	      java.util.Hashtable<实现类：底层是哈希表的数据结构,初始化容量是：11，默认加载因子：.75，所有的方法被synchronized修饰>
+  	      java.util.Properties<属性类：Map集合，key和value都是字符串String类型，Properties通常和属性配置文件联合使用>
+
+	      setProperty(String a，String b);  //存数据
+	      getProperty（String a）;   //取数据
+
+	7.set集合：
+		放在TreeSet集合中的元素或者放在TreeMap集合key部分的元素可以自动排序，
+		前提是：这些元素是可比较的，实现了java.lang.Comparable接口并实现compareTo方法。
+       		集合主要体现了策略模式和迭代模式
+	
+	9、接口和抽象类的区别
+		抽象类：
+
+		1、类1和类2和类3...之间有共同特征，进行再次的高层抽象形成的模板，就是抽象类，
+		   类本身是不存在的，所以抽象类无法实例化对象。
+		2、抽象类虽然无法实例化，但是它有构造函数，供子类创建对象使用。
+		3、抽象类如何定义，语法格式：在定义类的时候，class关键字前添加：abstract
+		4、抽象类中不一定有抽象方法，但是抽象方法必须出现在抽象类中
+		5、抽象方法怎么定义：
+			- 在方法的修饰符列表中添加abstract关键字
+			- 抽象方法无方法体/无实现体，语法上体现是无大括号，以分号结尾
+		6、一个“非抽象的类”继承“抽象类”，必须将抽象类中的抽象方法加以覆盖/重写/实现.【强制性的】
+		7、java语言中abstract和final两个关键字不能共存,
+		抽象类就是用来让别的类继承的
+		抽象方法就是用来让别的方法覆盖的
+		所以抽象类和抽象方法都不能使用final修饰。
+
+		接口：
+		1、接口也是一种引用数据类型
+		2、接口对应的英语单词：interface
+		3、接口编译之后也生成对应的.class文件
+		4、接口是特殊的抽象类，特殊在接口是完全抽象的。
+		5、接口无法实例化，也没有构造函数
+		6、接口中只允许出现：常量和抽象方法
+		7、在接口中，常量的public static final可以省略不写。
+		   在接口中，方法的public abstract可以省略不写。
+		8、接口中所有的常量和抽象方法都是public修饰的，都是公开的。
+		9、接口和接口之间支持多继承
+		10、类和抽象类之间叫做继承，关键字是：extends
+		    类和接口之间叫做实现，关键字是：implements		
+		11、一个类的完整定义格式：
+			[修饰符列表] class 类名 extends 父类名 implements 接口1,接口2...{
+				类体;
+			}
+		12、一个非抽象的类实现接口之后，必须将接口中的方法全部实现。【强制性】
+
+	10、方法重载和方法重写（overload and override）
+		方法重载:（overload）
+		      - 在同一个类体中
+		      - 方法名相同，参数列表不同【顺序、个数、类型】
+		      - 方法重载和修饰符列表无关
+		      - 方法重载和返回值类型无关
+		方法重写：（override）
+		      	* 发生在具有继承关系的父子类之间【两个类之间】
+			* 相同的返回值类型、方法名、形式参数列表
+			* 访问权限不能更低，但是可以更高
+			* 抛出的异常不能更多，但是可以更少【讲完异常处理机制之后再说】
+			* 构造方法不能被继承，所以不能被覆盖
+			* 静态方法不存在覆盖【讲完多态之后再说】
+			* 私有方法在子类中不可见，不能被覆盖【讲完多态之后再说】
+			* 覆盖针对的是实例方法，和实例变量无关
+
+	11、四种修饰符列表
+		public		表示公开的公共的，在任何位置都可以访问，可以被子类继承
+		protected	受保护的，本类中可以，同一个包下可以，子类中可以，能被子类继承
+		缺省		本类中可以，同一个包下可以，只能被同包类继承
+		private		表示私有的，只能在本类中访问，其它位置不能访问，不能被子类继承
+
+====================================================================================================================================
+异常：
+	1.java中如何自定义异常【SUN的异常不够用】：
+		第一步：编写异常类继承Exception/RuntimeException
+		第二步：编写两个构造函数，一个是无参数的，一个是带有String参数的。
+
+	IllegalNameException编译时异常
+		public class IllegalNameException extends Exception{
+			public IllegalNameException(){}
+			public IllegalNameException(String s){
+				super(s);
+			}
+		}
+		
+============================================================================================================================
+
+	Jquery.ui插件中的功能：自动补全，多table页，日历
+	Java中提供了对数组和集合排序的封装Arrays.sort()和Collections.sort();
+	不要在Action上大量的循环调用service：第一，事务无法保证。第二：对连接对象使用太频繁。
+	删除之后页面刷新：window.location.reload();
+	disabaled  只读，不发送属性  
+	readonly   只读，发送属性
+	
+	空格 ：&nbsp;   &gt：大于号     &lt：小于号
+	修改机构代码的文本框格式：   style="width: 300px"   或者   size=50
+	增加隐藏域：<input type="hidden" id="orgId">
+	例块模式：ctrl+shift+A：工具：ue
+	CMM  对软件公司的质量认证级别   从3开始   3-5 
+	职业规划，团队建设：			
+	
+
+	论坛：CSDN  
+   	书：Java与模式 
+   	网站：w3cschool ,www.webxml.com.cn 
+   	专门卖书的网站:china-pub
+	
+=============================================================================================================================
+    各种图：
+
+	1、类和类之间的关系：（UML图的表示）
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter03\类之间的关系
+	2、内存结构图：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter03
+	3、集合的结构图，单向链表，双向链表，哈希表，可排序的二叉树：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter07
+	4、数组的结构图：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter05
+	5、异常的结构图：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter04
+	6、线程的生命周期：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter09
+	7、流的概述：
+		E:\laoshijiangke-0期\JavaProjects\02-JavaSE\chapter08
+
+==============================================================================================================================
+EGOV项目的相关知识点：
+	1.相关概念：EGOV电子政务系统
+	   1.客户：中国国家外汇局
+	   2.项目人员：21（1个项目经理，2个设计，3个小组（1个小组长，2个高级，3个中级））
+	   3.开发周期：6个月（2个月需求、设计，2个月开发，2个月测试上线运行）
+	   4.项目模块：境内业务（核心业务：核准件），境外业务，IC卡业务，基础模块（机构维护，权限管理，日志管理，通知管理）
+	   5.用到的技术：S2SH+JQUERY
+	   6.开发环境：window + eclipse + oracle
+  	   7.部署环境：Linux
+	   8.涉及角色：系统管理员，银行的工作人员，外汇局的工作人员
+	   9.表的数量：50-60张表，（核准件有5张表（投资人，外商投资企业，关系表，核准件，用户表））
+	   10.这个系统是国家部门内部以及银行相关部门使用，所以系统不会直接运行在Internet上，会使用VPN，防止黑客的攻击
+	
+	2.涉及的知识点：
+	   1、创建DOM元素：
+		function createSpanElt() {
+		    创建span元素
+		    var spanElt = document.createElement("span");
+		    给span元素添加html值
+		    spanElt.innerHTML="这是一个测试";
+		    给span元素的属性赋值
+		    spanElt.setAttribute("id","123232131");
+		    获取div对象
+		    var myDiv = document.getElementById("myDiv");
+		    给div追加span元素
+		    myDiv.appendChild(spanElt);
+
+	   2、在JSP中使用for each
+		引入taglib库
+		<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+		在页面中使用forEach
+		<c:forEach items="${orgTypes}" var="orgType">
+			<option value="${orgType.id}">${orgType.name}</option>
+		</c:forEach>
+
+	   3、ajxa实现数据传递和局部刷新：
+		jquery对Ajax的支持，提供了很多方法
+	
+		$.ajax()-->$.get()
+				-->$.getJson();
+				-->$.getScript();
+			-->$.post()
+		$.ajax()是底层实现
+
+		$.ajax({
+			url:请求资源的路径
+			data:发送给服务的数据{"json对象"}  
+			type:请求方式  默认get  
+			async:是否异步
+			cache:是否缓存页面(只有 get的时候存在)
+			beforeSend:function(){          在请求发送之前执行的回调函数
+				return true;		请求继续发送
+				return false;		请求不再发送   在该方法中比较适合做校验
+			},
+			success:function(data){		服务器处理成功之后，执行的回调函数
+				data	表示接收的服务器返回的数据,常用的和服务器交互的格式
+				text/html;text/xml;text/json;...具体返回什么格式取决于 
+								response.setContentType("text/xml;charset=UTF-8");
+			}
+		});
+
+	    4、将java对象转变为JsonString输出：
+		2种方式：TestJackson和TestJSON_LIB
+		public static void main(String[] args) throws Exception {
+			{"total":100, "data":[{"name":"张三", "age":10},{"name":"李四", "age":20},....]}
+		
+			Map<String, Object> jsonMap1 = new HashMap<String, Object>();
+			jsonMap1.put("name", "张三");
+			jsonMap1.put("age", 10);
+		
+			Map<String, Object> jsonMap2 = new HashMap<String, Object>();
+			jsonMap2.put("name", "李四");
+			jsonMap2.put("age", 20);
+		
+			List<Map<String, Object>> jsonList = new ArrayList<Map<String,Object>>();
+			jsonList.add(jsonMap1);
+			jsonList.add(jsonMap2);
+		
+			Map<String, Object> jsonMap = new HashMap<String, Object>();
+			jsonMap.put("total", 100);
+			jsonMap.put("data", jsonList);
+		
+			ObjectMapper objectMapper = new ObjectMapper();
+			String jsonString = objectMapper.writeValueAsString(jsonMap);
+			System.out.println(jsonString);
+		}
+
+
+
+	   5、jQuery的插件提交form表单（jquery.form）
+		
+		$(function(){
+			$("#orgForm").ajaxForm({
+				beforeSubmit:function(){
+					$("#message").html("正在保存机构请稍候...");		
+					设置ajax同步
+					$.ajaxSetup({
+						async:false
+					});
+						
+					让保存按钮失效
+					$("#saveBtn").attr("disabled","disabled");
+					触发所有需要校验项的blur事件,失去焦点事件
+					$(".required").blur();
+				        获取所有提示信息的span
+					$(".requiredSpan").each(function(i,this){
+						i表示遍历的索引
+						this表示当前遍历出的元素
+					}); 
+					$.each(数组,function(i,n){
+						i 当前遍历的索引
+						n表示当前的对象  和this含义相同
+					});
+						
+					var flag = true;
+					$.each($(".requiredSpan"),function(i,n){
+				
+					if(this.innerHTML !=""){
+						flag = false;
+						return false;   	false表示终止整个循环，相当于break；
+									true,表示终止本次循环，继续下一次循环，相当于continue
+						}
+					});
+						
+					if(!flag){
+						$("#message").html("数据非法请检查");
+					}
+						
+					return flag;
+				},
+
+				success:function(jsonObject){  	服务器处理成功之后执行的回调函数，该函数会接收服务器响应的数据，
+								格式text,xml,json,html... 取决response.setContentType()
+					if(jsonObject.success){
+						$("#message").html("保存成功");	
+						更新树
+						var tree = window.parent.I1.tree;
+						var parentId = jsonObject.data.parentId;
+						var itemId = jsonObject.data.itemId;
+						var itemText = jsonObject.data.itemText;
+						向机构树上添加新的节点
+						tree.insertNewChild(parentId,itemId,itemText);
+							
+						设置ajax异步
+						$.ajaxSetup({
+							async:true
+						});
+						让保存按钮生效
+						$("#saveBtn").removeAttr("disabled");
+					}else{
+						$("#message").html("保存失败");	
+					}
+				});
+				
+				给机构代码注册blur事件
+				$("#code").blur(function(){
+					获取机构代码
+					var code = document.getElementById("code").value;   	dom编程
+					var code = $("#code").val();  基于jquery对象的编程，val()这个方法只有jquery才有
+					var code = this.value;	      dom编程，和jquery没有关系，this表示当前文本框对象
+					var code = $(this).val();     基于jquery对象的编程，this是一个dom对象，但是$(this)是jquery对象
+					
+					去除前后空白
+					code = $.trim(code);
+				
+					判断是否为空
+					if(code==null){} 错误的 在js中字符串没有null值  空字符串是""
+					if(code.length==0) 可以，但是繁琐
+					if(code==""){
+						为空提示用户
+						$("#codeRequiredSpan").html("机构代码不能为空");	
+					}else{
+						不为空判断是否含有特殊字符
+						var regExp = /^[a-zA-Z0-9]+$/flag;创建正则表达式的第一种方式
+						var regExp = new RegExp("^[a-zA-Z0-9]+$",flag);//创建正则表达式的第二种方式
+						flag的可选值：g全局匹配   i忽略大小写    m可以匹配多行
+						var regExp = /^[a-zA-Z0-9]+$/;
+						var ok = regExp.test(code);
+						if(!ok){
+							含有特殊字符,提示用户
+							$("#codeRequiredSpan").html("机构代码只能包含字母和数字");	
+						}else{
+							不含有特殊字符，发送ajax请求判断是否重复
+							$.get("${pageContext.request.contextPath}/org/getByCode.action",
+							{"org.code":code,"_":new Date().getTime()}, function(jsonObject){
+						
+							if(jsonObject.success){
+								不重复  校验通过
+								$("#codeRequiredSpan").html("");
+							}else{
+								重复提示用户
+								$("#codeRequiredSpan").html("机构代码已经存在");
+							}
+						});
+					}			
+				});	
+
+	   6、eval函数：
+		eval函数属于window对象，可以将普通字符串转换为js代码并执行
+		window.eval("var v1 = 'hello';");
+		alert(v1);    输出结果为 "hello"
+	
+		java的response可以响应一段js代码到浏览器客户端
+		但是在服务器端的时候，这段js代码就是一段普通的字符串，到浏览器之后，底层会通过eval函数对其进行处理
+
+           7、javascript:void()方法：
+		<a href="http://www.baidu.com" onclick="jsCode();">点击超链接，执行js代码，跳转资源</a><br>
+		<a href="" onclick="jsCode();">点击超链接，执行js代码，跳转资源</a><br>
+		<a href="#" onclick="jsCode();">点击超链接，执行js代码，跳转资源</a><br>
+		<a href="#" onclick="jsCode();return false;">点击超链接，执行js代码，不会跳转资源</a><br>
+		<%--如果向想保留超链接的样式，同时执行js代码，但是不跳转到任何资源  --%>
+		<a href="javascript:void(0)" onclick="jsCode();">点击超链接，执行js代码，不会跳转资源</a><br>
+
+	   
+	   8、jstl函数库的作用：一般结合El表达式一起使用，是对EL表达式的补充，El表示不能直接书写java程序
+ 		${fn:contains("abcdefg", "abc")}
+ 		${fn:split("2,4,6,8",",")}
+
+	   9、设置chekbox的全选和全不选：
+
+		获取所有的chekbox             $(":checkbox");
+		获取所有的name=id的chekbox    $(":checkbox[name='id']");
+		将chekbox的选中状态致为false  $("#checkAllCancelAll").attr("checked",false);
+
+
+		给全选和取消全选的checkbox注册单击事件
+		$("#checkAllCancelAll").click(function(){
+			获取所有的checkbox
+			var allCheckboxes = $(":checkbox");
+			获取所有name='id'的checkbox
+			var allCheckboxes = $(":checkbox[name='id']");
+			设置全选和取消全选
+			$(":checkbox[name='id']").attr("checked",this.checked);
+					
+		});
+
+		获取页面中name=id 并且被选中的checkbox $(":checkbox[name='id']：checked");
+
+	    10、日历插件：
+		集成jquery.ui.datepicker插件   注意：该插件不能精确到时分秒
+		集成jquery.ui.datetimepicker插件，该插件可以精确到时分秒，是基于jquery.ui.datepicker插件实现的	
+		$(function() {
+			$("#expireTime").datetimepicker({
+				changeMonth: true,     显示月份
+				changeYear: true,      显示年份
+				showButtonPanel: true, 显示今天和关闭按钮
+				showSecond: true,      显示秒
+				timeFormat: 'hh:mm:ss' 时间格式化
+			});
+		});
+
+
+	    11、自动补全插件：
+		集成jquery.autocomplete插件，完成自动补全
+		Google是第一个使用自动补全的公司,所以也叫做谷歌的自动补全
+		底层也是ajax实现的
+			
+		$("#empCode").autocomplete("employee_data.jsp", {  	从对应的位置去查找
+			cellSeparator: "|",     	用竖线对返回的字符串进行分隔，也可以修改为其它字符
+			lineSeparator: "\n",            换行
+			minChars: 1,       		最少输入一个字符开始发送请求
+			maxItemsToShow: 10,		最多显示多少条提示信息
+			formatItem: function(row) {	回调函数  对返回的数据进行格式化  row这个被"|"分隔后的数组
+				return "员工代码->" + row[0] + " 姓名->" + row[1] + " 年龄->" + row[2] + " 机构->" + row[3];
+			},
+			onItemSelect: function(li) {	当选中某条记录的时候，自动被执行   li代表选中的数据 
+				$("#empName").val(li.extra[0]);   	li.extra[0]=row[1]  
+				$("#age").val(li.extra[1]);
+				$("#orgName").val(li.extra[2]);
+			}
+		});
+
+
+	     12、使用form表单提交信息的步骤：
+		1.在jsp先引入form插件所需要的js （已经导入工程）   
+		2.在body中加入form标签     
+		3.将保存按钮修改为 submit  
+		4.增加span提示信息  id=messgge
+		5.编写form表单的实现方法
+		$("#userForm").ajaxForm({
+			beforeSubmit:function(){
+				$("#message").text("正在保存请稍候...");
+				return true;
+			},
+			success:function(jsonObject){
+				if(jsonObject.success){
+					$("#message").text("保存成功");	
+				}else{
+					$("#message").text("保存失败");
+				}
+			}
+		}); 
+
+
+	    13、各个标签中增加name属性和MD5加密算法  
+		<input type="radio" name="user.lockStatus" value="1"/>  启用
+		<input type="radio" name="user.lockStatus" value="2"/>  锁定
+		实现单选，增加相同的name属性 
+
+        	MD5加密算法：可以做一个工具类，专门进行加密，将方法拷贝，构造方法私有化，
+		public static String MD5(String s) {
+			try {
+				byte[] btInput = s.getBytes();
+				MessageDigest mdInst = MessageDigest.getInstance("MD5");
+				mdInst.update(btInput);
+				byte[] md = mdInst.digest();
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < md.length; i++) {
+					int val = ((int) md[i]) & 0xff;
+					if (val < 16)
+						sb.append("0");
+					sb.append(Integer.toHexString(val));
+				}
+				return sb.toString();
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
+
+	    14、javascript中的下拉框：
+		关于select的其它属性:
+		size:显示条目的个数
+		multiple="multiple"   设置可以多选
+	
+		<select size="3" style="width: 500px;height: 500px" multiple="multiple">
+			<option>张三</option>
+			<option>李四</option>
+			<option>王五</option>
+			<option>招六</option>
+		</select>
+
+	    15、双击事件和appendto方法：
+		$(function(){
+			给未分配角色列表注册双击事件
+			$("#unAssignedRoleList").dblclick(function(){
+				获取所有被选中的option
+				var allSelectedOptions = $("option:selected");      这种写法有问题，如果已分配中有元素被选中，也会获取
+				获取所有未分配角色列表中被选中的元素
+				var allSelectedOptions = $("#unAssignedRoleList option:selected");
+
+				jquery提供的选择器其实有两个参数，第二个参数表示的是查找的范围,默认是document
+				var allSelectedOptions = $("option:selected",document);   ==>    $("option:selected");等效的
+				var allSelectedOptions = $("option:selected",$("#unAssignedRoleList"));
+				var allSelectedOptions = $("option:selected","#unAssignedRoleList");
+				var allSelectedOptions = $("option:selected",this);
+					
+					
+				移动  把所有匹配的元素追加到另一个指定的元素元素集合中。
+				实际上，使用这个方法是颠倒了常规的$(A).append(B)的操作，即不是把B追加到A中，而是把A追加到B中。
+ 				$("option:selected",this).appendTo($("#assignedRoleList"));
+				$("option:selected",this).appendTo("#assignedRoleList");
+			});
+
+	     16、关于jsp的include
+		静态包含 include指令 (静态联编)
+			a.jsp静态包含b.jsp,在编译阶段包含
+			a.jsp和b.jsp最后生成同一个java源文件，一个.class字节码文件，共用一个service方法
+			注意：a.jsp和b.jsp中不能声明同名的局部变量
+			<%@include %> jsp的指令
+			<%@include file="/WEB-INF/jsp/common/pageFoot.jsp"%>
+
+		动态包含 include动作 (动态态联编)
+			a.jsp静态包含b.jsp,在运行阶段包含
+			a.jsp和b.jsp最后生成两个java源文件，两个.class字节码文件，两个service方法
+			注意：a.jsp和b.jsp中可以声明同名的局部变量
+			<jsp:include> jsp动作
+			a和b之间需要有相同的头信息		
+			jsp中的指令
+			<%@ page %>
+			<%@ taglib %>
+			<%@ include %>
+		
+		jsp中常用的动作
+			<jsp:include>
+			<jsp:forword>
+			.....
+
+	   17、通配符的使用方法：
+		<action name="*">	
+			<result>/WEB-INF/jsp/{1}.jsp</result>
+		</action>		
+		
+		如果采用以下的通配符方式，对访问的格式有要求
+			org_add.action
+			org_edit.action
+			
+			<action name="*_*" class="orgAction" method="{2}">
+				<result>/WEB-INF/jsp/{1}/{2}.jsp</result>
+			</action>
+	 
+	   18、用ajax发送请求完成验证，注册回车按下事件，获取焦点事件
+		$(function(){
+			给整个窗口注册回车按下事件
+			$(window).keydown(function(event){    event.keyCode可以取得对应的键值
+				if(event.keyCode==13){
+					login();
+				}
+			});
+			给帐号文本框注册获取焦点的事件
+			$("#accountNo").focus();
+		});
+
+	    19、字符串或者其他类的的比较：
+		1.需要自定义比较器，实现Comparator接口。
+		2.字符串String 类型已经定义了比较器，有 compareTo（）方法  
+		3.比较两个字符串，前面的字符串大，返回正数；否则返回负数。
+
+	    20、动态显示时间：每一秒向服务器发送ajax请求
+		function echoTime(){
+			获取系统时间 (这里的sysTime是Date类型)
+			var sysTime = new Date();
+			获取星期
+			var weekDay = sysTime.getDay();
+			alert(weekDay);
+			var day = "星期日";
+			switch (weekDay) {
+				case 1:day="星期一";break;
+				case 2:day="星期二";break;
+				case 3:day="星期三";break;
+				case 4:day="星期四";break;
+				case 5:day="星期五";break;
+				case 6:day="星期六";break;
+			}
+				
+			将Date类型的时间转换为本地语言的时间字符串  (这里sysTime是字符串)
+			sysTime = sysTime.toLocaleString();
+			将时间设置到span标签中
+			var timeSpan = document.getElementById("time");
+			timeSpan.innerHTML = sysTime+"&nbsp;"+day;		
+		}
+		function startTime(){
+			每隔1s中执行一次
+			window.setInterval(echoTime, 1000);   
+			window.setInterval("echoTime()", 1000);
+		}
+
+		取客户端时间，生成动态时钟（取服务器时间：每隔1秒发送ajax请求）
+		window.setInterval(函数名,间隔时间);
+
+	   	
+    	    21、使用拦截器的步骤
+		1.定义一个拦截器类，可以继承AbstractInterceptor或者实现Interceptor接口
+		public class AuthInterceptor extends AbstractInterceptor {	
+			@Override
+			public String intercept(ActionInvocation invocation) throws Exception {
+				获取session
+				User user = (User)ServletActionContext.getRequest().getSession().getAttribute(Constant.SESSION_USER);
+				判断是否登录
+				if(user==null){
+					return Action.LOGIN;
+				}
+		
+				调用下一个拦截器，如果没有直接调用目标action的execute方法
+				return invocation.invoke();
+			}
+
+		}
+		2.将拦截器配置到struts.xml文件中
+		3.自定义拦截器栈 (指定拦截器的数量和执行顺序)
+		4.指定默认拦截器栈
+		
+		<package name="base-package" extends="struts-default">
+			<!-- 配置拦截器 -->
+			<interceptors>
+				<interceptor name="anthInterceptor" class="com.bjpowernode.egov.web.AuthInterceptor"></interceptor>
+				<!-- 配置拦截器栈 -->
+				<interceptor-stack name="egovStack">
+					<interceptor-ref name="anthInterceptor"/>
+					<interceptor-ref name="defaultStack"/>
+				</interceptor-stack>
+			</interceptors>
+	
+			<!-- 指定默认的拦截器栈 -->
+			<default-interceptor-ref name="egovStack"/>
+			<!-- 全局result ，在任何的action中，在任何的拦截器中，都能使用这个全局的result -->
+			<global-results>
+				<result name="login" type="redirect">/login.jsp</result>
+			</global-results>
+		</package>
+		
+		注意：执行下一个拦截器，如果没有下一个拦截器，调用目标对象的execute方法，这里不能手动调用，
+		      必须交给actionInvocation的invoke方法
+
+
+	    22、session超时，可以在web.xml文件中进行配置
+		<session-config>
+		  	<session-timeout>120</session-timeout>
+		</session-config>	
+
+
+	    23、如何导出Excel表 
+		1.使用apache提供的poi组件将操作日志导出到excel中
+			1.注意：Excel文件使用的是2003版本
+			        每一个sheet存储的记录是有限制的    65536
+			        Excel的文件结构：WorkBook-->Sheet-->Row-->Cell
+			
+			2.假设有一张表 (t_user id,name,age)  ，共6w条记录，使用poi导出excel文件，jvm大概需要创建多少个java对象
+				WorkBook + 1Sheet +1Row +3Cell +6wRow +6*3WCell 
+				大概需要24w个java对象才能完成导出，效率较低
+
+			3.提高导出excel文件的效率  使用csv格式导出
+				体积小
+				导出的内容可以使用普通的文本编辑器进行编辑
+				csv本质就是一个字符串   之间用","分隔
+				csv导出的内容会丢失一些格式，例如二进制数据的内容 图片
+	      	2.使用CSV进行导出：
+			1.apache的poi没有任何关系，就是一个简单的字符串拼接
+			2.CSV是逗号分隔符表达式          CVS是版本控制工具，是svn的前身
+		
+==============================================================================================================================
+第5期的知识点：
+    
+    1.mybatis：是一个基于java的持久层框架，面向SQL的应用框架
+	 1.Hibernate框架的效率比较低，占用内存比较大。
+         2.配置文件：mybatis-config.xml和user-mapping.xml
+		mybatis-config.xml中的配置：
+		    1.导入数据库配置文件jdbc.properties  2.环境  3.事物管理器   4.数据源    5.管理映射配置文件
+		user-mapping.xml中配置：
+		    <mapper namespace="user">
+				<select id="getAllUsers" resultType="com.bjpowernode.beans.User">
+					select * from t_user
+				</select>
+		    </mapper>
+			select标签:用来封装查询语法的标签,内部书写的是SQL语句.
+			id : 唯一标识,不代表必须数据唯一,只局限在当前的文件中,id的数据唯一.
+			resultType : 返回类型,是查询语句的结果作为什么类型返回.
+	3.namespace的使用：
+	    1.在映射文件中，select标签中的id相同的时候
+	    	在Mybatis中，一个mapping映射文件中，标签的id属性值必须唯一
+		多个mapping映射文件中，标签的id属性可以相同
+		查询时标签映射的全名：namespace.mapping_id
+	    2.提供日志：
+		TRACE : 跟踪     info ： 信息    debug ：调试
+		在log4j.properties中配置跟踪信息
+		log4j.loggger.user=TARACE  
+	    3.提供动态代理对象：
+		在Mybatis中，如果namespace的值为某Dao接口的全名，那么mybatis框架会提供一个动态代理对象提供对应的实现
+		namespace与dao的全命名一致
+		标签id值与接口的方法名一致
+	    4.mybatis中在对结果进行封装的时候，只检索getter/setter方法，也就是只检索property，不检索field
+	      在使用mybatis进行dao开发的时候，要注意，property必须和colum命名一致
+	4.mybatis中参数的传递：
+	    1.根据数据类型进行传递，不是依据参数的位置和数量进行传递
+	    2.数据库是弱类型的存储软件，在底层数据库中所有的数据都使用字符串进行保存
+	    3.单值传递：传递的数据类型是基本数据类型（8中基本数据类型，字符串，对应的封装类）
+			常用在查询唯一条件的时候（主键查询）
+	    4.自定义类型传值：会根据映射文件中的ognl表达式的标识符，反射的查询参数对象中的属性值
+		              将查询到的属性值作为对应的参数进行传递，进行数据查询
+			      查询条件复杂，常用在有关系的复杂查询
+	    5.map类型传值：key：SQL中的占位符，变量名，与SQL中的#{paramName}一致    value：要传递的查询条件数据
+	    6.补充：
+		MyBatis占位符: #{}相当于 JDBC 中的?, 是参数的占位符
+			1. 使用占位符作为表名,传递参数. 抛出异常
+			2. 使用占位符作为字段名, 传递参数. 结果错误
+			3. 使用占位符作为排序依据, 传递参数. 抛出异常
+		
+		${} : 相当于 JDBC 中的SQL语句拼接,要求在传递参数时,不能使用简单类型.必须提供一个可以通过get方法获取对应数据的参数类型. 		可以是自定义类型中的访问方法getter,也可以是Map中的get
+			语法: ${}
+			相当于JDBC中使用字符串拼接SQL语句.
+			可能会有SQL注入	
+	5.输出结果：
+	     1.property和字段名称不同的时候：可以使用别名
+	     2.可以使用resultMap标签将属性和段落进行一一对应
+	        <resultMap type="com.bjpowernode.beans.User" id="userMap">
+			<id column="id" property="id"/>
+			<result column="username" property="name"/>
+			<result column="age" property="userAge"/>
+		</resultMap>
+		<select id="getUsers" resultMap="userMap">
+			select * from t_user
+		</select>
+	     3.结果还可以为Map和基本数据类型
+	6.模糊查询：
+	     1.select * from table where colum like #{}
+	     2.select * from table where colum like '%${}%'	
+             3.select * from table where colum like concat('%',#{},'%')   mysql
+	     4.select * from table where colum like '%'|| #{} || '%' oracle
+	     字符串的拼接方式：mysql concat函数：用于拼接字符串，参数个数大于0
+			       oracle  ||运算符：用于字符串的拼接
+	7.动态查询：
+	     1.where标签：会自动的判断是否需要追加条件语句，可以自动判断是否需要删除多条件查询时的逻辑运算符
+	     2.choose标签：相当于java中罗列多个if语句
+		<choose>
+			<when></when>
+			<otherwise></otherwise>
+		</choose>
+	      是排他的判断逻辑.注意是否可以使用.避免错误结果
+	     3.查询同一个字段，值不同的时候：
+		1.首先定义一个list集合，将要查询的数据放到集合中
+		2.在定义一个map集合，进行参数的传递，将list集合作为value放入map集合中
+		3.将map集合的key放入配置文件中的collection中，将其遍历，放入item中，用逗号进行分割，然后取出，传值
+	8.事物管理：
+	    mybatis中，事物是默认开启的，如果没有手动提交事物，在session关闭的时候，自动回滚
+	9.缓冲：
+	    一级缓存: SqlSession 中自带的缓存
+		默认开启的.
+		已映射文件中标签的id属性为缓存标记.(id不同，一级缓冲失效)
+		
+	   二级缓存: SqlSessionFactory 缓存
+		需要配置: 在映射文件中增加标签<cache/>
+		要求需要进行缓存的数据必须实现Serializable接口
+		缓存保存在硬盘文件中
+	10.注解：
+	    1.user-mapping.xml
+		将命名空间声明为DAO接口
+	    2.在DAO接口中使用@Select注解进行开发
+		@Select("select * from t_user")
+		@Select("select * from t_user where id = #{id} or username = #{username}")
+		需要传值的时候在方法中定义参数进行传值，传值方式与配置文件相同
+	11.表与表之间的关系：
+	    1.多对一关系：表与表之间：在多的一方表中增加一的一方表中的外键
+			  类与类之间：在多的一方中增加一的一方的引用
+	    2.一对多关系：表与表之间：在多的一方表中增加一的一方表中的外键
+	      		  类与类之间：在一的一方中增加多的一方的list集合的属性
+	    3.自关联：表的设计：id，pid
+		      类的设计：在类中增加相同属性的list集合
+	12.延时加载：
+	    mybatis中默认延时加载关闭，如果需要延时加载，需要进行配置
+
+     2.spring3
+	1.spring2和spring3之间的区别：
+	    1.模块的组织更加的细致
+	    2.针对java5的核心API升级
+	    3.对servlet3.0全面支持
+	    4.遵循严格的开发规范
+	2.读取Spring的配置文件
+	  ApplicationCotext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+	  获取bean对象
+	  User user = context.getBean("user",user.class);    第一个参数表示：配置文件中的对象的id   第二个参数表示：方法返回的类型
+
+	  在xml中#{}是ognl表达式
+	  新特性：可以在配置文件中通过一个对象直接读取另一个对象中的属性
+		  通过value = #{配置文件中对象的 id.属性名}进行配置
+	
+    3.springmvc：
+	1.springmvc实现了MVC设计模式的轻量级web框架，是spring框架的重要组成部分
+	2.是Spring的重要组成部分
+		在web中程序分为三类
+		listener:（监听器）监听HTTP对象的创建和状态的变化和属性的变化 session，application
+		filter：对请求的拦截和过滤
+		servlet：前端控制器（FrontController）
+	
+		MVC架构模式中要求一定要存在前端控制器，而且一定要是servlet实现。
+		SpringMVC 架构模式严格遵循了MVC架构模式
+	
+		SpringMVC的流程
+			服务器启动的时候执行前端控制器，加载配置文件。
+			发送一个请求，通过前端控制器中的配置的路径，走到前端控制器，
+			通过映射器找到请求路径，与处理器中的bean对象的名字应，找到对应的类
+			通过适配器将handler转换为controller
+			控制器类实现了controller接口，调用重写的方法handleRequest
+			创建了ModelAndView 对象。将其返回。
+			通过视图解析器，找到指定的跳转的页面
+			在页面中通过EL表达式找到相应的模型
+		springmvc-servlet.xml文件中配置的内容：配置文件的名称必须和servlet的名称保持一致
+		 	1.处理映射器（HandlerMapping）
+			<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>
+			2.适配器 （HandlerAdapter）
+	    		<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+			3.视图解析器 （ViewResolver）
+			<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		        	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+		        	<property name="prefix" value="/WEB-INF/jsp/"></property>
+		        	<property name="suffix" value=".jsp"></property>
+		    	</bean>
+		      	 页面路径为 ： 视图的前缀 + 视图名称 + 视图后缀
+		    			 /WEB-INF/jsp/hello.jsp
+			增加处理器（处理controller类）
+			<bean name="/hello" class="com.bjpowernode.springmvc.controller.HelloWorldController"></bean>
+		 
+	3.SpringMVC框架中的处理映射器 （HandlerMapping）
+	      作用：将请求路径和控制器进行关联映射，当用户发送相应的请求，会找到对应的控制器
+	      分类：	
+	      1.BeanNameUrlHandlerMapping
+		将<bean>标签的name属性作为映射和url进行关联
+		<bean name="/hello" class="com.bjpowernode.springmvc.controller.HelloWorldController"></bean>
+		
+	      2.将请求路径和控制器的映射关系独立出来。 
+	        SimpleUrlHandlerMapping
+		<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	            <property name="urlMap">
+	                 <map>
+	                	<entry key="/hello" value-ref="helloWorldController"></entry>
+	            	</map>
+	            </property>
+	        </bean>
+	2.springmvc的拦截器：
+	    1.对业务功能进行补充
+	    2.对请求和相应进行拦截，拦截后进行业务操作
+            3.创建自定义拦截器：
+		1.1.创建类，继承org.springframework.web.servlet.handler.HandlerInterceptorAdapter
+		2.重写方法：
+			afterCompletion ： 拦截器执行完毕后执行此方法。
+			postHandle：在执行控制器之后执行。进行响应的验证。
+			preHandle：在执行控制器之前执行，进行请求的验证。验证通过（true），请求继续执行，验证失败（false），直接返回
+		3. 配置拦截器：在springmvc-servlet.xml
+		<bean id="log" class="com.bjpowernode.springmvc.interceptor.LogInterceptor"></bean>
+		4.应用拦截器：在处理映射器中配置
+		     <property name="interceptors">
+		         <list>
+		             <ref bean="log"/>
+		         </list>
+		     </property>
+	          当存在多个拦截器的时候，按照配置的顺序执行，先执行preHandle方法，再执行postHandle方法，最后执行afterCompletion
+	          先执行的拦截器最后执行结束
+	 3.springmvc的控制器：
+	     1.处理和调度模型和视图来解决业务问题
+	     2.实现方式：
+		1.实现Controller接口，重写handleRequest方法。
+		2.继承AbstractControlle抽象类，重写handleRequestInternal
+		  通过supportMethods 被支持的数据提交方式可以设置提交方式：post、get
+		3.继承MultiActionController类，方法声明和之前的两种一样的
+		  通过methodNameResolver 方法名称解析器，可以写多个方法在处理映射器中配置多个请求走同一个类，不同请求走不同的方法
+	4.SpringMVC框架的模型和视图
+	    1.模型：这里的Model指的就是数据模型
+		    向模型中增加数据就等同于向hashmap中增加数据
+	    2.视图：View视图对象，仅仅用于声明展示数据的相关配置，用于关联具体的页面（JSP，PDF，XLS）
+	5.springmvc的视图解析器：
+	    1.在控制器执行之后，返回的仅仅是视图对象，并没有指向任何的视图页面，所以需要解析。解析之后进行跳转
+	    2.分类：
+		1.InternalResourceViewResolver : 内部资源视图解析器，用于在当前web应用的内部查找资源
+		2.BeanNameViewResolver : 对象名称视图解析器，将视图名称作为spring bean对象的名称进行解析	
+		3.ResourceBundleViewResolver : 资源视图解析器，将视图定义在资源文件中。
+		4.请求和响应
+			浏览器 ==》 服务器 （请求）
+			服务器 ==》 浏览器 （响应）
+		5.转发和重定向
+			转发 ：JstlView
+				浏览器发送一次请求，由服务器进行内部资源的跳转，所以地址栏不会变化。因为请求没有发送变化。
+				因为请求就是一个，所以在前面保存数据，那么可以在后续页面共享数据
+			重定向 ：RedirectView
+				浏览器发送两次请求，可以跨越服务器来请求数据。由于两次请求，所以地址栏会发生变化。
+				因为请求对象是多个，所以在前一个请求对象中保存数据，后面的请求对象无法共享数据
+
+	6.SpringMVC框架的视图
+		分类：JstlView，RedirectView
+		在页面中可以通过EL表达式获取模型中的数据，相当于从request中取的数据，执行了request.getAtrribute()
+		如果数据没有取到，跳转方式：重定向
+
+	7.SpringMVC框架的注解
+		注解的作用：
+			1.加标记
+			2.框架的配置文件的内容太多，比较复杂，不利于维护和管理，并且会降低开发效率
+			3.使用注解可以简化配置文件，提高开发效率， 违背了OCP开发原则。
+		注解的使用方法：
+			1.使用注解进行简化，只保留视图解析器
+			2.在配置文件中，启用注解功能springmvc-serclet.xml
+			<context:annotation-config />
+			3.在配置文件中扫描注解类，加载到spring环境中。
+			<context:component-scan base-package="com.bjpowernode.springmvc.*" />
+			4.创建注解类：类不需要实现任何的接口，也不需要继承任何的类和重写任何的方法。
+				      声明的方法 ：
+					public String insert() {
+					    return "insert";
+					}
+					
+				     方法的返回值表示视图的名称
+				     如果响应中包含输出的内容，方法可以没有返回值void
+				     可以返回view，必须是重定向的RedirectView
+				     不能返回对象，需要用json字符串，将json字符串转化为对象。
+		
+			5.使用注解
+			     在类的前面声明
+				@Controller ：声明当前的类为控制器类
+				@RequestMapping : 声明命名空间,访问时必须要增加。
+				@Scope("prototype") ： SpringMVC框架中的控制器不需要多例创建。
+				
+			     在方法前声明
+		    		@RequestMapping("/user/insert")将请求路径与当前方法进行映射，当只有一个参数的时候，value可以不写
+		  		@RequestMapping(value="/user/update",method={RequestMethod.post})    
+				请求方式为 post 在注解中{}代表数组 
+		  		@RequestMapping("/user") 在类前面声明，相当于声明命名空间,访问时，必须要增加命名空间		
+		  		@RequestMapping(value="/user"，params={"usercode"})  
+				在方法名前声明，表示请求对象中必须包含指定的参数，否则无法访 问，参数类型任意。
+		  		@RequestMapping(value="/user"，params={"!usercode"}) 不需要传递参数，否则无法访问
+		  		@RequestMapping(value="/user"，params={"usercode=zhangsan"})  
+				请求对象中的参数取值是否满足要求，满足访问，不满足不能访问  
+			
+		            在方法参数前声明 	
+			  	在方法参数中封装表单数据，可以封装多个参数，将表单数据封装到数据模型中，数据模型的名称没有要求
+			  	当参数中普通参数和数据模型参数同事存在，会都进行封装
+			  	封装表单数据的原则是：表单数据的请求参数和方法参数的名称匹配
+			  	如果方法参数名称和表单数据名称不匹配，依然想要封装成功，可以增加注解
+	   			@RequestParam("usercode") 将不同名称的表单数据和方法参数进行关联
+				@PathVariable : 将路径中的参数和方法参数进行绑定
+			
+			    让方法返回JSON字符串， 必须在方法前增加特殊的注解
+				1.@ResponseBody  将user作为响应体
+				2.需要引入jackson组件的jar包
+				    jackson-core-asl-1.9.9.jar
+				    jackson-mapper-asl-1.9.9.jar
+				3.修改配置文件，让响应体的内容为JSON字符串 。在springmvc-servlet.xml
+		  
+      4.easyUI框架:是一组基于jquery的UI插件集合，目标是帮助web开发者开发出美观的UI界面
+	  特点：1.基于jquery用户界面插件的集合
+                2.支持两中渲染方式：JavaScript方式和html方式
+	  	3.支持HTML5
+		4.节省时间和资源，简单，强大，支持扩展
+
+      5.workFlow工作流：就是工作的流程，完成一系列工作的步骤，从业务开始到结束的流转过程
+	  三大要素：这个过程要做什么，有多少步骤，每步由谁来做、做什么、怎么做
+	  
+      6.Activiti5工作流程框架：
+	  1.开发方式：1.在eclips中添加流程插件。然后打开eclipse。在window/Open Perspective/activiti
+     		      2.创建activiti项目，新建Activiti Diagram.
+     		      3.将图形转化为代码，辅助开发
+	  2.相关概念：1.流程定义：声明一个流程，相当于声明Class
+     		      2.流程实例：流程定义的具体应用，相当于new class
+                      3.流程变量：在流程中某些值不是固定不变的，需要定义一个变量进行保存
+                      4.任务变量：工作内容。
+                      5.起始节点：流程从什么时候开始的
+                      6.结束节点：流程什么时候结束
+                      7.网关：逻辑分支判断
+                      8.事件：当什么发生的时候应该怎么做
+	  3.ProcessEngine（流程引擎）这个类是activiti5的核心，所有服务都要通过这个类来创建，是线程安全的，底层采用mybatis，移植性好。
+     	  4.service：包括7个service，通过ProcessEngine来创建 
+		repositoryService (持久化服务)
+		runtimeService (运行时服务)
+		formService(表单服务)
+		taskService(任务服务)
+		historyService(历史信息)
+     	  5.不需要自己写SQL语句，底层已封装好
+	
+	7.web services
+	    主要用来解决不同语言之间的通讯，让不同语言之间的通讯更加简单，解决异构系统通信
+	    最好使用基本数据类型：优先选择XML或json
+
+	     出现时间：2000年初  
+	     特点：编程简单，走http协议
+	     缺点：效率慢（走http协议）
+	     
+	     使用Axis1,Axis2,CXF，Xfire框架写web services 
+	     WSDL：web services描述语言，描述webservices 有哪些方法，参数，返回值
+		  （根据java代码有axis生成，当需要执行的时候将地址给了调用者）
+	     SOAP：简单对象访问协议，http + xml
+		   在http中有xml格式的字符串：
+			<soap:envelope>
+			   <soap:header>
+			     .......
+			   </soap:header>
+			   <soap:body>
+			    ........
+			   </soap:body>
+			</soap:envelope>
+	     web services是一种分布式（不在一起）技术体系，和语言没有关系，主流的语言都可以写web services程序，使用文本传输
+	     属于SOA-Enterprise 面向服务的架构             
+	     分布式通信：Stub（存根）和Skeleton（骨架）的通信，stub和skeleton隐藏分布式通信的细节
+			 Sub是目标对象的代理对象，体现了典型的代理对象，体现了代理的设计模式
+			 所有的分布式都是这样的。
+			 客户端与stub存根进行联系，stub通过soap协议与sleleton进行联系，sleleton与目标对象进行关联
+			 目标对象的返回值先返回给sleleton，然后通过soap协议传给stub，然后传给客户端
+	    
+	    例子的演示:
+	       服务器端：
+		1.将axis复制到tomcat的webapps目录下完成环境的搭建
+		2.在webapps/axis下创建mymath.jsw文件（在web.xml中配置了axisServlet相当于一个拦截器，拦截.jws的请求）
+		3.通过请求地址http://8080/axis/mymath.jws 获取 WSDL
+		4.将WSDL的地址发送给客户端，完成调用即可（可以是java程序，也可以是c语言）
+	       客户端：
+		1.拷贝jar包
+		2.编写一个.cmd类，根据WSDL生成存根（stub）及相关语言的代码，通过 axis中的wsdl2java
+		3.直接运行.cmd这个类，生成存根放在指定的文件下
+		4.将存根拷贝到项目中的src目录下
+		5.新建一个调用类：使用存根中的接口进行编写，传递一个参数：如 8，执行即可
+		6.在window/preferences/java/editor/content assist 中设置 写代码时的提示
+	采用eclipse完成取平方：
+		1.在项目中新建一个web service cilent 相当于.cmd文件
+		  将服务器的地址复制过去，完成后直接生成存根
+		2.编写调用类：使用存根中的service接口，传参数，运行
+	使用工具进行测试：soapUI
+	调用网上的web service
+		1.拷贝wsdl地址
+		2.使用工具或者myeclips进行检测
+	
+	使用CXF框架进行开发
+		cxf和axis的区别：axis兼容性相对来说比较好
+				 cxf容易和spring集成容易
+		使用myeclipse编写cxf框架的webservice服务器端
+			0.引入依赖包
+			1.建立Helloworld接口，在接口上写@WebService注解，如果方法有参数写@WebParam注解
+			2.编写helloworld接口的实现类
+			3.使用jetty提供Server类发布HelloWorld WebService
+			4. 采用浏览器访问发布地址（wsdl）
+		使用cxf框架开发helloworld开发客户端
+   			1.根据WSDL生成stub（存根），将CXF_HOME和JAVA_HOME配置到环境变量中
+			  为了使用方便将bin目录加入到PATH环境变量中
+   
+     8.linux操作系统的相关操作：	
+	1.先安装虚拟机。（相当于一个裸机）
+    	2.装linux系统。
+    	3.linux没有分盘。
+    	4.相关操作：
+		pwd  查看当前所在位置
+		touch  创建文件（没有的话创建，将文件的最后修改时间修改为当前系统时间）
+		ls  当前目录中有哪些子目录 
+		ls -l  查看当前目录中的文件的详细信息（相关权限）
+			r：read 4	w:write 2     x:excute 1
+		chmod 777 HelloWorld.java   修改文件的权限
+		ls -a  显示全部文件（将隐藏文件显示出来）
+		ls -al 显示所有文件的详细信息
+		clear 清屏
+		rm HelloWorld.java   删除文件
+		mkdir a  创建一个文件夹
+		rmdir a  删除文件夹
+		cp HelloWorld.java a  将文件复制到a文件夹
+		cd a  进去文件夹
+		rm -rf  强行删除
+    
+    	5.操作系统之间的相互操作
+		1.使用windows 操作linux 系统：putty 工具，输入linux系统的ip地址，打开。输入用户名，密码。		
+		2.使用windows 和 linux 系统 传文件：winscp工具，输入linux系统的ip地址，输入用户名，密码，保存，打开
+	  	  将eclipse,tomcat,java,mysql传到linux系统中
+		3.在linux系统中运行jdk安装，配置环境变量。
+		4.让环境变量起作用。
+		5.装tomacat服务器。
+		6.使用windows访问linux系统中的tomcat服务器
+		7.开发程序：创建文件夹和文件，然后开始开发	     
+=================================================================================================================================
+相关知识点：
+    1.JSON : JavaScript Object Notation 就是一个特定的JavaScript对象
+		
+		***********************************
+		javaScript中定义：
+		
+			function Emp() {
+			   this.username = "123";
+			   this.userpswd = "123123";
+			}
+			
+			var emp = new Emp();
+			
+			alert(emp.username);
+		***********************************
+		json中定义：
+			var jsonObj = {
+			   username : "123",
+			   userpswd : "123123"
+			}
+		***********************************	
+		java ==> "{username:'123',userpswd:'123123'}" ==> js ==> obj
+		在java中的字符串为json对象，通过js中的ajax将json对象转化为一个java对象，在页面中展示出来
+		AJAX + JSON
+     
+	2.ArrayList  VS  LinkedList  效率优劣?
+	     如果两个集合的长度都为100, 集合中保存的有效元素个数为99.
+             调用两个集合的add(Object)方法.
+	     调用一次,谁的效率高?    ArrayList
+			ArrayList : 1. 判断容量  2. 插入数据
+			LinkedList : 1. 创建节点  2. 建立关系
+	     调用两次,谁的效率高?    LinkedList
+			ArrayList : 1. 判断容量  2. 扩容[2.1 数组扩容  2.2 数组拷贝]  3. 插入数据
+			LinkedList : 1. 创建节点  2. 建立关系
+	 
+	     如果调用集合的add(int index, Object)方法.
+			ArrayList : 1. 判断index合法性  2. 判断容量  3. 数组位移  4. 保存数据
+			LinkedList : 1. 判断index合法性  2. 判断index位置   3. 创建节点   4. 建立关系
+	     调用一次,谁的效率高?  LinkedList
+	     调用两次,谁的效率高?  LinkedList
+
+	3.分页查询
+	     1.查询方式：分页查询 : 查询第二页  每页3条数据
+		MySQL: 分页 limit , 是一个语句, 不是函数.  limit startIndex, pagesize
+			   startIndex : 起始下标, 从0开始. (页码-1) * pagesize
+			   pagesize : 查询多少行记录[rows]
+			   select * from table limit (pageno-1) * pagesize, pagesize
+			   select * from p_user limit 3, 3
+		Oracle:Oracle 分页
+			   使用rownum进行，需要使用select的三层嵌套，查询的时候最好进行排序。
+	     2.查询分类：
+		1. 内存分页 : 一次性查询所有数据,在内存中通过代码逻辑控制显示的信息数量.
+		   优点: 1.效率高（访问数据库次数少、代码逻辑判断效率高）
+			 2.移植性好,屏蔽了不同数据库的分页语法
+		   缺点: 内存压力大
+		
+	        2. 物理分页 : 使用数据库分页查询语句实现分页效果
+		   采用数据库分页语法,直接查询部分数据
+		   优点: 内存压力小
+		   缺点: 效率低, 移植性差
+	
+	4.方法的重载和方法的重写：
+		Overload  &  Override
+		方法签名: 修饰符 返回类型 方法名 (参数表) 抛出异常 
+		Overload : 重载，要求: 同名 参数表不同 
+		Override : 重写[覆盖] 子类
+			   要求: 
+				同名  
+				参数表相同  
+				子类方法访问范围大于等于父类  
+				子类方法返回类型必须与父类方法返回类型一致,或是父类方法返回类型的子类型
+					子类方法返回类型必须与父类方法返回类型兼容  
+				子类方法抛出异常少于父类
+	
+	       Override : 方法[成员|静态]  
+		静态Override没有多态
+		如果父类方法是静态方法,子类能否使用成员方法进行Override   不能
+		如果父类方法是成员方法,子类能否使用静态方法进行Override   不能
+		
+	    方法是保存在方法区中的.
+		静态方法,在类加载时加载入方法区
+		成员方法,创建对象时加载入方法区
+	
+	   构造方法执行,代表对象创建成功
+	   创建子类对象,不会创建父类对象
+		
+		
+	   Field : 属性|成员变量[包括静态属性]  能不能在父子类中定义同名的属性.如果定义同名属性,是否有多态
+		属性不存在Override
+		父子类同名属性,称为属性的遮蔽.
+		属性不存在多态
+
+	5.Integer i1 = 127;
+	  Integer i1 = Integer.valueOf(127);
+	  valueOf : 会自动的判断参数的数据范围,如果参数数据范围在-128 ~ 127 ，返回常量池中的对象.		
+	  
+          i == 100  比的是什么
+		 * 包装类型对象于基本数据类型做 == 比较.比较的是具体的数据值.
+		 * 所有的数学包装类型有 intValue byteValue shortValue longValue 方法
+		 * 包装类型对象会调用xxxValue方法,使用方法的返回值于基本数据类型做比较.
+
+	6.值传递和地址传递：主要看在方法中是否创建了一个 临时的变量，两个对象是否相同
+		值传递: 基本类型 传递数据值
+		引用传递: 引用类型 传递内存地址
+		只是一个概念.
+		在Java中可以说,方法传递参数,只有值传递,没有引用传递.所谓的引用传递,就是传递地址.
+		因为,java中引用类型变量,长度固定为4字节,内部保存的数据是内存地址,数据形式是8位十六进制数字
+			[0x00000000 ~ 0xFFFFFFFF]
+		对变量进行操作,实际上应该修改的是变量的值.理论上说,应该改地址的数据值.
+		方法内部如果操作引用类型参数时,只是调用其方法的话.那么变量的数据是不变的.	
+		引用传递无法替代方法返回值.
+	
+	7.finally和return
+	  * 如果一个方法有返回值.那么方法在执行的时候,会有对应的一个临时变量用于保存真正的返回值.
+	  * 当遇到finally的时候，return会阻塞,先执行finally中的语句，当finally中的语句执行完，没有返回值的时候，继续执行。
+	  * _retVal
+	  * i = 11; _retVal = i;  return _retVal; 阻塞
+	  * i = 12; _retVal = i; -> _retVal = 12
+
+	8.相对路径和绝对路径		
+	  1.servlet规范对路径的匹配规则是有要求的
+	  /user/insertUser ==> UserServlet
+	  /user/updateUser ==> UserServlet
+
+	  /user/*User ==> UserServlet   错误
+	
+	   	1.如果一个路径是以 / 开头，以 /* 结尾，称为路径前缀匹配    /*
+		2.如果一个路径以 *. 开头，那么这个路径称为扩展匹配              *.do
+		3.其他所有路径都是精确匹配（必须那样写，不然访问不到）        /user/insertUser
+		
+	2.绝对路径：固定不变，无法改变的路径
+		本地路径：增加盘符的路径（file:///c:/test/test.html）
+		网络路径：增加协议和服务器以及端口号的路径（http://www.baidu.com:80/test/test.html）	
+	
+	3.相对路径：可以改变的路径，相对的，有一个比较的规则（有一个基准路径，从基准路径开始查找资源）
+		基准路径：当前资源的访问路径
+		所在路径：当前资源所在的路径
+ 	
+ 	4.如果一个相对路径以斜杠开头，那么是特殊的相对路径，改变了默认的基准路径的位置
+		前台路径：由浏览器解析执行的代码，称为前台代码，代码中的路径称为前台路径
+			        会以web服务器的跟路径为基准：http://localhost:8080
+		HTML:<img src="xxxx"><form action="xxxxx"><a href="xxxxx">
+		CSS: background:img('xxxx.gif')
+		JS:  在页面中#{pageContext.reauest.contextPath}/hello
+		后台路径：由服务器解析执行的代码，称为后台代码，代码中的路径称为后台路径
+	 		        会以web应用的根路径为基准：http://localhost:8080/mvc/
+		response.sendRedirect("xxxxx");
+		xml : /user/test.jsp
+	
+	5.jsp页面中的标签
+        <ul>         //无序列表标签
+            <li>     //无序列表中的元素标签
+                <h2>处理映射器</h2>        //body中的标题
+                <ol>  //有序列表标签
+                   <li>BeanNameUrlHandlerMapping</li>
+                   <li><a href="${pageContext.request.contextPath}/hello">SimpleUrlHandlerMapping</a></li>    
+                </ol>
+            </li>
+            <li><a href="hello">第一个例子</a></li>
+        </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
