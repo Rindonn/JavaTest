@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="E:\OneDrive\Github\JavaTest\传智书城\test\Bookstore\WebContent" path="/Bookstore" reloadable="true" source="org.eclipse.jst.jee.server:Bookstore"><Resources><PreResources base="E:\OneDrive\Github\JavaTest\传智书城\test\Bookstore\build\classes" classLoaderOnly="false" className="org.apache.catalina.webresources.DirResourceSet" internalPath="/" webAppMount="/WEB-INF/classes"/></Resources></Context>
