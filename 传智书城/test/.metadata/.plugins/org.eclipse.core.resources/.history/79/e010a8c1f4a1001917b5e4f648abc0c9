@@ -1,9 +1,0 @@
-package com.bookstore.service;
-
-import com.bookstore.*;
-
-public class orderservice {
-	public PageBean<Order> findall(){
-		
-	}
-}
