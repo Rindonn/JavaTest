@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="jquery-3.4.1.min.js" ></script>
+<script type="text/javascript">
+	window.onload = function() {
+		var tbl= document.getElementById("employeetable");
+        document.getElementById("addEmpButton").onclick = function() {//点击提交按钮
+            var nameVal = document.getElementById("name").value;
+            var userVal = document.getElementById("username").value;
+			var emailVal = document.getElementById("email").value;
+			var telVal = document.getElementById("tel").value;
+            var numVal = document.getElementById("num").value;
+            var ageVal = document.getElementById("age").value;
+            var pwdVal = document.getElementById("pwd").value;
+            var repwdVal = document.getElementById("repwd").value;
+            //0-所有输入项非空
+            if (nameVal == "" || userVal == "" || emailVal == "" || telVal == "" || numVal == "" || ageVal == "" || pwdVal == "" || repwdVal == "") { 
+                alert("输入有空!请检查输入"); 
+                return false;
+            } 
+            //1-昵称只能为汉字
+            var reg=/^[\u0391-\uFFE5]+$/; 
+            if(nameVal!=""&&!reg.test(nameVal)){ 
+                alert('只能输入汉字！');
+                //console.log(reg.test(nameVal)); 
+                return false; 
+            }
+            //2-用户名只能为字母+数字
+            var zmnumReg=/^[0-9a-zA-Z]*$/; 
+            if(userVal!=""&&!zmnumReg.test(userVal)){ 
+                alert("只能输入是字母或者数字,请重新输入");
+                return false; 
+            } 
+            //3-邮箱
+            var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            if(!myreg.test(emailVal))
+            {
+                alert('请输入有效的邮箱！');
+                return false;
+            }
+            //4-电话
+            if(telVal.length!=11) 
+            { 
+                alert('请输入有效的手机号码，需是11位！');
+                return false; 
+            } 
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+            if(!myreg.test(telVal)) 
+            { 
+                alert('请输入有效的手机号码！'); 
+                return false; 
+            } 
+            //5-身份证号
+            var format = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/;
+            //号码规则校验
+            if(!format.test(numVal)){
+                alert("身份证号码不合规");
+                return false;
+            }
+            //区位码校验
+            //出生年月日校验   前正则限制起始年份为1900;
+            var year = numVal.substr(6,4),//身份证年
+                month = numVal.substr(10,2),//身份证月
+                date = numVal.substr(12,2),//身份证日
+                time = Date.parse(month+'-'+date+'-'+year),//身份证日期时间戳date
+                now_time = Date.parse(new Date()),//当前时间戳
+                dates = (new Date(year,month,0)).getDate();//身份证当月天数
+            if(time>now_time||date>dates){
+                alert("出生日期不合规");
+                return false;
+            }
+            //校验码判断
+            var c = new Array(7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2);   //系数
+            var b = new Array('1','0','X','9','8','7','6','5','4','3','2');  //校验码对照表
+            var numVal_array = numVal.split("");
+            var sum = 0;
+            for(var k=0;k<17;k++){
+                sum+=parseInt(numVal_array[k])*parseInt(c[k]);
+            }
+            if(numVal_array[17].toUpperCase() != b[sum%11].toUpperCase()){
+                alert("身份证校验码不合规");
+                return false;
+            }
+            //6-年龄为7-120
+            var reg = /^[0-9]+$/; 
+            if(ageVal!=""&&!reg.test(ageVal)){ 
+                alert('只能输入数字！'); 
+                return false; 
+            } 
+            if(ageVal<7 || ageVal>120){
+                alert("年龄不合规");
+                return false;
+            }
+            //7-密码是6-14位
+            if(pwdVal.length>14 || pwdVal.length<6){
+                alert("密码不合规");
+                return false;
+            }
+            //8-确认密码是否一致
+            if(pwdVal != repwdVal){
+                alert("两次密码不一致");
+                return false;
+            }
+
+            //最后一步-添加到表格
+			var checkboxTd = document.createElement("td");//通过指定名称创建一个元素
+			
+			var nameTd = document.createElement("td");
+			nameTd.appendChild(document.createTextNode(nameVal));//包含着给定文本的新文本节点
+
+            var userTd = document.createElement("td");
+            userTd.appendChild(document.createTextNode(userVal));
+
+			var emailTd = document.createElement("td");
+			emailTd.appendChild(document.createTextNode(emailVal));
+
+			var telTd = document.createElement("td");
+			telTd.appendChild(document.createTextNode(telVal));
+			
+            var numTd = document.createElement("td");
+            numTd.appendChild(document.createTextNode(numVal));
+
+            var ageTd = document.createElement("td");
+            ageTd.appendChild(document.createTextNode(ageVal));
+
+            var pwdTd = document.createElement("td");
+            pwdTd.appendChild(document.createTextNode(pwdVal));
+			
+			var btnTd = document.createElement("td");
+			var btn =  document.createElement("input");
+            btn.setAttribute("type","button");
+            btn.setAttribute("value","delete");
+			btnTd.appendChild(btn);
+			
+			btn.onclick = function() {
+				del(this);
+				return false;
+			}
+			
+			var tr = document.createElement("tr");
+			
+            tr.appendChild(nameTd);
+            tr.appendChild(userTd);
+			tr.appendChild(emailTd);
+			tr.appendChild(telTd);
+            tr.appendChild(numTd);
+            tr.appendChild(ageTd);
+            tr.appendChild(pwdTd);
+			tr.appendChild(btnTd);
+			
+			tbl.getElementsByTagName("tbody")[0].appendChild(tr);
+			//getElementsByTagName() 方法可返回带有指定标签名的对象的集合。
+			//appendChild向节点的子节点列表的末尾添加新的子节点
+		}			
+		var items = document.getElementsByName("items");//按钮
+		
+		for(var i = 0; i < items.length; i++){
+			items[i].onclick = function(){
+				//记录有多少个 items 被选中了
+				var number = 0;
+				for(var j = 0; j < items.length; j++){
+					if(items[j].checked){
+						number++;
+					}
+				}
+			}
+		}	
+    }
+    //删除
+	function del(aNoe) {
+		var trNode = aNoe.parentNode.parentNode;
+		var textContent = trNode.getElementsByTagName("td")[1].firstChild.nodeValue;
+		textContent = trim(textContent);
+		trNode.parentNode.removeChild(trNode);
+		return false;
+	}
+	function trim(str) {
+		var reg = /^\s*|\s*$/g;
+		return str.replace(reg, "");
+	}
+</script>
+</head>
+<body>
+
+	<center>
+		<br> <br> 注册 <br> <br> 
+        昵称: <input type="text" name="name" id="name" />&nbsp;&nbsp; *昵称只能为汉字<br><br> 
+        用户名: <input type="text" name="username" id="username" />&nbsp;&nbsp; *用户名只能为字母+数字<br><br> 
+		邮箱: <input type="text" name="email" id="email" />&nbsp;&nbsp; <br><br>
+        电话: <input type="text" name="tel" id="tel" />&nbsp;&nbsp; <br><br>
+        身份证号: <input type="text" name="num" id="num" />&nbsp;&nbsp; <br><br>
+        年龄: <input type="text" name="age" id="age" />&nbsp;&nbsp; *年龄为7-120<br><br> 
+        密码: <input type="password" name="pwd" id="pwd" />&nbsp;&nbsp; *密码是6-14位<br><br> 
+        确认密码: <input type="password" name="repwd" id="repwd" />&nbsp;&nbsp; <br><br>
+		<button id="addEmpButton" value="abc">Submit</button>
+		<br> <br>
+		<hr>
+		<br> <br>
+		<table id="employeetable" border="1" cellpadding="5" cellspacing=0>
+			<tbody>
+				<tr>
+                    <th>昵称</th>
+                    <th>用户名</th>
+					<th>邮箱</th>
+                    <th>电话</th>
+                    <th>身份证号</th>
+                    <th>年龄</th>
+                    <th>密码</th>
+					<th>&nbsp;&nbsp; &nbsp;&nbsp; </th>
+				</tr>
+			</tbody>
+		</table> 
+	</center>
+</body>
+</html>

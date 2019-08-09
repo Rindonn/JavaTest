@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>安博师创用户注册</title>
+    </head>
+    <link rel="stylesheet" href="css/style.css">
+    <body>
+        <div id="title">
+            <p>安博师创用户注册</p>
+        </div>
+        <hr>
+        <div class="main">
+            <div id="main1-1">
+                用户名 :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="user" id="user" onblur="checkuser()"><br><div id="erroruser"></div><br>
+                输入密码：<input type="text" name="pwd" id="pwd" onblur="checkpwd()"><div id="errorpwd"></div><br>
+                验证密码：<input type="text" name="repwd" id="repwd" onblur="checkrepwd()"><div id="errorrepwd"></div><br>
+            </div>
+            <div id="main1-2">
+                <p>英文字母阿拉伯数字下划线组合，长度为6-20位，只能以字母开头</p>
+                <p>英文字母或阿拉伯数字组合，英文区分大小写，长度位6-20位</p>
+            </div>
+        </div><br>
+        <hr style="width:100%">
+        <div class="main">
+            <div id="main2-1">  
+                密码提示问题：<select style="width:173px;height:21px;">
+                    <option value ="1">您的初恋情人是？</option>
+                  </select><br><br>
+                密码提示答案：<input type="text" name="ans" id="ans"><br>
+            </div>
+            <div id="main2-2">
+                当您忘记密码时，可以通过密码问题和答案来查询，密码提示答案3-32位之间，不能包含特殊字符
+            </div>
+        </div>
+        <br><hr style="width:100%">
+        <div class="main">
+            <div id="main3-1">
+                出生日期：<select><option value="1">1994</option></select>年<select><option value="1">01</option></select>月<select><option value="1">01</option></select>日<br><br>
+                性别：<label><input type="radio" name="sex">男</label><label><input type="radio" name="sex">女</label><br><br>
+                常用邮箱：<input type="text" name="email" id="email">
+            </div>
+            <div id="main3-2">
+                <p>为了方便您的使用，请填写真实信息</p>
+                <p>方便您取得邮箱账号相关的重要信息，包括找回密码</p>
+            </div>
+        </div><br>
+        <hr style="width:100%">
+        <div class="main">
+            <div id="main4-1">
+                请输入验证码：<input type="text" name="yzm" id="yzm" style="width:70px;"> <label style="display:inline;color: red;">1492</label><input type="button" value="刷">
+            </div>
+            <div id="main4-2">
+                <p>请将系统产生的四位验证码数字输入到系统验证码的输入框中</p>
+            </div>
+        </div>
+        <hr style="width:100%"> 
+        <div class="main" style="height:45px;">
+            <div id="main5-1"><label><input type="checkbox" name="y" id="y">我已阅读并接受<a href="#">服务条款</a></label></div>
+            <div id="main5-2">选择HT-EFM服务前，请仔细阅读本服务条款</div>
+        </div>
+        <center><input type="button" name="" id="" value="提交" onclick="checkflag()"></center>
+        <hr style="width:100%"> 
+    </body>
+    <script>
+        var flag = 0;
+        function checkuser(){
+            var userVal = document.getElementById("user").value;
+            if(userVal == ""){
+                document.getElementById("erroruser").innerHTML = "<span>用户名不能为空</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+            if(userVal.length< 6 || userVal.length>20 ){
+                document.getElementById("erroruser").innerHTML = "<span>用户名必须为6-20位</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+            var zmnumReg=/^[0-9a-zA-Z_]*$/; 
+            if(userVal!=""&&!zmnumReg.test(userVal)){ 
+                document.getElementById("erroruser").innerHTML = "<span>用户名只能是字母或者数字或下划线</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+            var zmnumReg1=/^[a-zA-Z]*$/; 
+            if(userVal!=""&&!zmnumReg1.test(userVal[0])){ 
+                document.getElementById("erroruser").innerHTML = "<span>用户名第一位只能是字母！</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+        }
+        function checkpwd(){
+            var pwdVal = document.getElementById("pwd").value;
+            if(pwdVal == ""){
+                document.getElementById("errorpwd").innerHTML = "<span>密码不能为空！</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+            if(pwdVal.length< 6 || pwdVal.length>20 ){
+                document.getElementById("errorpwd").innerHTML = "<span>密码必需6-20位！</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+            var zmnumReg=/^[0-9a-zA-Z]*$/; 
+            if(pwdVal!=""&&!zmnumReg.test(pwdVal)){ 
+                document.getElementById("errorpwd").innerHTML = "<span>密码只能是字母或者数字！</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+        }
+        function checkrepwd(){
+            var pwdVal = document.getElementById("pwd").value;
+            var repwdVal = document.getElementById("repwd").value;
+            if(pwdVal!=repwdVal){
+                document.getElementById("errorrepwd").innerHTML = "<span>两次输入密码不一致！</span>";
+                flag=0;
+                return false;
+            }
+            else{
+                flag=1;
+            }
+        }
+        function checkflag(){
+            if(flag == 0){
+                alert("注册失败，请按红色提示信息修改！");
+                return false;
+            }
+        }
+    </script>
+</html>
