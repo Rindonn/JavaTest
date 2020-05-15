@@ -1,0 +1,6 @@
+已知bug记录：
+1.分类与一级重复报错无提示
+2.一个会话多次错误请求会报错sgetOutputStream() has already been called for this response
+4.Data truncation: Out of range value for column 'discount' at row 1 Query 但是返回添加成功 | 修复：添加try,catch
+5.图片过大依然可以传上去
+6.价格越界无提示报错显示成功
